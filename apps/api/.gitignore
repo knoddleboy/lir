@@ -1,0 +1,12 @@
+# compiled output
+/dist
+/node_modules
+
+# Logs
+logs
+*.log
+pnpm-debug.log*
+
+# Tests
+/coverage
+/.nyc_output
