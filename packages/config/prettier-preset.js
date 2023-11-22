@@ -11,9 +11,16 @@ module.exports = {
   importOrder: [],
   importOrderSeparation: true,
   /**
-   * Plugins to address Prettier requirements for experimental features.
-   * See https://github.com/trivago/prettier-plugin-sort-imports#importorderparserplugins for more.
+   * Satisfy prettier with experimental features.
+   * @see https://github.com/trivago/prettier-plugin-sort-imports#importorderparserplugins
    */
   importOrderParserPlugins: ["jsx", "typescript", "decorators-legacy"],
-  plugins: ["@trivago/prettier-plugin-sort-imports"],
+  plugins: [
+    "@trivago/prettier-plugin-sort-imports",
+    /**
+     * **NOTE** tailwind plugin must come last!
+     * @see https://github.com/tailwindlabs/prettier-plugin-tailwindcss#compatibility-with-other-prettier-plugins
+     */
+    "prettier-plugin-tailwindcss",
+  ],
 };
