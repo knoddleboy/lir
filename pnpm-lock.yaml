@@ -42,6 +42,9 @@ importers:
       '@lir/config':
         specifier: '*'
         version: link:../../packages/config
+      '@lir/tsconfig':
+        specifier: '*'
+        version: link:../../packages/tsconfig
       '@nestjs/cli':
         specifier: ^10.0.0
         version: 10.2.1
@@ -109,6 +112,9 @@ importers:
       '@lir/config':
         specifier: '*'
         version: link:../../packages/config
+      '@lir/tsconfig':
+        specifier: '*'
+        version: link:../../packages/tsconfig
       '@types/node':
         specifier: ^20
         version: 20.9.2
