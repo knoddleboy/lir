@@ -1,8 +1,11 @@
 {
   "extends": "./base.json",
+  "display": "Nest.js",
   "compilerOptions": {
-    "target": "ES2021",
+    "target": "esnext",
     "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["esnext"],
     "sourceMap": true,
     "incremental": true,
     "emitDecoratorMetadata": true,

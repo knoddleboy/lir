@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@lir/config": "*",
+    "@lir/eslint-config": "*",
     "@lir/tsconfig": "*",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",

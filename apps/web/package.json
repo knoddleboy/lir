@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@lir/config": "*",
+    "@lir/eslint-config": "*",
     "@lir/tsconfig": "*",
     "@types/node": "^20",
     "@types/react": "^18",

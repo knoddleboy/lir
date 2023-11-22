@@ -1,1 +1,3 @@
-module.exports = require("@lir/config/eslint-preset");
+module.exports = {
+  extends: ["@lir/eslint-config/nest.js"],
+};
