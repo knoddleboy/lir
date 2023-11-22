@@ -7,10 +7,10 @@
     "dev": "turbo run dev --parallel",
     "dev:api": "turbo run dev --filter=@lir/api",
     "dev:web": "turbo run dev --filter=@lir/web",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "lint-staged": {
     "(apps|packages)/**/*.{js,jsx,ts,tsx}": [
