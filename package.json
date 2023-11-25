@@ -9,7 +9,6 @@
     "dev:web": "turbo run dev --filter=@lir/web",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "prepare": "husky install",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "lint-staged": {
