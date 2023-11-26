@@ -6,6 +6,7 @@
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "dev": {
+      "dependsOn": ["//#env-check:common"],
       "cache": false
     },
     "lint": {
@@ -13,6 +14,12 @@
     },
     "lint:fix": {
       "cache": false
+    },
+    "//#env-check:common": {
+      "cache": false,
+      "inputs": ["./env.example", "./.env"],
+      "outputs": ["./.env"]
     }
-  }
+  },
+  "globalEnv": ["NODE_ENV", "PORT"]
 }
