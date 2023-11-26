@@ -6,6 +6,7 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
+  ignorePatterns: ["dist"],
   env: {
     node: true,
     jest: true,
