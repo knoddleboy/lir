@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 
 services:
   api:
@@ -8,4 +8,22 @@ services:
       dockerfile: ./apps/api/Dockerfile
     restart: always
     ports:
+      - 3001:3001
+    networks:
+      - monorepo_network
+
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    restart: always
+    ports:
       - 3000:3000
+    depends_on:
+      - api
+    networks:
+      - monorepo_network
+
+networks:
+  monorepo_network:
