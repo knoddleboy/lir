@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:13-alpine
+    restart: unless-stopped
+    ports:
+      - "5450:5432" # exposing local pg on port 5450 to avoid collisions
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "lir"
+      POSTGRES_PASSWORD: ""
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+volumes:
+  pg_data:

@@ -1,9 +1,25 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
+    "@lir/prisma#db:migrate": {
+      "cache": false,
+      "dependsOn": ["@lir/prisma#db:up"],
+      "inputs": ["./schema.prisma", "./migrations/**/*.sql"]
+    },
+    "@lir/prisma#db:up": {
+      "cache": false
+    },
+    "@lir/prisma#dev": {
+      "cache": false,
+      "dependsOn": ["@lir/prisma#db:migrate"]
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+    },
+    "db:deploy": {
+      "cache": false,
+      "inputs": ["./migrations/**/*.sql", "./prisma/migrations/**/*.sql"]
     },
     "dev": {
       "dependsOn": ["//#env-check:common"],
