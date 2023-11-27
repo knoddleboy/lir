@@ -5,6 +5,7 @@ node_modules
 
 # evn file
 .env
+!packages/prisma/.env
 
 # local env files
 .env.local
