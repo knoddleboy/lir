@@ -1,0 +1,14 @@
+{
+  "name": "@lir/lib",
+  "private": true,
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build --force ./tsconfig.json"
+  },
+  "devDependencies": {
+    "@lir/tsconfig": "*",
+    "typescript": "^5.3.2"
+  }
+}
