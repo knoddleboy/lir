@@ -8,7 +8,13 @@ module.exports = {
   printWidth: 80,
   arrowParens: "always",
   endOfLine: "auto",
-  importOrder: ["<THIRD_PARTY_MODULES>", "^@nestjs/(.*)$", "^~/(.*)$", "^[./]"],
+  importOrder: [
+    "^@lir/(.*)$",
+    "<THIRD_PARTY_MODULES>",
+    "^@nestjs/(.*)$",
+    "^~/(.*)$",
+    "^[./]",
+  ],
   importOrderSeparation: true,
   /**
    * Satisfy prettier with experimental features.
