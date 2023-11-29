@@ -38,5 +38,11 @@
     }
   },
   "globalDependencies": [".env"],
-  "globalEnv": ["NODE_ENV", "PORT", "DATABASE_URL"]
+  "globalEnv": [
+    "NODE_ENV",
+    "PORT",
+    "DATABASE_URL",
+    "JWT_ACCESS_SECRET",
+    "JWT_REFRESH_SECRET"
+  ]
 }
