@@ -4,11 +4,25 @@
   "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    "./error": {
+      "default": "./dist/error/index.js",
+      "types": "./dist/error/index.d.ts"
+    },
+    "./schema": {
+      "default": "./dist/schema/index.js",
+      "types": "./dist/schema/index.d.ts"
+    }
+  },
   "scripts": {
     "build": "tsc --build --force ./tsconfig.json"
   },
   "devDependencies": {
     "@lir/tsconfig": "*",
     "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "@paralleldrive/cuid2": "^2.2.2",
+    "zod": "^3.22.4"
   }
 }

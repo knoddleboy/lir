@@ -3,7 +3,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "./dist",
-    "paths": {}
+    "preserveWatchOutput": true,
+    "paths": {
+      "~/*": ["src/*"]
+    }
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts"],
+  "exclude": ["dist"]
 }
