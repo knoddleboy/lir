@@ -10,8 +10,8 @@ export const configSchema = z.object({
 
   // security
   BCRYPT_SALT_OR_ROUNDS: z.coerce.number().optional(),
-  ACCESS_TOKEN_SECRET: z.string(),
-  REFRESH_TOKEN_SECRET: z.string(),
+  JWT_ACCESS_SECRET: z.string(),
+  JWT_REFRESH_SECRET: z.string(),
 });
 
 export type Config = z.infer<typeof configSchema>;

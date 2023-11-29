@@ -239,6 +239,9 @@ importers:
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
+      nestjs-zod:
+        specifier: ^3.0.0
+        version: 3.0.0(@nestjs/common@10.2.10)(@nestjs/core@10.2.10)(zod@3.22.4)
       zod:
         specifier: ^3.22.4
         version: 3.22.4

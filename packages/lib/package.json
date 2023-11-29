@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.2",
+    "nestjs-zod": "^3.0.0",
     "zod": "^3.22.4"
   }
 }
