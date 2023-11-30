@@ -56,20 +56,6 @@ export class AuthService {
     }
   }
 
-  async login(loginDto: LoginDto) {
-    try {
-      const user = await this.userService.findOneByIdentifier({
-        email: loginDto.email,
-      });
-
-      this.validatePassword(loginDto.password, user.password);
-
-      return user;
-    } catch (error) {
-      throw new BadRequestException(ErrorResponseCode.InvalidCredentials);
-    }
-  }
-
   async logout() {
     throw new Error("Unimplemented");
   }
@@ -80,11 +66,7 @@ export class AuthService {
       user.email
     );
 
-    response.cookie(
-      "Authorization",
-      accessToken,
-      cookieOptionsFactory("access")
-    );
+    response.cookie("Authorization", accessToken, cookieOptionsFactory("access"));
     response.cookie("Refresh", refreshToken, cookieOptionsFactory("refresh"));
 
     const responseBody = authResponseSchema.parse(user);
@@ -92,11 +74,20 @@ export class AuthService {
     response.status(200).send(responseBody);
   }
 
+  async validateUser({ email, password }: LoginDto) {
+    try {
+      const user = await this.userService.findOneByIdentifier({ email });
+
+      await this.validatePassword(password, user.password);
+
+      return user;
+    } catch (error) {
+      throw new BadRequestException(ErrorResponseCode.InvalidCredentials);
+    }
+  }
+
   private async validatePassword(password: string, hashedPassword: string) {
-    const isValid = await this.passwordService.validate(
-      password,
-      hashedPassword
-    );
+    const isValid = await this.passwordService.validate(password, hashedPassword);
 
     if (!isValid) {
       throw new BadRequestException(ErrorResponseCode.InvalidCredentials);

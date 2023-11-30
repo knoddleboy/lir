@@ -1,18 +1,20 @@
 import { Response } from "express";
 
-import { Body, Controller, Post, Res } from "@nestjs/common";
+import { Body, Controller, Post, Res, UseGuards } from "@nestjs/common";
 
-import { LoginDto } from "~/dto/auth/login";
 import { SignupDto } from "~/dto/auth/signup";
+import { UserDto } from "~/dto/user/user";
+import { User } from "~/user/decorators/user.decorator";
 
 import { AuthService } from "./auth.service";
+import { LocalGuard } from "./guards/local.guard";
 
 @Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post("signup")
-  async register(
+  async signup(
     @Body() singupDto: SignupDto,
     @Res({ passthrough: true }) response: Response
   ) {
@@ -20,12 +22,12 @@ export class AuthController {
     return this.authService.handleAuthResponse(user, response);
   }
 
+  @UseGuards(LocalGuard)
   @Post("login")
   async login(
-    @Body() loginDto: LoginDto,
+    @User() user: UserDto,
     @Res({ passthrough: true }) response: Response
   ) {
-    const user = await this.authService.login(loginDto);
     return this.authService.handleAuthResponse(user, response);
   }
 
