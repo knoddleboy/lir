@@ -14,12 +14,20 @@ export class UserService {
   async findOneById(id: string) {
     return await this.prismaService.user.findUniqueOrThrow({
       where: { id },
+      include: { tokens: true },
     });
   }
 
   async findOneByIdentifier(identifier: Prisma.UserWhereUniqueInput) {
     return await this.prismaService.user.findUniqueOrThrow({
       where: identifier,
+    });
+  }
+
+  async updateById(id: string, data: Prisma.UserUpdateArgs["data"]) {
+    return await this.prismaService.user.update({
+      where: { id },
+      data,
     });
   }
 }

@@ -56,8 +56,13 @@ export class AuthService {
     }
   }
 
-  async logout() {
-    throw new Error("Unimplemented");
+  async logout(user: UserDto, response: Response) {
+    await this.tokenService.deleteToken(user.id);
+
+    response.clearCookie("Authorization");
+    response.clearCookie("Refresh");
+
+    response.status(200).send({});
   }
 
   async handleAuthResponse(user: UserDto, response: Response<AuthResponseDto>) {

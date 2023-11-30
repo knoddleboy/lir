@@ -3,10 +3,11 @@ import { JwtModule } from "@nestjs/jwt";
 
 import { UserModule } from "~/user/user.module";
 
+import { PasswordModule } from "../password/password.module";
 import { TokenService } from "./token.service";
 
 @Module({
-  imports: [JwtModule, UserModule],
+  imports: [JwtModule, UserModule, PasswordModule],
   providers: [TokenService],
   exports: [TokenService],
 })

@@ -1,12 +1,21 @@
+import { ErrorResponseCode } from "@lir/lib/error";
 import { jwtPayloadSchema } from "@lir/lib/schema";
 
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
+import { PrismaService } from "nestjs-prisma";
+
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 
 import { Config } from "~/config/schema";
 import { UserService } from "~/user/user.service";
 
+import { PasswordService } from "../password/password.service";
 import { JwtPayload } from "../utils/type";
 
 @Injectable()
@@ -14,7 +23,9 @@ export class TokenService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService<Config>,
-    private readonly userService: UserService
+    private readonly passwordService: PasswordService,
+    private readonly userService: UserService,
+    private readonly prismaService: PrismaService
   ) {}
 
   async generateToken(grantType: "access" | "refresh", payload: JwtPayload) {
@@ -34,14 +45,20 @@ export class TokenService {
       }
 
       default:
-        throw new InternalServerErrorException();
+        throw new InternalServerErrorException(/** Invalid `grantType` */);
     }
   }
 
   async validateRefreshToken(token: string, payload: JwtPayload) {
-    const user = this.userService.findOneById(payload.sub);
+    const user = await this.userService.findOneById(payload.sub);
+    const isValid = await this.passwordService.validate(
+      token,
+      user?.tokens?.refreshToken || ""
+    );
 
-    // access user's tokens and if any compare with the provided token
+    if (!isValid) {
+      throw new UnauthorizedException(ErrorResponseCode.InvalidRefreshToken);
+    }
 
     return user;
   }
@@ -54,8 +71,38 @@ export class TokenService {
       this.generateToken("refresh", payload),
     ]);
 
-    // store refresh token
+    const hashedRefreshToken = await this.passwordService.hash(refreshToken);
+    const { exp } = this.jwtService.decode(refreshToken);
+
+    const tokenData = {
+      refreshToken: hashedRefreshToken,
+      expiresAt: new Date(exp * 1000), // epoch ms
+    };
+
+    await this.createOrUpdateToken(id, tokenData);
 
     return { accessToken, refreshToken };
+  }
+
+  async createOrUpdateToken(
+    userId: string,
+    data: Omit<Prisma.TokenCreateInput, "user">
+  ) {
+    await this.prismaService.token.upsert({
+      where: { userId },
+      create: {
+        ...data,
+        user: { connect: { id: userId } },
+      },
+      update: {
+        ...data,
+      },
+    });
+  }
+
+  async deleteToken(userId: string) {
+    await this.prismaService.token.delete({
+      where: { userId },
+    });
   }
 }
