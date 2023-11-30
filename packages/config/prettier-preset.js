@@ -5,7 +5,7 @@ module.exports = {
   jsxSingleQuote: false,
   trailingComma: "es5",
   semi: true,
-  printWidth: 80,
+  printWidth: 85,
   arrowParens: "always",
   endOfLine: "auto",
   importOrder: [
