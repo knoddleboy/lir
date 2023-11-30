@@ -5,16 +5,16 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 
-import { AuthService } from "~/auth/auth.service";
 import { Config } from "~/config/schema";
 
+import { TokenService } from "../token/token.service";
 import { JwtPayload } from "../utils/type";
 
 @Injectable()
 export class RefreshStrategy extends PassportStrategy(Strategy, "jwt-refresh") {
   constructor(
     private readonly configService: ConfigService<Config>,
-    private readonly authService: AuthService
+    private readonly tokenService: TokenService
   ) {
     super({
       secretOrKey: configService.get<string>("JWT_REFRESH_SECRET"),
@@ -28,6 +28,6 @@ export class RefreshStrategy extends PassportStrategy(Strategy, "jwt-refresh") {
 
   async validate(request: Request, payload: JwtPayload) {
     const refreshToken = request.cookies?.Refresh;
-    return this.authService.validateRefreshToken(refreshToken, payload);
+    return this.tokenService.validateRefreshToken(refreshToken, payload);
   }
 }

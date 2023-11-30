@@ -1,6 +1,8 @@
 import { ErrorResponseCode } from "@lir/lib/error";
+import { authResponseSchema } from "@lir/lib/schema";
 
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { Response } from "express";
 
 import {
   BadRequestException,
@@ -8,24 +10,23 @@ import {
   InternalServerErrorException,
   Logger,
 } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { JwtService } from "@nestjs/jwt";
 
-import { Config } from "~/config/schema";
+import { AuthResponseDto } from "~/dto/auth/auth-response";
 import { LoginDto } from "~/dto/auth/login";
 import { SignupDto } from "~/dto/auth/signup";
+import { UserDto } from "~/dto/user/user";
 import { UserService } from "~/user/user.service";
 
 import { PasswordService } from "./password/password.service";
-import { JwtPayload } from "./utils/type";
+import { TokenService } from "./token/token.service";
+import { cookieOptionsFactory } from "./utils/cookie-options.factory";
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly configService: ConfigService<Config>,
     private readonly userService: UserService,
     private readonly passwordService: PasswordService,
-    private readonly jwtService: JwtService
+    private readonly tokenService: TokenService
   ) {}
 
   async signup(signupDto: SignupDto) {
@@ -73,33 +74,22 @@ export class AuthService {
     throw new Error("Unimplemented");
   }
 
-  async validateRefreshToken(token: string, payload: JwtPayload) {
-    const user = this.userService.findOneById(payload.sub);
+  async handleAuthResponse(user: UserDto, response: Response<AuthResponseDto>) {
+    const { accessToken, refreshToken } = await this.tokenService.refreshTokens(
+      user.id,
+      user.email
+    );
 
-    // access user's tokens and if any compare with the provided token
+    response.cookie(
+      "Authorization",
+      accessToken,
+      cookieOptionsFactory("access")
+    );
+    response.cookie("Refresh", refreshToken, cookieOptionsFactory("refresh"));
 
-    return user;
-  }
+    const responseBody = authResponseSchema.parse(user);
 
-  async generateToken(grantType: "access" | "refresh", payload: JwtPayload) {
-    switch (grantType) {
-      case "access": {
-        return await this.jwtService.signAsync(payload, {
-          secret: this.configService.get<string>("JWT_ACCESS_SECRET"),
-          expiresIn: "15m",
-        });
-      }
-
-      case "refresh": {
-        return await this.jwtService.signAsync(payload, {
-          secret: this.configService.get<string>("JWT_REFRESH_SECRET"),
-          expiresIn: "7d",
-        });
-      }
-
-      default:
-        throw new InternalServerErrorException();
-    }
+    response.status(200).send(responseBody);
   }
 
   private async validatePassword(password: string, hashedPassword: string) {
