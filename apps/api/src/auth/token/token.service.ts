@@ -86,7 +86,7 @@ export class TokenService {
 
   async createOrUpdateToken(
     userId: string,
-    data: Omit<Prisma.TokenCreateInput, "user">
+    data: Prisma.TokenUpsertWithoutUserInput["create"]
   ) {
     await this.prismaService.token.upsert({
       where: { userId },

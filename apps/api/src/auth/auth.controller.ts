@@ -9,6 +9,7 @@ import { User } from "~/user/decorators/user.decorator";
 import { AuthService } from "./auth.service";
 import { JwtGuard } from "./guards/jwt.guard";
 import { LocalGuard } from "./guards/local.guard";
+import { RefreshGuard } from "./guards/refresh.guard";
 
 @Controller("auth")
 export class AuthController {
@@ -26,6 +27,15 @@ export class AuthController {
   @UseGuards(LocalGuard)
   @Post("login")
   async login(
+    @User() user: UserDto,
+    @Res({ passthrough: true }) response: Response
+  ) {
+    return this.authService.handleAuthResponse(user, response);
+  }
+
+  @UseGuards(RefreshGuard)
+  @Post("refresh")
+  async refresh(
     @User() user: UserDto,
     @Res({ passthrough: true }) response: Response
   ) {

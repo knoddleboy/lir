@@ -7,11 +7,12 @@ import { AuthService } from "./auth.service";
 import { PasswordModule } from "./password/password.module";
 import { JwtStrategy } from "./strategy/jwt.strategy";
 import { LocalStrategy } from "./strategy/local.strategy";
+import { RefreshStrategy } from "./strategy/refresh.strategy";
 import { TokenModule } from "./token/token.module";
 
 @Module({
   imports: [UserModule, PasswordModule, TokenModule],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, RefreshStrategy],
 })
 export class AuthModule {}
