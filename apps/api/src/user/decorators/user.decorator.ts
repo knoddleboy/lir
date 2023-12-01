@@ -2,7 +2,7 @@ import { Request } from "express";
 
 import { ExecutionContext, createParamDecorator } from "@nestjs/common";
 
-import { UserWithTokensDto } from "~/dto/user/user";
+import { UserWithTokensDto } from "~/lib/dto/user";
 
 export const User = createParamDecorator(
   (data: keyof UserWithTokensDto, context: ExecutionContext) => {

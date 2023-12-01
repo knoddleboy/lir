@@ -2,8 +2,8 @@ import { Response } from "express";
 
 import { Body, Controller, Post, Res, UseGuards } from "@nestjs/common";
 
-import { SignupDto } from "~/dto/auth/signup";
-import { UserWithTokensDto } from "~/dto/user/user";
+import { SignupDto } from "~/lib/dto/auth";
+import { UserWithTokensDto } from "~/lib/dto/user";
 import { User } from "~/user/decorators/user.decorator";
 
 import { AuthService } from "./auth.service";

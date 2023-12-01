@@ -12,9 +12,7 @@ import { Config } from "~/config/schema";
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger:
-      process.env.NODE_ENV === "development"
-        ? ["debug"]
-        : ["log", "warn", "error"],
+      process.env.NODE_ENV === "development" ? ["debug"] : ["log", "warn", "error"],
   });
 
   const configService = app.get(ConfigService<Config>);

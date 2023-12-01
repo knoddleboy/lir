@@ -12,10 +12,8 @@ import {
   Logger,
 } from "@nestjs/common";
 
-import { AuthResponseDto } from "~/dto/auth/auth-response";
-import { LoginDto } from "~/dto/auth/login";
-import { SignupDto } from "~/dto/auth/signup";
-import { UserDto } from "~/dto/user/user";
+import { AuthResponseDto, LoginDto, SignupDto } from "~/lib/dto/auth";
+import { UserDto } from "~/lib/dto/user";
 import { UserWithTokens } from "~/lib/types";
 import { UserService } from "~/user/user.service";
 
