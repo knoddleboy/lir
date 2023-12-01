@@ -1,6 +1,7 @@
 import { ErrorResponseCode } from "@lir/lib/error";
 import { authResponseSchema } from "@lir/lib/schema";
 
+import { User } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { Response } from "express";
 
@@ -15,6 +16,7 @@ import { AuthResponseDto } from "~/dto/auth/auth-response";
 import { LoginDto } from "~/dto/auth/login";
 import { SignupDto } from "~/dto/auth/signup";
 import { UserDto } from "~/dto/user/user";
+import { UserWithTokens } from "~/lib/types";
 import { UserService } from "~/user/user.service";
 
 import { PasswordService } from "./password/password.service";
@@ -29,7 +31,7 @@ export class AuthService {
     private readonly tokenService: TokenService
   ) {}
 
-  async signup(signupDto: SignupDto) {
+  async signup(signupDto: SignupDto): Promise<User> {
     const hashedPassword = await this.passwordService.hash(signupDto.password);
 
     try {
@@ -79,7 +81,7 @@ export class AuthService {
     response.status(200).send(responseBody);
   }
 
-  async validateUser({ email, password }: LoginDto) {
+  async validateUser({ email, password }: LoginDto): Promise<UserWithTokens> {
     try {
       const user = await this.userService.findOneByIdentifier({ email });
 

@@ -1,7 +1,5 @@
 import { createZodDto } from "nestjs-zod";
 
-import { userSchema } from "../user/user";
-
-export const loginSchema = userSchema.pick({ email: true, password: true });
+import { loginSchema } from "~/lib/validators/auth";
 
 export class LoginDto extends createZodDto(loginSchema) {}

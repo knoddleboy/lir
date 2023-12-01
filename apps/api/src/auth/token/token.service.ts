@@ -13,6 +13,7 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 
 import { Config } from "~/config/schema";
+import { UserWithTokens } from "~/lib/types";
 import { UserService } from "~/user/user.service";
 
 import { PasswordService } from "../password/password.service";
@@ -49,7 +50,10 @@ export class TokenService {
     }
   }
 
-  async validateRefreshToken(token: string, payload: JwtPayload) {
+  async validateRefreshToken(
+    token: string,
+    payload: JwtPayload
+  ): Promise<UserWithTokens> {
     const user = await this.userService.findOneById(payload.sub);
     const isValid = await this.passwordService.validate(
       token,
