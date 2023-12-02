@@ -4,13 +4,11 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
 @Injectable()
-export class PasswordService {
+export class HashingService {
   constructor(private readonly configService: ConfigService) {}
 
   private async genSaltRounds(): Promise<number> {
-    const saltOrRounds = this.configService.get<number>(
-      "BCRYPT_SALT_OR_ROUNDS"
-    );
+    const saltOrRounds = this.configService.get<number>("BCRYPT_SALT_OR_ROUNDS");
 
     if (saltOrRounds !== undefined) {
       return saltOrRounds;

@@ -18,11 +18,11 @@ import {
 
 import { AuthResponseDto, LoginDto, SignupDto } from "~/lib/dto/auth";
 import { UserDto } from "~/lib/dto/user";
+import { HashingService } from "~/lib/services/hashing.service";
 import { UserWithTokens } from "~/lib/types";
 import { MailService } from "~/mail/mail.service";
 import { UserService } from "~/user/user.service";
 
-import { PasswordService } from "./password/password.service";
 import { TokenService } from "./token/token.service";
 import { cookieOptionsFactory } from "./utils/cookie-options.factory";
 
@@ -30,14 +30,14 @@ import { cookieOptionsFactory } from "./utils/cookie-options.factory";
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    private readonly passwordService: PasswordService,
     private readonly tokenService: TokenService,
     private readonly mailService: MailService,
-    private readonly prismaService: PrismaService
+    private readonly prismaService: PrismaService,
+    private readonly hashingService: HashingService
   ) {}
 
   async signup(signupDto: SignupDto): Promise<User> {
-    const hashedPassword = await this.passwordService.hash(signupDto.password);
+    const hashedPassword = await this.hashingService.hash(signupDto.password);
 
     try {
       const user = await this.userService.create({
@@ -124,7 +124,7 @@ export class AuthService {
   }
 
   private async validatePassword(password: string, hashedPassword: string) {
-    const isValid = await this.passwordService.validate(password, hashedPassword);
+    const isValid = await this.hashingService.validate(password, hashedPassword);
 
     if (!isValid) {
       throw new BadRequestException(ErrorResponseCode.InvalidCredentials);

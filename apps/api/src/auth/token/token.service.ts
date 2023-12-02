@@ -13,10 +13,10 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 
 import { Config } from "~/config/schema";
+import { HashingService } from "~/lib/services/hashing.service";
 import { UserWithTokens } from "~/lib/types";
 import { UserService } from "~/user/user.service";
 
-import { PasswordService } from "../password/password.service";
 import { JwtPayload } from "../utils/type";
 
 @Injectable()
@@ -24,7 +24,7 @@ export class TokenService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService<Config>,
-    private readonly passwordService: PasswordService,
+    private readonly hashingService: HashingService,
     private readonly userService: UserService,
     private readonly prismaService: PrismaService
   ) {}
@@ -55,7 +55,7 @@ export class TokenService {
     payload: JwtPayload
   ): Promise<UserWithTokens> {
     const user = await this.userService.findOneById(payload.sub);
-    const isValid = await this.passwordService.validate(
+    const isValid = await this.hashingService.validate(
       token,
       user?.tokens?.refreshToken || ""
     );
@@ -75,7 +75,7 @@ export class TokenService {
       this.generateToken("refresh", payload),
     ]);
 
-    const hashedRefreshToken = await this.passwordService.hash(refreshToken);
+    const hashedRefreshToken = await this.hashingService.hash(refreshToken);
     const { exp } = this.jwtService.decode(refreshToken);
 
     const tokenData = {

@@ -1,19 +1,25 @@
 import { Module } from "@nestjs/common";
 
+import { HashingService } from "~/lib/services/hashing.service";
 import { MailModule } from "~/mail/mail.module";
 import { UserModule } from "~/user/user.module";
 
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
-import { PasswordModule } from "./password/password.module";
 import { JwtStrategy } from "./strategy/jwt.strategy";
 import { LocalStrategy } from "./strategy/local.strategy";
 import { RefreshStrategy } from "./strategy/refresh.strategy";
 import { TokenModule } from "./token/token.module";
 
 @Module({
-  imports: [UserModule, PasswordModule, TokenModule, MailModule],
+  imports: [UserModule, TokenModule, MailModule],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, RefreshStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    RefreshStrategy,
+    HashingService,
+  ],
 })
 export class AuthModule {}

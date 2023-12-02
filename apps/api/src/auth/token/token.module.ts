@@ -1,14 +1,14 @@
 import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 
+import { HashingService } from "~/lib/services/hashing.service";
 import { UserModule } from "~/user/user.module";
 
-import { PasswordModule } from "../password/password.module";
 import { TokenService } from "./token.service";
 
 @Module({
-  imports: [JwtModule, UserModule, PasswordModule],
-  providers: [TokenService],
+  imports: [JwtModule, UserModule],
+  providers: [TokenService, HashingService],
   exports: [TokenService],
 })
 export class TokenModule {}
