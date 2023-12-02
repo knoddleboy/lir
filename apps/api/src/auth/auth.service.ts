@@ -15,6 +15,7 @@ import {
 import { AuthResponseDto, LoginDto, SignupDto } from "~/lib/dto/auth";
 import { UserDto } from "~/lib/dto/user";
 import { UserWithTokens } from "~/lib/types";
+import { MailService } from "~/mail/mail.service";
 import { UserService } from "~/user/user.service";
 
 import { PasswordService } from "./password/password.service";
@@ -26,7 +27,8 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly passwordService: PasswordService,
-    private readonly tokenService: TokenService
+    private readonly tokenService: TokenService,
+    private readonly mailService: MailService
   ) {}
 
   async signup(signupDto: SignupDto): Promise<User> {
@@ -39,7 +41,15 @@ export class AuthService {
         password: hashedPassword,
       });
 
-      // call to mail service
+      this.mailService.sendMail({
+        to: user.email,
+        subject: "Confirm your Email",
+        templateType: "verify-email",
+        context: {
+          name: user.name,
+          url: "https://google.com",
+        },
+      });
 
       return user;
     } catch (error) {

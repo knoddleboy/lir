@@ -50,4 +50,8 @@ export class AuthController {
   ) {
     return this.authService.logout(user, response);
   }
+
+  @UseGuards(JwtGuard)
+  @Post("verify-email")
+  async verifyEmail() {}
 }

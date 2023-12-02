@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 
+import { MailModule } from "~/mail/mail.module";
 import { UserModule } from "~/user/user.module";
 
 import { AuthController } from "./auth.controller";
@@ -11,7 +12,7 @@ import { RefreshStrategy } from "./strategy/refresh.strategy";
 import { TokenModule } from "./token/token.module";
 
 @Module({
-  imports: [UserModule, PasswordModule, TokenModule],
+  imports: [UserModule, PasswordModule, TokenModule, MailModule],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy, RefreshStrategy],
 })
