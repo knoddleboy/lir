@@ -1,8 +1,8 @@
 import { Response } from "express";
 
-import { Body, Controller, Post, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query, Res, UseGuards } from "@nestjs/common";
 
-import { SignupDto } from "~/lib/dto/auth";
+import { SignupDto, VerificationTokenDto } from "~/lib/dto/auth";
 import { UserWithTokensDto } from "~/lib/dto/user";
 import { User } from "~/user/decorators/user.decorator";
 
@@ -51,7 +51,8 @@ export class AuthController {
     return this.authService.logout(user, response);
   }
 
-  @UseGuards(JwtGuard)
-  @Post("verify-email")
-  async verifyEmail() {}
+  @Get("verify-email")
+  async verifyEmail(@Query() query: VerificationTokenDto) {
+    return this.authService.verifyEmail(query.token);
+  }
 }

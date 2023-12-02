@@ -35,4 +35,14 @@ export class UserService {
       data,
     });
   }
+
+  async updateByIdentifier(
+    identifier: Prisma.UserWhereUniqueInput,
+    data: Prisma.UserUpdateInput
+  ): Promise<User> {
+    return await this.prismaService.user.update({
+      where: identifier,
+      data,
+    });
+  }
 }

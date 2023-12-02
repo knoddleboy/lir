@@ -3,10 +3,14 @@ import { authResponseSchema } from "@lir/lib/schema";
 
 import { User } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { randomBytes } from "crypto";
+import dayjs from "dayjs";
 import { Response } from "express";
+import { PrismaService } from "nestjs-prisma";
 
 import {
   BadRequestException,
+  GoneException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -28,7 +32,8 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly passwordService: PasswordService,
     private readonly tokenService: TokenService,
-    private readonly mailService: MailService
+    private readonly mailService: MailService,
+    private readonly prismaService: PrismaService
   ) {}
 
   async signup(signupDto: SignupDto): Promise<User> {
@@ -41,15 +46,7 @@ export class AuthService {
         password: hashedPassword,
       });
 
-      this.mailService.sendMail({
-        to: user.email,
-        subject: "Confirm your Email",
-        templateType: "verify-email",
-        context: {
-          name: user.name,
-          url: "https://google.com",
-        },
-      });
+      this.sendEmailVerification(user.name, user.email);
 
       return user;
     } catch (error) {
@@ -73,6 +70,31 @@ export class AuthService {
     response.clearCookie("Refresh");
 
     response.status(200).send({});
+  }
+
+  async verifyEmail(token: string) {
+    const foundToken = await this.prismaService.verificationToken.findFirst({
+      where: { token },
+    });
+
+    if (!foundToken) {
+      throw new BadRequestException(ErrorResponseCode.InvalidVerificationToken);
+    }
+
+    if (dayjs(foundToken.expiresAt).isBefore(dayjs())) {
+      throw new GoneException(ErrorResponseCode.ExpiredVerificationToken);
+    }
+
+    await this.userService.updateByIdentifier(
+      { email: foundToken.identifier },
+      { emailVerified: new Date() }
+    );
+
+    await this.prismaService.verificationToken.delete({
+      where: {
+        id: foundToken.id,
+      },
+    });
   }
 
   async handleAuthResponse(user: UserDto, response: Response<AuthResponseDto>) {
@@ -106,6 +128,32 @@ export class AuthService {
 
     if (!isValid) {
       throw new BadRequestException(ErrorResponseCode.InvalidCredentials);
+    }
+  }
+
+  private async sendEmailVerification(name: string, email: string) {
+    try {
+      const token = randomBytes(32).toString("hex");
+      const params = new URLSearchParams({ token });
+
+      await this.prismaService.verificationToken.create({
+        data: {
+          identifier: email,
+          token,
+          expiresAt: new Date(Date.now() + 1000 * 10), // in 1d
+        },
+      });
+
+      await this.mailService.sendMail({
+        templateType: "verify-email",
+        payload: {
+          user: { name, email },
+          verificationLink: `http://localhost:3001/api/auth/verify-email?${params.toString()}`,
+        },
+      });
+    } catch (error) {
+      Logger.error(error);
+      throw new InternalServerErrorException(error);
     }
   }
 }
