@@ -54,3 +54,13 @@ model VerificationToken {
   @@index([token])
   @@map(name: "verification_tokens")
 }
+
+model PasswordResetRequest {
+  id        String   @id @default(cuid())
+  email     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map(name: "password_reset_request")
+}

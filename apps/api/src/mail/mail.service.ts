@@ -26,6 +26,16 @@ export class MailService {
         break;
       }
 
+      case "forgot-password-email": {
+        options.subject = "Lir: Password reset request";
+        options.template = "./forgot-password-email.hbs";
+        options.context = {
+          name: payload.user.name,
+          url: payload.resetPasswordLink,
+        };
+        break;
+      }
+
       default:
         throw new InternalServerErrorException(/** Invalid `templateType` */);
     }

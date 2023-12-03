@@ -2,7 +2,12 @@ import { Response } from "express";
 
 import { Body, Controller, Get, Post, Query, Res, UseGuards } from "@nestjs/common";
 
-import { SignupDto, VerificationTokenDto } from "~/lib/dto/auth";
+import {
+  ForgotPasswordDto,
+  ResetPasswordDto,
+  SignupDto,
+  VerificationTokenDto,
+} from "~/lib/dto/auth";
 import { UserDto } from "~/lib/dto/user";
 import { User } from "~/user/decorators/user.decorator";
 
@@ -54,5 +59,21 @@ export class AuthController {
   @Get("verify-email")
   async verifyEmail(@Query() query: VerificationTokenDto) {
     return this.authService.verifyEmail(query.token);
+  }
+
+  @Post("forgot-password")
+  async forgotPassword(
+    @Body() forgotPasswordDto: ForgotPasswordDto,
+    @Res() response: Response
+  ) {
+    return this.authService.forgotPassword(forgotPasswordDto.email, response);
+  }
+
+  @Post("reset-password")
+  async resetPassword(
+    @Body() { newPassword, requestId }: ResetPasswordDto,
+    @Res() response: Response
+  ) {
+    return this.authService.resetPassword(newPassword, requestId, response);
   }
 }

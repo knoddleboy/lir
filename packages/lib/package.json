@@ -9,6 +9,10 @@
       "default": "./dist/error/index.js",
       "types": "./dist/error/index.d.ts"
     },
+    "./responses": {
+      "default": "./dist/responses/index.js",
+      "types": "./dist/responses/index.d.ts"
+    },
     "./schema": {
       "default": "./dist/schema/index.js",
       "types": "./dist/schema/index.d.ts"
