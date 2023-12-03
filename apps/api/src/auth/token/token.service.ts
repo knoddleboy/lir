@@ -1,7 +1,7 @@
 import { ErrorResponseCode } from "@lir/lib/error";
 import { jwtPayloadSchema } from "@lir/lib/schema";
 
-import { Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
 
 import {
@@ -14,8 +14,6 @@ import { JwtService } from "@nestjs/jwt";
 
 import { Config } from "~/config/schema";
 import { HashingService } from "~/lib/services/hashing.service";
-import { UserWithTokens } from "~/lib/types";
-import { UserService } from "~/user/user.service";
 
 import { JwtPayload } from "../utils/type";
 
@@ -25,7 +23,6 @@ export class TokenService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService<Config>,
     private readonly hashingService: HashingService,
-    private readonly userService: UserService,
     private readonly prismaService: PrismaService
   ) {}
 
@@ -50,14 +47,18 @@ export class TokenService {
     }
   }
 
-  async validateRefreshToken(
-    token: string,
-    payload: JwtPayload
-  ): Promise<UserWithTokens> {
-    const user = await this.userService.findOneById(payload.sub);
+  async validateRefreshToken(token: string, payload: JwtPayload): Promise<User> {
+    const user = await this.prismaService.user.findUniqueOrThrow({
+      where: { id: payload.sub },
+      include: {
+        accounts: {
+          where: { userId: payload.sub },
+        },
+      },
+    });
     const isValid = await this.hashingService.validate(
       token,
-      user?.tokens?.refreshToken || ""
+      user?.accounts?.refreshToken || ""
     );
 
     if (!isValid) {
@@ -67,8 +68,8 @@ export class TokenService {
     return user;
   }
 
-  async refreshTokens(id: string, email: string) {
-    const payload = jwtPayloadSchema.parse({ sub: id, email });
+  async refreshTokens(userId: string, email: string) {
+    const payload = jwtPayloadSchema.parse({ sub: userId, email });
 
     const [accessToken, refreshToken] = await Promise.all([
       this.generateToken("access", payload),
@@ -76,23 +77,21 @@ export class TokenService {
     ]);
 
     const hashedRefreshToken = await this.hashingService.hash(refreshToken);
-    const { exp } = this.jwtService.decode(refreshToken);
 
     const tokenData = {
       refreshToken: hashedRefreshToken,
-      expiresAt: new Date(exp * 1000), // epoch ms
     };
 
-    await this.createOrUpdateToken(id, tokenData);
+    await this.setRefreshToken(userId, tokenData);
 
     return { accessToken, refreshToken };
   }
 
-  async createOrUpdateToken(
+  async setRefreshToken(
     userId: string,
-    data: Prisma.TokenUpsertWithoutUserInput["create"]
+    data: Prisma.AccountUpsertWithoutUserInput["create"]
   ) {
-    await this.prismaService.token.upsert({
+    await this.prismaService.account.upsert({
       where: { userId },
       create: {
         ...data,
@@ -104,8 +103,8 @@ export class TokenService {
     });
   }
 
-  async deleteToken(userId: string) {
-    await this.prismaService.token.delete({
+  async deleteRefreshToken(userId: string) {
+    await this.prismaService.account.delete({
       where: { userId },
     });
   }

@@ -2,8 +2,6 @@ import { idSchema } from "@lir/lib/schema";
 
 import { z } from "nestjs-zod/z";
 
-import { tokenSchema } from "./tokens";
-
 export const userNameSchema = z
   .string()
   .min(3)
@@ -31,8 +29,4 @@ export const userSchema = z.object({
 
   createdAt: z.date(),
   updatedAt: z.date(),
-});
-
-export const userWithTokensSchema = userSchema.extend({
-  tokens: tokenSchema,
 });

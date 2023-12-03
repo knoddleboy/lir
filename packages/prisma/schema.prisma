@@ -10,30 +10,36 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String    @unique
-  emailVerified DateTime?
-  password      String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  tokens        Token?
+enum IdentityProvider {
+  EMAIL
+}
 
+model User {
+  id               String           @id @default(cuid())
+  name             String
+  email            String           @unique
+  emailVerified    DateTime?
+  password         String
+  accounts         Account?
+  identityProvider IdentityProvider @default(EMAIL)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@index([email])
   @@index([emailVerified])
   @@map(name: "users")
 }
 
-model Token {
+model Account {
   id           String   @id @default(cuid())
+  userId       String   @unique
   refreshToken String
-  expiresAt    DateTime
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  userId       String   @unique
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("tokens")
+  @@index([userId])
+  @@map(name: "accounts")
 }
 
 model VerificationToken {
@@ -45,5 +51,6 @@ model VerificationToken {
   updatedAt  DateTime @updatedAt
 
   @@unique([identifier, token])
-  @@map("verification_tokens")
+  @@index([token])
+  @@map(name: "verification_tokens")
 }

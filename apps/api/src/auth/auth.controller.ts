@@ -3,7 +3,7 @@ import { Response } from "express";
 import { Body, Controller, Get, Post, Query, Res, UseGuards } from "@nestjs/common";
 
 import { SignupDto, VerificationTokenDto } from "~/lib/dto/auth";
-import { UserWithTokensDto } from "~/lib/dto/user";
+import { UserDto } from "~/lib/dto/user";
 import { User } from "~/user/decorators/user.decorator";
 
 import { AuthService } from "./auth.service";
@@ -27,7 +27,7 @@ export class AuthController {
   @UseGuards(LocalGuard)
   @Post("login")
   async login(
-    @User() user: UserWithTokensDto,
+    @User() user: UserDto,
     @Res({ passthrough: true }) response: Response
   ) {
     return this.authService.handleAuthResponse(user, response);
@@ -36,7 +36,7 @@ export class AuthController {
   @UseGuards(RefreshGuard)
   @Post("refresh")
   async refresh(
-    @User() user: UserWithTokensDto,
+    @User() user: UserDto,
     @Res({ passthrough: true }) response: Response
   ) {
     return this.authService.handleAuthResponse(user, response);
@@ -45,7 +45,7 @@ export class AuthController {
   @UseGuards(JwtGuard)
   @Post("logout")
   async logout(
-    @User() user: UserWithTokensDto,
+    @User() user: UserDto,
     @Res({ passthrough: true }) response: Response
   ) {
     return this.authService.logout(user, response);

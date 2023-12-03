@@ -2,12 +2,12 @@ import { Request } from "express";
 
 import { ExecutionContext, createParamDecorator } from "@nestjs/common";
 
-import { UserWithTokensDto } from "~/lib/dto/user";
+import { UserDto } from "~/lib/dto/user";
 
 export const User = createParamDecorator(
-  (data: keyof UserWithTokensDto, context: ExecutionContext) => {
+  (data: keyof UserDto, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest() as Request;
-    const user = request.user as UserWithTokensDto;
+    const user = request.user as UserDto;
 
     return data ? user?.[data] : user;
   }

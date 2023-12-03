@@ -19,7 +19,6 @@ import {
 import { AuthResponseDto, LoginDto, SignupDto } from "~/lib/dto/auth";
 import { UserDto } from "~/lib/dto/user";
 import { HashingService } from "~/lib/services/hashing.service";
-import { UserWithTokens } from "~/lib/types";
 import { MailService } from "~/mail/mail.service";
 import { UserService } from "~/user/user.service";
 
@@ -64,7 +63,7 @@ export class AuthService {
   }
 
   async logout(user: UserDto, response: Response) {
-    await this.tokenService.deleteToken(user.id);
+    await this.tokenService.deleteRefreshToken(user.id);
 
     response.clearCookie("Authorization");
     response.clearCookie("Refresh");
@@ -111,7 +110,7 @@ export class AuthService {
     response.status(200).send(responseBody);
   }
 
-  async validateUser({ email, password }: LoginDto): Promise<UserWithTokens> {
+  async validateUser({ email, password }: LoginDto): Promise<User> {
     try {
       const user = await this.userService.findOneByIdentifier({ email });
 
@@ -140,7 +139,7 @@ export class AuthService {
         data: {
           identifier: email,
           token,
-          expiresAt: new Date(Date.now() + 1000 * 10), // in 1d
+          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 10), // in 1d
         },
       });
 
