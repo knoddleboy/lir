@@ -1,4 +1,5 @@
 import { Request } from "express";
+import { PrismaService } from "nestjs-prisma";
 import { Strategy, ExtractJwt, StrategyOptions } from "passport-jwt";
 
 import { Injectable } from "@nestjs/common";
@@ -6,7 +7,6 @@ import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 
 import { Config } from "~/config/schema";
-import { UserService } from "~/user/user.service";
 
 import { JwtPayload } from "../utils/type";
 
@@ -14,7 +14,7 @@ import { JwtPayload } from "../utils/type";
 export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
   constructor(
     private readonly configService: ConfigService<Config>,
-    private readonly userService: UserService
+    private readonly prismaService: PrismaService
   ) {
     super({
       secretOrKey: configService.get<string>("JWT_ACCESS_SECRET"),
@@ -26,6 +26,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
   }
 
   async validate(payload: JwtPayload) {
-    return this.userService.findOneById(payload.sub);
+    return this.prismaService.user.findUniqueOrThrow({
+      where: { id: payload.sub },
+    });
   }
 }

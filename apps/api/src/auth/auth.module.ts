@@ -2,7 +2,6 @@ import { Module } from "@nestjs/common";
 
 import { HashingService } from "~/lib/services/hashing.service";
 import { MailModule } from "~/mail/mail.module";
-import { UserModule } from "~/user/user.module";
 
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
@@ -12,7 +11,7 @@ import { RefreshStrategy } from "./strategy/refresh.strategy";
 import { TokenModule } from "./token/token.module";
 
 @Module({
-  imports: [UserModule, TokenModule, MailModule],
+  imports: [TokenModule, MailModule],
   controllers: [AuthController],
   providers: [
     AuthService,

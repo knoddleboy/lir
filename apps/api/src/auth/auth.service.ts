@@ -21,7 +21,6 @@ import { AuthResponseDto, LoginDto, SignupDto } from "~/lib/dto/auth";
 import { UserDto } from "~/lib/dto/user";
 import { HashingService } from "~/lib/services/hashing.service";
 import { MailService } from "~/mail/mail.service";
-import { UserService } from "~/user/user.service";
 
 import { TokenService } from "./token/token.service";
 import { cookieOptionsFactory } from "./utils/cookie-options.factory";
@@ -29,7 +28,6 @@ import { cookieOptionsFactory } from "./utils/cookie-options.factory";
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
     private readonly tokenService: TokenService,
     private readonly mailService: MailService,
     private readonly prismaService: PrismaService,
@@ -40,10 +38,12 @@ export class AuthService {
     const hashedPassword = await this.hashingService.hash(signupDto.password);
 
     try {
-      const user = await this.userService.create({
-        name: signupDto.name,
-        email: signupDto.email,
-        password: hashedPassword,
+      const user = await this.prismaService.user.create({
+        data: {
+          name: signupDto.name,
+          email: signupDto.email,
+          password: hashedPassword,
+        },
       });
 
       this.sendEmailVerification(user.name, user.email);
@@ -85,10 +85,10 @@ export class AuthService {
       throw new GoneException(ErrorResponseCode.ExpiredVerificationToken);
     }
 
-    await this.userService.updateByIdentifier(
-      { email: foundToken.identifier },
-      { emailVerified: new Date() }
-    );
+    await this.prismaService.user.update({
+      where: { email: foundToken.identifier },
+      data: { emailVerified: new Date() },
+    });
 
     await this.prismaService.verificationToken.delete({
       where: {
@@ -170,7 +170,9 @@ export class AuthService {
 
   async validateUser({ email, password }: LoginDto): Promise<User> {
     try {
-      const user = await this.userService.findOneByIdentifier({ email });
+      const user = await this.prismaService.user.findUniqueOrThrow({
+        where: { email },
+      });
 
       await this.validatePassword(password, user.password);
 
