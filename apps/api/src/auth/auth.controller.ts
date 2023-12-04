@@ -3,6 +3,7 @@ import { Response } from "express";
 import { Body, Controller, Get, Post, Query, Res, UseGuards } from "@nestjs/common";
 
 import {
+  ChangePasswordDto,
   ForgotPasswordDto,
   ResetPasswordDto,
   SignupDto,
@@ -15,10 +16,14 @@ import { AuthService } from "./auth.service";
 import { JwtGuard } from "./guards/jwt.guard";
 import { LocalGuard } from "./guards/local.guard";
 import { RefreshGuard } from "./guards/refresh.guard";
+import { PasswordService } from "./password/password.service";
 
 @Controller("auth")
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly passwordService: PasswordService
+  ) {}
 
   @Post("signup")
   async signup(
@@ -66,7 +71,7 @@ export class AuthController {
     @Body() forgotPasswordDto: ForgotPasswordDto,
     @Res() response: Response
   ) {
-    return this.authService.forgotPassword(forgotPasswordDto.email, response);
+    return this.passwordService.forgotPassword(forgotPasswordDto.email, response);
   }
 
   @Post("reset-password")
@@ -74,6 +79,15 @@ export class AuthController {
     @Body() { newPassword, requestId }: ResetPasswordDto,
     @Res() response: Response
   ) {
-    return this.authService.resetPassword(newPassword, requestId, response);
+    return this.passwordService.resetPassword(newPassword, requestId, response);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post("change-password")
+  async changePassword(
+    @User() user: UserDto,
+    @Body() { oldPassword, newPassword }: ChangePasswordDto
+  ) {
+    return this.passwordService.changePassword(user, oldPassword, newPassword);
   }
 }

@@ -1,6 +1,8 @@
+import { passwordSchema } from "@lir/lib/schema";
+
 import { z } from "zod";
 
-import { passwordSchema, userSchema } from "./user";
+import { userSchema } from "./user";
 
 export const loginSchema = userSchema.pick({ email: true, password: true });
 
@@ -21,4 +23,9 @@ export const forgotPasswordSchema = z.object({
 export const resetPasswordSchema = z.object({
   newPassword: passwordSchema,
   requestId: z.string(),
+});
+
+export const changePasswordSchema = z.object({
+  oldPassword: passwordSchema,
+  newPassword: passwordSchema,
 });

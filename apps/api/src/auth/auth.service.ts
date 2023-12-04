@@ -1,5 +1,4 @@
 import { ErrorResponseCode } from "@lir/lib/error";
-import { AuthResponse } from "@lir/lib/responses";
 import { authResponseSchema } from "@lir/lib/schema";
 
 import { User } from "@prisma/client";
@@ -95,63 +94,6 @@ export class AuthService {
         id: foundToken.id,
       },
     });
-  }
-
-  async forgotPassword(email: string, response: Response) {
-    const expiresAt = dayjs().add(8, "hours").toDate();
-    const createdPasswordResetId =
-      await this.prismaService.passwordResetRequest.create({
-        data: { email, expiresAt },
-      });
-
-    const user = await this.prismaService.user.findUnique({
-      where: { email },
-      select: { name: true, email: true },
-    });
-
-    // In case a user misspells their email, do not send a reset link
-    // but show email sent message anyway
-    if (!user) {
-      return response.status(201).json(AuthResponse.PasswordResetEmailSent);
-    }
-
-    await this.mailService.sendMail({
-      templateType: "forgot-password-email",
-      payload: {
-        user,
-        resetPasswordLink: `http://localhost:3000/api/auth/forgot-password/${createdPasswordResetId}`,
-      },
-    });
-
-    return response.status(201).json(AuthResponse.PasswordResetEmailSent);
-  }
-
-  async resetPassword(newPassword: string, requestId: string, response: Response) {
-    const foundRequest =
-      await this.prismaService.passwordResetRequest.findFirstOrThrow({
-        where: { id: requestId },
-      });
-
-    const hashedPassword = await this.hashingService.hash(newPassword);
-
-    // Although non-existing emails are handled in `forgotPassword`,
-    // we may want to return a 404 in case something went wrong here
-    try {
-      await this.prismaService.user.update({
-        where: { email: foundRequest.email },
-        data: { password: hashedPassword },
-      });
-    } catch (error) {
-      return response.status(404).end();
-    }
-
-    await this.prismaService.passwordResetRequest.update({
-      where: { id: requestId },
-      // set the expiry date to now to invalidate the request
-      data: { expiresAt: new Date() },
-    });
-
-    return response.status(201).json(AuthResponse.PasswordReset);
   }
 
   async handleAuthResponse(user: UserDto, response: Response<AuthResponseDto>) {

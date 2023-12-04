@@ -3,6 +3,7 @@ import { authResponseSchema } from "@lir/lib/schema";
 import { createZodDto } from "nestjs-zod";
 
 import {
+  changePasswordSchema,
   forgotPasswordSchema,
   loginSchema,
   resetPasswordSchema,
@@ -21,3 +22,5 @@ export class VerificationTokenDto extends createZodDto(verificationTokenSchema) 
 export class ForgotPasswordDto extends createZodDto(forgotPasswordSchema) {}
 
 export class ResetPasswordDto extends createZodDto(resetPasswordSchema) {}
+
+export class ChangePasswordDto extends createZodDto(changePasswordSchema) {}
