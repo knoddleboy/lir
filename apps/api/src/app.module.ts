@@ -9,8 +9,17 @@ import { MailModule } from "~/mail/mail.module";
 import { PrismaModule } from "~/prisma/prisma.module";
 import { UserModule } from "~/user/user.module";
 
+import { AvatarModule } from "./avatar/avatar.module";
+
 @Module({
-  imports: [ConfigModule, AuthModule, PrismaModule, UserModule, MailModule],
+  imports: [
+    ConfigModule,
+    AuthModule,
+    PrismaModule,
+    UserModule,
+    MailModule,
+    AvatarModule,
+  ],
   providers: [
     {
       provide: APP_PIPE,

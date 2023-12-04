@@ -10,14 +10,17 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 
+import { AvatarService } from "~/avatar/avatar.service";
 import { UserDto } from "~/lib/dto/user";
 import { HashingService } from "~/lib/services/hashing.service";
+import { UpdateUserInput } from "~/lib/validators/user";
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly hashingService: HashingService
+    private readonly hashingService: HashingService,
+    private readonly avatarService: AvatarService
   ) {}
 
   async getUserInfo(id: string) {
@@ -27,6 +30,7 @@ export class UserService {
         id: true,
         name: true,
         email: true,
+        avatar: true,
         identityProvider: true,
         createdAt: true,
         updatedAt: true,
@@ -34,23 +38,42 @@ export class UserService {
     });
   }
 
-  async updateUserProfile(user: UserDto, input: Prisma.UserUpdateInput) {
+  async updateUserProfile(user: UserDto, input: UpdateUserInput) {
     const data: Prisma.UserUpdateInput = { ...input };
 
-    const emailChanged = data.email && data.email !== user.email;
+    const emailChanged = input.email && input.email !== user.email;
     if (emailChanged) {
       data.emailVerified = null;
     }
 
-    await this.prismaService.user.update({
+    if (input.avatar && input.avatar.startsWith("data:image/png;base64,")) {
+      data.avatar = await this.avatarService.uploadAvatar(user.id, input.avatar);
+    }
+
+    // When a user deletes their avatar, we expect to receive null from the client,
+    // which then gets transformed by zod schema to an empty string
+    if (input.avatar === "") {
+      data.avatar = null;
+    }
+
+    const updatedUser = await this.prismaService.user.update({
       where: { id: user.id },
       data,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar: true,
+        identityProvider: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
-    // TODO: when identity provider changes we want to send en email with
-    // password reset so that the user can log in with their new email
+    // TODO: when identity provider changes from social we want to send a
+    // password reset email so that the user can log in with their new email
 
-    return { ...input };
+    return { ...input, ...updatedUser };
   }
 
   async deleteUser(id: string, password: string) {

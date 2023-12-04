@@ -11,15 +11,26 @@ export const userSchema = z.object({
 
   password: passwordSchema,
 
+  avatar: z.string().nullable(),
+
   createdAt: z.date(),
   updatedAt: z.date(),
 });
 
-export const updateUserSchema = userSchema.partial().pick({
-  name: true,
-  email: true,
-  password: true,
-});
+export const updateUserSchema = userSchema
+  .partial()
+  .pick({
+    name: true,
+    email: true,
+    password: true,
+    avatar: true,
+  })
+  .transform((data) => ({
+    ...data,
+    avatar: data.avatar ?? "",
+  }));
+
+export type UpdateUserInput = z.infer<typeof updateUserSchema>;
 
 export const deleteUserSchema = userSchema.required().pick({
   password: true,

@@ -20,6 +20,7 @@ model User {
   email            String           @unique
   emailVerified    DateTime?
   password         String
+  avatar           String?
   accounts         Account?
   identityProvider IdentityProvider @default(EMAIL)
   createdAt        DateTime         @default(now())
@@ -28,6 +29,15 @@ model User {
   @@index([email])
   @@index([emailVerified])
   @@map(name: "users")
+}
+
+model Avatar {
+  avatarId String @unique
+  userId   String @unique
+  // base64 string
+  data     String
+
+  @@map(name: "avatars")
 }
 
 model Account {

@@ -5,18 +5,10 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    "./error": {
-      "default": "./dist/error/index.js",
-      "types": "./dist/error/index.d.ts"
-    },
-    "./responses": {
-      "default": "./dist/responses/index.js",
-      "types": "./dist/responses/index.d.ts"
-    },
-    "./schema": {
-      "default": "./dist/schema/index.js",
-      "types": "./dist/schema/index.d.ts"
-    }
+    ".": "./dist/index.js",
+    "./error": "./dist/error/index.js",
+    "./responses": "./dist/responses/index.js",
+    "./schema": "./dist/schema/index.js"
   },
   "scripts": {
     "build": "tsc --build --force ./tsconfig.json"
