@@ -5,7 +5,9 @@
     "baseUrl": ".",
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./*"]
+      "~/*": ["./*"],
+      "@lib/*": ["./lib/*"],
+      "@components/*": ["./components/*"]
     }
   },
   "include": [

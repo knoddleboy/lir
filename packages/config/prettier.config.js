@@ -11,7 +11,9 @@ module.exports = {
   importOrder: [
     "^@lir/(.*)$",
     "<THIRD_PARTY_MODULES>",
-    "^@nestjs(.*)/(.*)$",
+    "^next(.*)|@nestjs(.*)/(.*)$",
+    "^@lib/(.*)$",
+    "^@components/(.*)$",
     "^~/(.*)$",
     "^[./]",
   ],
