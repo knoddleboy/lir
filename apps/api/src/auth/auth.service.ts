@@ -21,6 +21,7 @@ import { UserDto } from "~/lib/dto/user";
 import { HashingService } from "~/lib/services/hashing.service";
 import { MailService } from "~/mail/mail.service";
 
+import { PasswordService } from "./password/password.service";
 import { TokenService } from "./token/token.service";
 import { cookieOptionsFactory } from "./utils/cookie-options.factory";
 
@@ -30,7 +31,8 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly mailService: MailService,
     private readonly prismaService: PrismaService,
-    private readonly hashingService: HashingService
+    private readonly hashingService: HashingService,
+    private readonly passwordService: PasswordService
   ) {}
 
   async signup(signupDto: SignupDto): Promise<User> {
@@ -116,18 +118,17 @@ export class AuthService {
         where: { email },
       });
 
-      await this.validatePassword(password, user.password);
+      const isValid = await this.passwordService.verifyPassword(
+        password,
+        user.password
+      );
+
+      if (!isValid) {
+        throw new BadRequestException(ErrorResponseCode.InvalidCredentials);
+      }
 
       return user;
     } catch (error) {
-      throw new BadRequestException(ErrorResponseCode.InvalidCredentials);
-    }
-  }
-
-  private async validatePassword(password: string, hashedPassword: string) {
-    const isValid = await this.hashingService.validate(password, hashedPassword);
-
-    if (!isValid) {
       throw new BadRequestException(ErrorResponseCode.InvalidCredentials);
     }
   }

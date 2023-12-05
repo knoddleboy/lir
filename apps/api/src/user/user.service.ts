@@ -93,9 +93,7 @@ export class UserService {
       throw new ForbiddenException(ErrorResponseCode.InvalidCredentials);
     }
 
-    return await this.prismaService.user.delete({
-      where: { id },
-    });
+    await this._deleteUser(id);
   }
 
   async deleteUserWithoutPassword(id: string) {
@@ -117,10 +115,15 @@ export class UserService {
       );
     }
 
-    await this.prismaService.user.delete({
-      where: { id },
-    });
+    await this._deleteUser(id);
+  }
 
-    return;
+  private async _deleteUser(userId: string) {
+    await Promise.all([
+      this.prismaService.user.delete({
+        where: { id: userId },
+      }),
+      this.avatarService.deleteAvatar(userId),
+    ]);
   }
 }

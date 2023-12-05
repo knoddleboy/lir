@@ -54,4 +54,10 @@ export class AvatarService {
 
     return `/api/avatar/${avatarId}.png`;
   }
+
+  async deleteAvatar(userId: string) {
+    await this.prismaService.avatar.delete({
+      where: { userId },
+    });
+  }
 }

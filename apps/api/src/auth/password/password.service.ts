@@ -19,6 +19,10 @@ export class PasswordService {
     private readonly hashingService: HashingService
   ) {}
 
+  async verifyPassword(password: string, hashedPassword: string) {
+    return await this.hashingService.validate(password, hashedPassword);
+  }
+
   async forgotPassword(email: string, response: Response) {
     const expiresAt = dayjs().add(8, "hours").toDate();
     const createdPasswordResetId =
@@ -81,11 +85,7 @@ export class PasswordService {
       throw new BadRequestException(ErrorResponseCode.NewPasswordMatchesOldPassword);
     }
 
-    const passwordsMatch = await this.hashingService.validate(
-      oldPassword,
-      user.password
-    );
-
+    const passwordsMatch = await this.verifyPassword(oldPassword, user.password);
     if (!passwordsMatch) {
       throw new BadRequestException(ErrorResponseCode.IncorrectPassword);
     }

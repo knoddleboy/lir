@@ -66,6 +66,15 @@ export class AuthController {
     return this.authService.verifyEmail(query.token);
   }
 
+  @UseGuards(JwtGuard)
+  @Post("verify-password")
+  async verifyPassword(
+    @User("password") hashedPassword: string,
+    @Body() password: UserDto["password"]
+  ) {
+    return this.passwordService.verifyPassword(password, hashedPassword);
+  }
+
   @Post("forgot-password")
   async forgotPassword(
     @Body() forgotPasswordDto: ForgotPasswordDto,
