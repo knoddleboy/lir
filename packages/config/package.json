@@ -2,9 +2,12 @@
   "name": "@lir/config",
   "private": true,
   "version": "0.0.0",
+  "files": [
+    "prettier.config.js",
+    "tailwind.config.js"
+  ],
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "prettier-plugin-tailwindcss": "^0.5.7",
-    "tailwindcss": "^3.3.0"
+    "prettier-plugin-tailwindcss": "^0.5.7"
   }
 }

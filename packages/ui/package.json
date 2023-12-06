@@ -1,0 +1,25 @@
+{
+  "name": "@lir/ui",
+  "private": true,
+  "version": "0.0.0",
+  "main": "index.tsx",
+  "types": "index.tsx",
+  "scripts": {
+    "ui:add": "pnpm dlx shadcn-ui@latest add"
+  },
+  "devDependencies": {
+    "@lir/config": "*",
+    "@lir/tsconfig": "*",
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "lucide-react": "^0.294.0",
+    "react": "^18",
+    "tailwind-merge": "^2.1.0",
+    "tailwindcss-animate": "^1.0.7"
+  }
+}

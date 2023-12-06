@@ -1,0 +1,11 @@
+{
+  "extends": "@lir/tsconfig/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~ui/*": ["./*"]
+    }
+  },
+  "include": ["."],
+  "exclude": ["dist", "build", "node_modules"]
+}
