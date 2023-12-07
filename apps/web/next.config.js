@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   output: "standalone",
-  transpilePackages: ["@lir/ui"],
+  transpilePackages: ["@lir/lib", "@lir/ui"],
 };
 
 module.exports = nextConfig;

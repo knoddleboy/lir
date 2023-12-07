@@ -3,3 +3,4 @@ export * from "./jwt-payload";
 export * from "./auth-response";
 export * from "./user-name";
 export * from "./password";
+export * from "./user";

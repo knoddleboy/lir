@@ -5,8 +5,8 @@
     "baseUrl": ".",
     "plugins": [{ "name": "next" }],
     "paths": {
-      "~/*": ["./*"],
-      "~ui/*": ["../../packages/ui/*"]
+      "~/*": ["./*"]
+      // "~ui/*": ["../../packages/ui/*"]
     }
   },
   "include": [

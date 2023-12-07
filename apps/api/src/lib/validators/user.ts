@@ -1,21 +1,6 @@
-import { idSchema, userNameSchema, passwordSchema } from "@lir/lib/schema";
+import { userSchema } from "@lir/lib/schema";
 
 import { z } from "nestjs-zod/z";
-
-export const userSchema = z.object({
-  id: idSchema,
-  name: userNameSchema,
-
-  email: z.string().email(),
-  emailVerified: z.date().nullable(),
-
-  password: passwordSchema,
-
-  avatar: z.string().nullable(),
-
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
 
 export const updateUserSchema = userSchema
   .partial()
