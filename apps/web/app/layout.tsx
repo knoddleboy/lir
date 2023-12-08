@@ -1,27 +1,22 @@
-import { APP_NAME, cn } from "@lir/lib";
+import { cn } from "@lir/lib";
 import "@lir/ui/styles/globals.css";
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
-import { ThemeProvider } from "~/components/theme-provider";
+import { Providers } from "~/providers";
 
 import { inter } from "./fonts";
+import { defaultMetadata } from "./metadata";
 
 export const metadata: Metadata = {
-  title: {
-    default: APP_NAME,
-    template: `%s | ${APP_NAME}`,
-  },
+  ...defaultMetadata,
+};
+
+export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
-  },
-  manifest: "/site.webmanifest",
 };
 
 interface RootLayoutProps {
@@ -38,9 +33,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           inter.variable
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
