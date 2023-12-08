@@ -1,9 +1,6 @@
 export { Button, buttonVariants } from "./components/ui/button";
 export type { ButtonProps } from "./components/ui/button";
 
-export { Link, linkVariants } from "./components/ui/link";
-export type { LinkProps } from "./components/ui/link";
-
 export {
   Form,
   FormControl,

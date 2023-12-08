@@ -1,7 +1,7 @@
-import { Link } from "@lir/ui";
+import { Button } from "@lir/ui";
 
-import { type Metadata } from "next";
-import NextLink from "next/link";
+import type { Metadata } from "next";
+import Link from "next/link";
 
 import { SignupForm } from "~/components/forms/signup-form";
 
@@ -15,9 +15,9 @@ export default function SignupPage() {
       <div className="space-y-3">
         <h2 className="text-center text-4xl font-bold">Create account</h2>
         <div className="text-center">
-          <Link asChild>
-            <NextLink href="/login">Already have an account?</NextLink>
-          </Link>
+          <Button variant="link" size="link-ghost" text="base" asChild>
+            <Link href="/login">Already have an account?</Link>
+          </Button>
         </div>
       </div>
       <SignupForm />

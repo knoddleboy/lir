@@ -1,7 +1,7 @@
 import { cn } from "@lir/lib";
-import { Link } from "@lir/ui";
+import { Button } from "@lir/ui";
 
-import NextLink from "next/link";
+import Link from "next/link";
 
 interface NavProps {
   classNames?: string;
@@ -14,14 +14,14 @@ export default function Nav({ classNames }: NavProps) {
         <ul className="flex items-center gap-1"></ul>
         <ul className="flex shrink-0 items-center gap-4">
           <li>
-            <Link variant="button-ghost" size="default-button" asChild>
-              <NextLink href="/login">Log in</NextLink>
-            </Link>
+            <Button variant="ghost" size="link" text="base" asChild>
+              <Link href="/login">Log in</Link>
+            </Button>
           </li>
           <li>
-            <Link variant="button" size="default-button" asChild>
-              <NextLink href="/signup">Sign up</NextLink>
-            </Link>
+            <Button size="link" text="base" asChild>
+              <Link href="/signup">Sign up</Link>
+            </Button>
           </li>
         </ul>
       </div>
