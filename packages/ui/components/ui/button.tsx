@@ -7,11 +7,12 @@ import * as React from "react";
 const buttonVariants = cva(
   `inline-flex items-center justify-center whitespace-nowrap
    rounded-md text-sm font-medium transition-colors
-   disabled:pointer-events-none disabled:opacity-50 _ring`,
+   disabled:cursor-not-allowed _ring`,
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default:
+          "bg-primary text-primary-foreground hover:bg-primary/90 disabled:hover:bg-primary disabled:opacity-30",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:

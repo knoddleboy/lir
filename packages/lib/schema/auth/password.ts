@@ -1,6 +1,7 @@
-import { z } from "nestjs-zod/z";
+import { z } from "zod";
 
 import { isPasswordValid } from "../../validator";
+import { emailSchema } from "../user/email";
 
 // export const passwordSchema = z
 //   .password()
@@ -20,4 +21,18 @@ export const passwordSchema = z.string().superRefine((data, ctx) => {
       });
     }
   });
+});
+
+export const forgotPasswordSchema = z.object({
+  email: emailSchema,
+});
+
+export const resetPasswordSchema = z.object({
+  newPassword: passwordSchema,
+  requestId: z.string(),
+});
+
+export const changePasswordSchema = z.object({
+  oldPassword: passwordSchema,
+  newPassword: passwordSchema,
 });

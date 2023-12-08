@@ -1,14 +1,15 @@
 import { z } from "zod";
 
+import { passwordSchema } from "../auth/password";
 import { idSchema } from "../shared/id";
-import { passwordSchema } from "./password";
+import { emailSchema } from "./email";
 import { userNameSchema } from "./user-name";
 
 export const userSchema = z.object({
   id: idSchema,
   name: userNameSchema,
 
-  email: z.string().email({ message: "Invalid email address" }),
+  email: emailSchema,
   emailVerified: z.date().nullable(),
 
   password: passwordSchema,

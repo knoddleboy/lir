@@ -27,8 +27,6 @@ export const SignupForm = () => {
     mode: "onChange",
   });
 
-  // console.log(form.formState.errors);
-
   const onSubmit = () => {};
 
   return (
