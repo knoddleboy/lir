@@ -8,7 +8,8 @@
     ".": "./dist/index.js",
     "./error": "./dist/error/index.js",
     "./responses": "./dist/responses/index.js",
-    "./schema": "./dist/schema/index.js"
+    "./schema": "./dist/schema/index.js",
+    "./validator": "./dist/validator/index.js"
   },
   "scripts": {
     "build": "tsc --build --force ./tsconfig.json"

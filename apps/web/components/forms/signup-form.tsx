@@ -9,6 +9,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormHints,
   Input,
 } from "@lir/ui";
 
@@ -23,7 +24,10 @@ export const SignupForm = () => {
       email: "",
       password: "",
     },
+    mode: "onChange",
   });
+
+  // console.log(form.formState.errors);
 
   const onSubmit = () => {};
 
@@ -66,11 +70,7 @@ export const SignupForm = () => {
                 <FormControl>
                   <Input placeholder="Enter your password" {...field} />
                 </FormControl>
-                <ul className="list-disc pl-6 pt-1 text-sm">
-                  <li>At least 8 characters long</li>
-                  <li>Contain at least 1 number</li>
-                  <li>Mix of lowercase & uppercase letters</li>
-                </ul>
+                <FormHints fieldName="password" hints={["min", "num", "upplow"]} />
               </FormItem>
             )}
           />

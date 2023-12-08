@@ -12,6 +12,7 @@ export {
   FormItem,
   FormLabel,
   FormMessage,
+  FormHints,
   useFormField,
 } from "./components/ui/form";
 

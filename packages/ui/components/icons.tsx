@@ -1,3 +1,4 @@
+import { LucideCheck, LucideCircle } from "lucide-react";
 import type { LucideIcon, LucideProps } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -15,4 +16,6 @@ export const Icons = {
       />
     </svg>
   ),
+  circle: LucideCircle,
+  check: LucideCheck,
 } as const;

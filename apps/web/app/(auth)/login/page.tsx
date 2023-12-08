@@ -6,7 +6,7 @@ import NextLink from "next/link";
 import { LoginForm } from "~/components/forms/login-form";
 
 export const metadata: Metadata = {
-  title: "Login",
+  title: "Log In",
 };
 
 export default function LoginPage() {

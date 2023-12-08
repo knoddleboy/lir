@@ -1,6 +1,8 @@
 "use client";
 
 import { cn } from "@lir/lib";
+import { passwordHints } from "@lir/lib/error";
+import type { PasswordValidStates } from "@lir/lib/validator";
 
 import type * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
@@ -12,8 +14,10 @@ import {
   type FieldValues,
   FormProvider,
   useFormContext,
+  type FieldErrors,
 } from "react-hook-form";
 
+import { Icons } from "../icons";
 import { Label } from "./label";
 
 const Form = FormProvider;
@@ -159,6 +163,66 @@ const FormMessage = React.forwardRef<
 });
 FormMessage.displayName = "FormMessage";
 
+type FormHintProps = React.HTMLAttributes<HTMLUListElement> & {
+  fieldName: string;
+  hints?: (keyof typeof PasswordValidStates)[] | string[];
+};
+
+const FormHints = <T extends FieldValues = FieldValues>({
+  fieldName,
+  hints,
+  className,
+  ...props
+}: FormHintProps) => {
+  const context = useFormContext() as ReturnType<typeof useFormContext> | null;
+  // Cannot use outside React Hook Form context
+  if (!context) return null;
+
+  const { formState } = context;
+  // @ts-expect-error ignore
+  const fieldErrors: FieldErrors<T> | undefined = formState.errors[fieldName];
+
+  return (
+    <ul className={cn("pl-4 pt-1 text-sm", className)} {...props}>
+      {hints?.map((key: string) => {
+        const dirty = formState.dirtyFields[fieldName];
+        const submitted = formState.isSubmitted;
+        const error = fieldErrors
+          ? fieldErrors[key] || fieldErrors?.message
+          : undefined;
+
+        return (
+          <li key={key} className={cn(error && submitted && "text-destructive")}>
+            {dirty ? (
+              error ? (
+                <Icons.circle
+                  fill="currentColor"
+                  size={5}
+                  className="mr-3 inline-block"
+                />
+              ) : (
+                <Icons.check
+                  size={12}
+                  strokeWidth={3}
+                  className="-ml-[3px] mr-2 inline-block"
+                />
+              )
+            ) : (
+              <Icons.circle
+                fill="currentColor"
+                size={5}
+                className="mr-3 inline-block"
+              />
+            )}
+            {passwordHints[key as keyof typeof passwordHints]}
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
+FormHints.displayName = "FormHints";
+
 export {
   useFormField,
   Form,
@@ -167,5 +231,6 @@ export {
   FormControl,
   FormDescription,
   FormMessage,
+  FormHints,
   FormField,
 };

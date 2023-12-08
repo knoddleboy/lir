@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { idSchema } from "./id";
+import { idSchema } from "../shared/id";
 import { passwordSchema } from "./password";
 import { userNameSchema } from "./user-name";
 
