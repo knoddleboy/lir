@@ -1,19 +1,18 @@
-import { authResponseSchema } from "@lir/lib/schema";
+import {
+  authResponseSchema,
+  changePasswordSchema,
+  forgotPasswordSchema,
+  loginUserSchema,
+  resetPasswordSchema,
+  signupUserSchema,
+  verificationTokenSchema,
+} from "@lir/lib/schema";
 
 import { createZodDto } from "nestjs-zod";
 
-import {
-  changePasswordSchema,
-  forgotPasswordSchema,
-  loginSchema,
-  resetPasswordSchema,
-  verificationTokenSchema,
-} from "~/lib/validators/auth";
-import { signupSchema } from "~/lib/validators/auth";
+export class LoginDto extends createZodDto(loginUserSchema) {}
 
-export class LoginDto extends createZodDto(loginSchema) {}
-
-export class SignupDto extends createZodDto(signupSchema) {}
+export class SignupDto extends createZodDto(signupUserSchema) {}
 
 export class AuthResponseDto extends createZodDto(authResponseSchema) {}
 

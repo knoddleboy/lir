@@ -1,10 +1,6 @@
-import { createZodDto } from "nestjs-zod";
+import { deleteUserSchema, updateUserSchema, userSchema } from "@lir/lib/schema";
 
-import {
-  deleteUserSchema,
-  updateUserSchema,
-  userSchema,
-} from "~/lib/validators/user";
+import { createZodDto } from "nestjs-zod";
 
 export class UserDto extends createZodDto(userSchema) {}
 

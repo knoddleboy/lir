@@ -19,17 +19,3 @@ export const userSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
 });
-
-export const loginUserSchema = userSchema
-  .pick({
-    email: true,
-  })
-  .extend({
-    password: z.string().min(1, { message: "Password is required" }),
-  });
-
-export const signupUserSchema = userSchema.pick({
-  name: true,
-  email: true,
-  password: true,
-});

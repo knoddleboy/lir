@@ -1,4 +1,5 @@
 import { ErrorResponseCode } from "@lir/lib/error";
+import { UpdateUserInput } from "@lir/lib/schema";
 
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
@@ -13,7 +14,6 @@ import {
 import { AvatarService } from "~/avatar/avatar.service";
 import { UserDto } from "~/lib/dto/user";
 import { HashingService } from "~/lib/services/hashing.service";
-import { UpdateUserInput } from "~/lib/validators/user";
 
 @Injectable()
 export class UserService {

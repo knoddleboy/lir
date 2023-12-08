@@ -1,3 +1,4 @@
+import { APP_URL } from "@lir/lib";
 import { ErrorResponseCode } from "@lir/lib/error";
 import { AuthResponse } from "@lir/lib/responses";
 
@@ -45,7 +46,7 @@ export class PasswordService {
       templateType: "forgot-password-email",
       payload: {
         user,
-        resetPasswordLink: `http://localhost:3000/api/auth/forgot-password/${createdPasswordResetId}`,
+        resetPasswordLink: `${APP_URL}/forgot-password/${createdPasswordResetId}`,
       },
     });
 
