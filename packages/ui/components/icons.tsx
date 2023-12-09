@@ -1,4 +1,4 @@
-import { LucideCheck, LucideCircle } from "lucide-react";
+import { LucideArrowLeft, LucideCheck, LucideCircle } from "lucide-react";
 import type { LucideIcon, LucideProps } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -16,6 +16,23 @@ export const Icons = {
       />
     </svg>
   ),
+  eye: ({ ...props }: LucideProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" {...props}>
+      <path
+        fill="currentColor"
+        d="M8 13c4.7 0 8-3.8 8-5 0-1.2-3.3-5-8-5S0 6.8 0 8c0 1.2 3.3 5 8 5zm0-.9c-3.9 0-7-3.3-7-4.1 0-.7 3.1-4.1 7-4.1 3.8 0 7 3.4 7 4.1 0 .8-3.2 4.1-7 4.1zm0-.8c1.8 0 3.3-1.5 3.3-3.3 0-1.8-1.5-3.3-3.3-3.3-1.8 0-3.3 1.5-3.3 3.3 0 1.8 1.5 3.3 3.3 3.3zm0-2.2c-.6 0-1.1-.5-1.1-1.1 0-.6.5-1.1 1.1-1.1.6 0 1.1.5 1.1 1.1 0 .6-.5 1.1-1.1 1.1z"
+      />
+    </svg>
+  ),
+  eyeSlash: ({ ...props }: LucideProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" {...props}>
+      <path
+        fill="currentColor"
+        d="M3.7 5.4C2.1 6.4 1 7.7 1 8.1c0 .8 3.1 4.1 7 4.1.8 0 1.5-.1 2.2-.3l.8.8c-1 .3-1.9.4-3 .4-4.7 0-8-3.8-8-5 0-.7 1.1-2.3 3-3.4l.7.7zM16 8.1c0 .7-1.1 2.2-2.9 3.4l-.7-.7C14 9.9 15 8.6 15 8.1 15 7.4 11.9 4 8 4c-.7 0-1.5.1-2.1.3l-.8-.7C6 3.3 7 3.1 8 3.1c4.7 0 8 3.8 8 5zm-6.6 3c-.4.2-.9.3-1.4.3-1.8 0-3.3-1.5-3.3-3.3 0-.5.1-1 .3-1.4l4.4 4.4zm1.9-3c0 .5-.1.9-.3 1.4L6.6 5.2c.4-.2.9-.3 1.4-.3 1.8 0 3.3 1.4 3.3 3.2zm1.2 5.1c.2.2.5.2.6 0 .2-.2.2-.5 0-.6L3.3 2.8c-.2-.2-.5-.2-.6 0-.2.2-.2.5 0 .6l9.8 9.8z"
+      />
+    </svg>
+  ),
   circle: LucideCircle,
   check: LucideCheck,
+  arrowLeft: LucideArrowLeft,
 } as const;

@@ -9,7 +9,7 @@ import {
   FormHints,
   FormItem,
   FormLabel,
-  Input,
+  PasswordField,
 } from "@lir/ui";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,7 +45,7 @@ export const ResetPasswordForm = ({ requestId }: ResetPasswordFormProps) => {
               <FormItem>
                 <FormLabel>New password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter new password" {...field} />
+                  <PasswordField {...field} />
                 </FormControl>
                 <FormHints
                   fieldName="newPassword"

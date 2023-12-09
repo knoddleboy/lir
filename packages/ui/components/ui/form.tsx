@@ -183,7 +183,7 @@ const FormHints = <T extends FieldValues = FieldValues>({
   const fieldErrors: FieldErrors<T> | undefined = formState.errors[fieldName];
 
   return (
-    <ul className={cn("pl-4 pt-1 text-sm", className)} {...props}>
+    <ul className={cn("pl-[14px] pt-1 text-sm", className)} {...props}>
       {hints?.map((key: string) => {
         const dirty = formState.dirtyFields[fieldName];
         const submitted = formState.isSubmitted;

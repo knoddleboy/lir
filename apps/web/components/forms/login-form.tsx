@@ -3,13 +3,14 @@
 import { loginUserSchema } from "@lir/lib/schema";
 import {
   Button,
+  EmailField,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  Input,
+  PasswordField,
 } from "@lir/ui";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,7 +31,7 @@ export const LoginForm = () => {
 
   return (
     <Form {...form}>
-      <form className="space-y-9" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="space-y-9" onSubmit={form.handleSubmit(onSubmit)} noValidate>
         <div className="space-y-6">
           <FormField
             control={form.control}
@@ -39,7 +40,7 @@ export const LoginForm = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your email" {...field} />
+                  <EmailField {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -52,7 +53,7 @@ export const LoginForm = () => {
               <FormItem className="relative">
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your password" {...field} />
+                  <PasswordField {...field} />
                 </FormControl>
                 <FormMessage />
                 <div className="absolute -top-1 right-0">

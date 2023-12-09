@@ -13,10 +13,11 @@ export {
   useFormField,
 } from "./components/ui/form";
 
-export { Input } from "./components/ui/input";
-export type { InputProps } from "./components/ui/input";
+export { Input, type InputProps } from "./components/ui/input";
 
 export { Content } from "./components/content";
 
-export { Icons } from "./components/icons";
-export type { Icon } from "./components/icons";
+export { Icons, type Icon } from "./components/icons";
+
+export { InputField, type InputFieldProps } from "./components/inputs/input-field";
+export { PasswordField, EmailField } from "./components/inputs/fields";

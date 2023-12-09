@@ -3,13 +3,13 @@
 import { forgotPasswordSchema } from "@lir/lib/schema";
 import {
   Button,
+  EmailField,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  Input,
 } from "@lir/ui";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,7 +36,7 @@ export const FotgotPasswordForm = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your email" {...field} />
+                  <EmailField {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

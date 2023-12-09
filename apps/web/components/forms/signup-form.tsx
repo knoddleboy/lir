@@ -11,6 +11,8 @@ import {
   FormMessage,
   FormHints,
   Input,
+  PasswordField,
+  EmailField,
 } from "@lir/ui";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,7 +33,7 @@ export const SignupForm = () => {
 
   return (
     <Form {...form}>
-      <form className="space-y-9" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="space-y-9" onSubmit={form.handleSubmit(onSubmit)} noValidate>
         <div className="space-y-6">
           <FormField
             control={form.control}
@@ -40,7 +42,7 @@ export const SignupForm = () => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your name" {...field} />
+                  <Input type="text" placeholder="Enter your name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -53,7 +55,7 @@ export const SignupForm = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your email" {...field} />
+                  <EmailField {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -66,7 +68,7 @@ export const SignupForm = () => {
               <FormItem className="relative">
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your password" {...field} />
+                  <PasswordField {...field} />
                 </FormControl>
                 <FormHints fieldName="password" hints={["min", "num", "upplow"]} />
               </FormItem>
