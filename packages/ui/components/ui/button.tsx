@@ -17,7 +17,9 @@ const buttonVariants = cva(
         // outline:
         //   "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         // secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "font-medium hover:bg-accent hover:text-accent-foreground",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        "control-ghost": `text-accent-foreground/60 active:text-accent-foreground 
+        hover:bg-control active:bg-control-foreground transition-none`,
 
         link: "text-primary underline-offset-4 hover:underline",
         "link-ghost": "text-primary",
@@ -28,7 +30,7 @@ const buttonVariants = cva(
         "link-ghost": "",
         // sm: "h-9 rounded-md px-3",
         // lg: "h-11 rounded-md px-8",
-        // icon: "h-10 w-10",
+        icon: "h-7 w-8",
       },
       text: {
         sm: "text-sm",

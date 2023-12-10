@@ -10,15 +10,13 @@ export const metadata: Metadata = {
   title: "Reset Password",
 };
 
-interface ResetPasswordPageProps {
+type Props = {
   params: {
     requestId: string;
   };
-}
+};
 
-export default function ResetPasswordPage({
-  params: { requestId },
-}: ResetPasswordPageProps) {
+export default function ResetPasswordPage({ params: { requestId } }: Props) {
   const requestValid = false;
 
   return (

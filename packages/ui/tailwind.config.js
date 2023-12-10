@@ -18,6 +18,10 @@ module.exports = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        control: {
+          DEFAULT: "hsl(var(--control))",
+          foreground: "hsl(var(--control-foreground))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -51,6 +55,10 @@ module.exports = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        sidebar: "hsl(var(--control)) -1px 0px 0px 0px inset",
+        "sidebar-active": "hsl(var(--control-foreground)) -2px 0px 0px 0px inset",
       },
       keyframes: {
         "accordion-down": {

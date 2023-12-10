@@ -1,4 +1,9 @@
-import { LucideArrowLeft, LucideCheck, LucideCircle } from "lucide-react";
+import {
+  LucideArrowLeft,
+  LucideCheck,
+  LucideCircle,
+  LucideMenu,
+} from "lucide-react";
 import type { LucideIcon, LucideProps } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -35,4 +40,5 @@ export const Icons = {
   circle: LucideCircle,
   check: LucideCheck,
   arrowLeft: LucideArrowLeft,
+  menu: LucideMenu,
 } as const;

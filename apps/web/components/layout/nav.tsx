@@ -3,11 +3,11 @@ import { Button } from "@lir/ui";
 
 import Link from "next/link";
 
-interface NavProps {
+type Props = {
   classNames?: string;
-}
+};
 
-export default function Nav({ classNames }: NavProps) {
+export default function Nav({ classNames }: Props) {
   return (
     <nav className={cn(classNames)}>
       <div className="flex justify-between">
@@ -19,7 +19,7 @@ export default function Nav({ classNames }: NavProps) {
             </Button>
           </li>
           <li>
-            <Button size="link" text="base" asChild>
+            <Button size="link" className="text-[15px]" asChild>
               <Link href="/signup">Sign up</Link>
             </Button>
           </li>

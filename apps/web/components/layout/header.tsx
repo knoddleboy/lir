@@ -7,11 +7,11 @@ import { abril } from "~/app/fonts";
 
 import Nav from "./nav";
 
-interface HeaderProps {
+type Props = {
   includeNav?: boolean;
-}
+};
 
-export default function Header({ includeNav = true }: HeaderProps) {
+export default function Header({ includeNav = true }: Props) {
   return (
     <header className="fixed z-50 w-screen">
       <div className="container m-auto flex h-20 items-center justify-center">
