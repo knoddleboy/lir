@@ -5,13 +5,11 @@ import Link from "next/link";
 
 import { abril } from "~/app/fonts";
 
-import Nav from "./nav";
-
 type Props = {
-  includeNav?: boolean;
+  children?: React.ReactNode;
 };
 
-export default function Header({ includeNav = true }: Props) {
+export const Header = ({ children }: Props) => {
   return (
     <header className="fixed z-50 w-screen">
       <div className="container m-auto flex h-20 items-center justify-center">
@@ -27,8 +25,8 @@ export default function Header({ includeNav = true }: Props) {
             </Link>
           </Button>
         </div>
-        <div className="flex-1">{includeNav && <Nav />}</div>
+        <div className="flex-1">{children}</div>
       </div>
     </header>
   );
-}
+};

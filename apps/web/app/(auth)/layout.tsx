@@ -1,20 +1,20 @@
-import { Content } from "@lir/ui";
+import { Layout } from "@lir/ui";
 
-import Header from "~/components/layout/header";
+import { Header } from "~/widgets/header-landing";
 
-interface AuthLayoutProps {
+type Props = {
   children: React.ReactNode;
-}
+};
 
-export default function AuthLayout({ children }: AuthLayoutProps) {
+export default function AuthLayout({ children }: Props) {
   return (
     <>
-      <Header includeNav={false} />
-      <Content className="overflow-hidden">
+      <Header />
+      <Layout className="overflow-hidden">
         <div className="flex h-full w-full items-center justify-center">
-          {children}
+          <div className="mb-24 w-full max-w-[360px] space-y-8">{children}</div>
         </div>
-      </Content>
+      </Layout>
     </>
   );
 }

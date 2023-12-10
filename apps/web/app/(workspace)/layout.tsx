@@ -1,7 +1,7 @@
 import { type Metadata } from "next";
 
-import { Header } from "~/components/workspace/header";
-import { Sidebar } from "~/components/workspace/sidebar";
+import { Header } from "~/widgets/header/header";
+import { Sidebar } from "~/widgets/sidebar/sidebar";
 
 import { defaultMetadata } from "../metadata";
 

@@ -1,17 +1,20 @@
-import { Content } from "@lir/ui";
+import { Layout } from "@lir/ui";
 
-import Header from "~/components/layout/header";
+import { Header } from "~/widgets/header-landing";
+import { Nav } from "~/widgets/nav-landing";
 
 export default function LandingPage() {
   return (
     <>
-      <Header />
-      <Content>
+      <Header>
+        <Nav />
+      </Header>
+      <Layout>
         <div className="h-20" />
         <div className="flex w-full justify-center text-4xl font-bold">
           Landing page
         </div>
-      </Content>
+      </Layout>
     </>
   );
 }

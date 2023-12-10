@@ -7,7 +7,7 @@ type Props = {
   classNames?: string;
 };
 
-export default function Nav({ classNames }: Props) {
+export const Nav = ({ classNames }: Props) => {
   return (
     <nav className={cn(classNames)}>
       <div className="flex justify-between">
@@ -27,4 +27,4 @@ export default function Nav({ classNames }: Props) {
       </div>
     </nav>
   );
-}
+};

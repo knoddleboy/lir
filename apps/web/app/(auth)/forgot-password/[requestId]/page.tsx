@@ -4,7 +4,7 @@ import { Button, Icons } from "@lir/ui";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { ResetPasswordForm } from "~/components/forms/reset-password-form";
+import { ResetPasswordForm } from "~/features/reset-password/reset-password-form";
 
 export const metadata: Metadata = {
   title: "Reset Password",
@@ -20,7 +20,7 @@ export default function ResetPasswordPage({ params: { requestId } }: Props) {
   const requestValid = false;
 
   return (
-    <div className="mb-24 w-full max-w-[360px] space-y-8">
+    <>
       <div className="space-y-3">
         <h2
           className={cn(
@@ -59,6 +59,6 @@ export default function ResetPasswordPage({ params: { requestId } }: Props) {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

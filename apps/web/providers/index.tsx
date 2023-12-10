@@ -1,12 +1,7 @@
-import { ThemeProvider } from "~/components/theme-provider";
-
 import { QueryProvider } from "./query-provider";
+import { ThemeProvider } from "./theme-provider";
 
-interface ProvidersProps {
-  children: React.ReactNode;
-}
-
-export function Providers({ children }: ProvidersProps) {
+export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <QueryProvider>{children}</QueryProvider>

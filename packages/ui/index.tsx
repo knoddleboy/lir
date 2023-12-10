@@ -15,7 +15,7 @@ export {
 
 export { Input, type InputProps } from "./components/ui/input";
 
-export { Content } from "./components/content";
+export { Layout } from "./components/layout";
 
 export { Icons, type Icon } from "./components/icons";
 
