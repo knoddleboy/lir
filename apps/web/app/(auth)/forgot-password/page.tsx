@@ -3,7 +3,7 @@ import { Button } from "@lir/ui";
 import { type Metadata } from "next";
 import Link from "next/link";
 
-import { FotgotPasswordForm } from "~/features/reset-password/forgot-password-form";
+import { FotgotPasswordForm } from "~/features/auth/reset-password/forgot-password-form";
 
 export const metadata: Metadata = {
   title: "Forgot Password?",

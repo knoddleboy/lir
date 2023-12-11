@@ -1,7 +1,6 @@
 import { type Metadata } from "next";
 
-import { Header } from "~/widgets/header/header";
-import { Sidebar } from "~/widgets/sidebar/sidebar";
+import { Sidebar } from "~/widgets/layouts/sidebar";
 
 import { defaultMetadata } from "../metadata";
 
@@ -17,11 +16,10 @@ type Props = {
 export default function WorkspaceLayout({ children }: Props) {
   return (
     <>
-      <div className="flex h-screen w-screen">
+      <div className="flex h-screen w-screen overflow-hidden">
         <Sidebar />
-        <div className="flex w-full flex-col">
-          <Header />
-          <main className="bg-muted h-full flex-1">{children}</main>
+        <div className="flex h-full w-full flex-col">
+          <div className="bg-muted h-full flex-1">{children}</div>
         </div>
       </div>
     </>

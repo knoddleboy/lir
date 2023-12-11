@@ -4,7 +4,7 @@ import { Button, Icons } from "@lir/ui";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { ResetPasswordForm } from "~/features/reset-password/reset-password-form";
+import { ResetPasswordForm } from "~/features/auth/reset-password/reset-password-form";
 
 export const metadata: Metadata = {
   title: "Reset Password",

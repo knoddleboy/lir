@@ -54,8 +54,9 @@ export const ProfileCard = () => {
         <div className="w-4 shrink-0"></div>
 
         <Button
-          className="text-accent-foreground/60 h-7 w-7 p-1"
+          className="text-accent-foreground/60"
           variant="control-ghost"
+          size="control-icon"
           onMouseDown={(e) => e.stopPropagation()}
           onClick={() => {}}
         >

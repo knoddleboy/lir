@@ -12,6 +12,9 @@ module.exports = {
       },
     },
     extend: {
+      spacing: {
+        4.5: "1.125rem", // 18px
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

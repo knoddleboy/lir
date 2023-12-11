@@ -31,6 +31,7 @@ const buttonVariants = cva(
         // sm: "h-9 rounded-md px-3",
         // lg: "h-11 rounded-md px-8",
         icon: "h-7 w-8",
+        "control-icon": "h-7 w-7 p-1",
       },
       text: {
         sm: "text-sm",

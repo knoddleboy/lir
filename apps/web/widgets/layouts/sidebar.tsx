@@ -1,14 +1,10 @@
 "use client";
 
-import { cn } from "@lir/lib";
 import { Icons } from "@lir/ui";
 
 import React, { type ElementRef, useRef } from "react";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-
-import { useSidebarStore } from "~/features/sidebar";
+import { Navigation, NavigationItem, useSidebarStore } from "~/features/sidebar";
 import { ProfileCard } from "~/features/user";
 
 const SIDEBAR_DEFAULT_WIDTH = 240;
@@ -19,12 +15,13 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
   const { isOpened, shouldAnimate, setIsOpened } = useSidebarStore();
 
   const sidebarRef = useRef<ElementRef<"nav">>(null);
+  const resizerRef = useRef<ElementRef<"div">>(null);
   const isResizing = useRef<boolean>(false);
   const didResize = useRef<boolean>(false);
   const lastWidth = useRef<number>(SIDEBAR_DEFAULT_WIDTH);
 
   const onMouseDown = () => {
-    if (!sidebarRef.current) return;
+    if (!sidebarRef.current || !resizerRef.current) return;
 
     // We do not want to persist the transition during drag, so once
     // the user clicks on the resizer, set `shouldAnimate` to false.
@@ -32,7 +29,9 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
 
     isResizing.current = true;
     sidebarRef.current.classList.add("shadow-sidebar-active");
+    resizerRef.current.classList.remove("hover:bg-control");
 
+    document.body.style.userSelect = "none";
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
   };
@@ -41,7 +40,6 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
     if (!sidebarRef.current) return;
 
     if (!didResize.current) {
-      console.log("move:");
       didResize.current = true;
     }
 
@@ -66,13 +64,16 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
   };
 
   const onMouseUp = () => {
-    if (!sidebarRef.current) return;
+    if (!sidebarRef.current || !resizerRef.current) return;
 
     const sidebarOpened = sidebarRef.current.clientWidth > 0;
 
     // Update the state only when the sidebar is closed to avoid unwanted re-renders.
     if (!sidebarOpened) {
       setIsOpened(sidebarOpened);
+
+      // This helps to locate the resizer when sidebar is closed.
+      resizerRef.current.classList.add("hover:bg-control");
     }
 
     isResizing.current = false;
@@ -84,6 +85,7 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
     sidebarRef.current.classList.add("shadow-sidebar");
 
     document.body.style.removeProperty("cursor");
+    document.body.style.removeProperty("user-select");
     document.removeEventListener("mousemove", onMouseMove);
     document.removeEventListener("mouseup", onMouseUp);
   };
@@ -143,6 +145,7 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
       <div className="flex h-full flex-col overflow-hidden">{children}</div>
       <div className="absolute bottom-0 right-0 top-0 h-full w-0 grow-0">
         <div
+          ref={resizerRef}
           onClick={onClick}
           onMouseDown={onMouseDown}
           onMouseEnter={onMouseEnter}
@@ -153,79 +156,6 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
     </nav>
   );
 };
-
-type NavigationItemType = {
-  name: string;
-  href?: string;
-  icon?: React.ReactNode;
-  isCurrent?: ({ pathname }: { pathname: string }) => boolean;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-};
-
-const navigation: NavigationItemType[] = [
-  {
-    name: "Settings",
-    href: "/settings",
-    icon: <Icons.settings size={16} />,
-    isCurrent: ({ pathname }) => pathname.startsWith("/settings") ?? false,
-  },
-  {
-    name: "Trash",
-    icon: <Icons.trash />,
-  },
-  {
-    name: "Import",
-    icon: <Icons.import size={16} />,
-  },
-];
-
-const NavigationItem = ({ item }: { item: NavigationItemType }) => {
-  const pathname = usePathname();
-  const current = item.isCurrent?.({ pathname }) ?? false;
-
-  const sharedAttributes = {
-    role: "button",
-    tabIndex: 0,
-    className: cn(
-      "_ring hover:bg-control active:text-accent-foreground active:bg-control-foreground text-accent-foreground/75 flex cursor-pointer select-none items-center rounded-md py-1 pl-3.5 pr-1.5 font-medium",
-      current && "bg-control"
-    ),
-  };
-
-  return (
-    <div className="group mx-1.5 my-0.5">
-      {item.href ? (
-        <Link href={item.href} {...sharedAttributes}>
-          <div className="mr-2 flex h-4 w-4 shrink-0 grow-0 items-center justify-center">
-            {item.icon}
-          </div>
-
-          <div className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-sm">
-            {item.name}
-          </div>
-        </Link>
-      ) : (
-        <div {...sharedAttributes}>
-          <div className="mr-2 flex h-4 w-4 shrink-0 grow-0 items-center justify-center">
-            {item.icon}
-          </div>
-
-          <div className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-sm">
-            {item.name}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-const Navigation = () => (
-  <nav>
-    {navigation.map((item) => (
-      <NavigationItem key={item.name} item={item} />
-    ))}
-  </nav>
-);
 
 const Documents = () => (
   <nav className="flex-1">

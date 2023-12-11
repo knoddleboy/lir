@@ -3,7 +3,7 @@ import { Button } from "@lir/ui";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { SignupForm } from "~/features/signup/signup-form";
+import { SignupForm } from "~/features/auth/signup/signup-form";
 
 export const metadata: Metadata = {
   title: "Sign Up",

@@ -1,6 +1,6 @@
 import { Layout } from "@lir/ui";
 
-import { Header } from "~/widgets/header-landing";
+import { Header } from "~/widgets/layouts/landing/header";
 
 type Props = {
   children: React.ReactNode;
