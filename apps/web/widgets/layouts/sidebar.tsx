@@ -16,7 +16,7 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
 
   const sidebarRef = useRef<ElementRef<"nav">>(null);
   const resizerRef = useRef<ElementRef<"div">>(null);
-  const isResizerStyled = useRef<boolean>(false);
+  const resizerHighlighted = useRef<boolean>(false);
   const isResizing = useRef<boolean>(false);
   const didResize = useRef<boolean>(false);
   const lastWidth = useRef<number>(SIDEBAR_DEFAULT_WIDTH);
@@ -26,7 +26,9 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
 
     // We do not want to persist the transition during drag, so once
     // the user clicks on the resizer, set `shouldAnimate` to false.
-    setIsOpened(isOpened, false);
+    if (shouldAnimate) {
+      setIsOpened(isOpened, false);
+    }
 
     isResizing.current = true;
     didResize.current = false;
@@ -41,18 +43,17 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
   const onMouseMove = (e: MouseEvent) => {
     if (!sidebarRef.current || !resizerRef.current) return;
 
-    if (sidebarRef.current.clientWidth > 0 && isResizerStyled.current) {
-      isResizerStyled.current = false;
-      resizerRef.current.classList.remove("hover:bg-control");
-      resizerRef.current.classList.remove("active:bg-control-foreground");
-      resizerRef.current.style.removeProperty("padding");
-    }
-
     if (!didResize.current) {
       didResize.current = true;
     }
 
     let newWidth = e.clientX;
+
+    // Once the cursor reaches the minimum width, remove the highlight
+    if (newWidth > SIDEBAR_MIN_WIDTH && resizerHighlighted.current) {
+      highlightResizer(false);
+    }
+
     // Do not expand the sidebar beyond the maximum allowed width.
     if (newWidth > SIDEBAR_MAX_WIDTH) {
       newWidth = SIDEBAR_MAX_WIDTH;
@@ -81,11 +82,7 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
     if (!sidebarOpened) {
       setIsOpened(sidebarOpened);
 
-      // This helps to locate the resizer when the sidebar is closed.
-      isResizerStyled.current = true;
-      resizerRef.current.classList.add("hover:bg-control");
-      resizerRef.current.classList.add("active:bg-control-foreground");
-      resizerRef.current.style.padding = "0 8px";
+      highlightResizer(true);
     }
 
     isResizing.current = false;
@@ -127,21 +124,36 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
 
     // When a user clicks on the resizer, we want to reset the sidebar
     // to its default width and thus set `shouldAnimate` to true.
-    setIsOpened(isOpened, true);
+    setIsOpened(true, true);
 
     // If the user remains on the resizer, we want to keep it active to
     // create a hover effect. Therefore, reset the class, which was removed
     // in `onMouseUp` (as it fires first).
     sidebarRef.current.classList.add("shadow-sidebar-active");
 
-    // Unset values added in `onMouseUp`.
-    isResizerStyled.current = false;
-    resizerRef.current.classList.remove("hover:bg-control");
-    resizerRef.current.classList.remove("active:bg-control-foreground");
-    resizerRef.current.style.removeProperty("padding");
+    if (resizerHighlighted.current) {
+      highlightResizer(false);
+    }
 
     lastWidth.current = SIDEBAR_DEFAULT_WIDTH;
     sidebarRef.current.style.width = `${SIDEBAR_DEFAULT_WIDTH}px`;
+  };
+
+  // This helps to locate the resizer when the sidebar is closed.
+  const highlightResizer = (highlight: boolean) => {
+    if (!resizerRef.current) return;
+
+    if (highlight) {
+      resizerHighlighted.current = true;
+      resizerRef.current.classList.add("hover:bg-control");
+      resizerRef.current.classList.add("active:bg-control-foreground");
+      resizerRef.current.style.padding = "0 8px";
+    } else {
+      resizerHighlighted.current = false;
+      resizerRef.current.classList.remove("hover:bg-control");
+      resizerRef.current.classList.remove("active:bg-control-foreground");
+      resizerRef.current.style.removeProperty("padding");
+    }
   };
 
   return (
