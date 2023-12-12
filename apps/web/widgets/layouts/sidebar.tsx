@@ -16,6 +16,7 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
 
   const sidebarRef = useRef<ElementRef<"nav">>(null);
   const resizerRef = useRef<ElementRef<"div">>(null);
+  const isResizerStyled = useRef<boolean>(false);
   const isResizing = useRef<boolean>(false);
   const didResize = useRef<boolean>(false);
   const lastWidth = useRef<number>(SIDEBAR_DEFAULT_WIDTH);
@@ -28,8 +29,9 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
     setIsOpened(isOpened, false);
 
     isResizing.current = true;
+    didResize.current = false;
+
     sidebarRef.current.classList.add("shadow-sidebar-active");
-    resizerRef.current.classList.remove("hover:bg-control");
 
     document.body.style.userSelect = "none";
     document.addEventListener("mousemove", onMouseMove);
@@ -37,7 +39,14 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
   };
 
   const onMouseMove = (e: MouseEvent) => {
-    if (!sidebarRef.current) return;
+    if (!sidebarRef.current || !resizerRef.current) return;
+
+    if (sidebarRef.current.clientWidth > 0 && isResizerStyled.current) {
+      isResizerStyled.current = false;
+      resizerRef.current.classList.remove("hover:bg-control");
+      resizerRef.current.classList.remove("active:bg-control-foreground");
+      resizerRef.current.style.removeProperty("padding");
+    }
 
     if (!didResize.current) {
       didResize.current = true;
@@ -72,8 +81,11 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
     if (!sidebarOpened) {
       setIsOpened(sidebarOpened);
 
-      // This helps to locate the resizer when sidebar is closed.
+      // This helps to locate the resizer when the sidebar is closed.
+      isResizerStyled.current = true;
       resizerRef.current.classList.add("hover:bg-control");
+      resizerRef.current.classList.add("active:bg-control-foreground");
+      resizerRef.current.style.padding = "0 8px";
     }
 
     isResizing.current = false;
@@ -105,17 +117,11 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
   };
 
   const onClick = () => {
-    if (!sidebarRef.current) return;
+    if (!sidebarRef.current || !resizerRef.current) return;
 
     // Since `onClick` is triggered synchronously after `onMouseUp`, we aim to prevent
     // the undesired changes described below when the user finishes resizing.
-    if (
-      didResize.current &&
-      // When the sidebar is maximized, the user's cursor is likely not to trigger `onClick`.
-      // Therefore, we want to bypass this restriction and proceed to the instructions below.
-      sidebarRef.current.clientWidth !== SIDEBAR_MAX_WIDTH
-    ) {
-      didResize.current = false;
+    if (didResize.current) {
       return;
     }
 
@@ -127,6 +133,12 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
     // create a hover effect. Therefore, reset the class, which was removed
     // in `onMouseUp` (as it fires first).
     sidebarRef.current.classList.add("shadow-sidebar-active");
+
+    // Unset values added in `onMouseUp`.
+    isResizerStyled.current = false;
+    resizerRef.current.classList.remove("hover:bg-control");
+    resizerRef.current.classList.remove("active:bg-control-foreground");
+    resizerRef.current.style.removeProperty("padding");
 
     lastWidth.current = SIDEBAR_DEFAULT_WIDTH;
     sidebarRef.current.style.width = `${SIDEBAR_DEFAULT_WIDTH}px`;
