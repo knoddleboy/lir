@@ -3,6 +3,8 @@ export * from "./components/ui/avatar";
 export { Button, buttonVariants } from "./components/ui/button";
 export type { ButtonProps } from "./components/ui/button";
 
+export * from "./components/ui/dialog";
+
 export * from "./components/ui/dropdown-menu";
 
 export {

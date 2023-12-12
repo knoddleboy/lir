@@ -27,14 +27,14 @@ export const FotgotPasswordForm = () => {
 
   return (
     <Form {...form}>
-      <form className="space-y-9" onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="space-y-6">
+      <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="space-y-4">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="text-sm">Email</FormLabel>
                 <FormControl>
                   <EmailField {...field} />
                 </FormControl>

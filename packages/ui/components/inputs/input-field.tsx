@@ -13,7 +13,7 @@ const AddonWrapper = ({ children, onClickAddon }: AddonWrapperProps) => (
   <div
     onClick={onClickAddon}
     className={cn(
-      "border-input bg-muted h-9 rounded-r-md border",
+      "border-input bg-muted h-8 rounded-r-md border",
       onClickAddon && "cursor-pointer"
     )}
   >

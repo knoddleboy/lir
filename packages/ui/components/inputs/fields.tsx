@@ -34,7 +34,7 @@ export const PasswordField = React.forwardRef<HTMLInputElement, InputFieldProps>
           <button
             tabIndex={-1}
             type="button"
-            className="h-9 px-2 !outline-none"
+            className="px-2 !outline-none"
             onClick={togglePasswordVisible}
           >
             {passwordVisible ? (

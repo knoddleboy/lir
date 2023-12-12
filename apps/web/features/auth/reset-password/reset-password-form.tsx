@@ -43,9 +43,9 @@ export const ResetPasswordForm = ({ requestId }: ResetPasswordFormProps) => {
             name="newPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>New password</FormLabel>
+                <FormLabel className="text-sm">New password</FormLabel>
                 <FormControl>
-                  <PasswordField {...field} />
+                  <PasswordField placeholder="Enter new password" {...field} />
                 </FormControl>
                 <FormHints
                   fieldName="newPassword"

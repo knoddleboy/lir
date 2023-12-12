@@ -33,6 +33,6 @@ export const resetPasswordSchema = z.object({
 });
 
 export const changePasswordSchema = z.object({
-  oldPassword: passwordSchema,
+  oldPassword: z.string().min(1, { message: "Please enter your old password." }),
   newPassword: passwordSchema,
 });
