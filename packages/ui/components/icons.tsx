@@ -8,8 +8,10 @@ import {
   LucideCircle,
   LucideDownload,
   LucideMenu,
+  LucideMoon,
   LucidePlus,
   LucideSettings,
+  LucideSun,
 } from "lucide-react";
 import type { LucideIcon, LucideProps } from "lucide-react";
 
@@ -83,5 +85,6 @@ export const Icons = {
   settings: LucideSettings,
   import: LucideDownload,
   plus: LucidePlus,
-  // trash: LucideTrash2,
+  sun: LucideSun,
+  moon: LucideMoon,
 } as const;

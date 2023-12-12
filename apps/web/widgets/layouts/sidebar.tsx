@@ -2,10 +2,11 @@
 
 import { Icons } from "@lir/ui";
 
-import React, { type ElementRef, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
+import type { ElementRef } from "react";
 
 import { Navigation, NavigationItem, useSidebarStore } from "~/features/sidebar";
-import { ProfileCard } from "~/features/user";
+import { UserDropdown } from "~/features/user/user-dropdown";
 
 const SIDEBAR_DEFAULT_WIDTH = 240;
 const SIDEBAR_MIN_WIDTH = 120;
@@ -206,7 +207,7 @@ const Documents = () => (
 export const Sidebar = () => {
   return (
     <SidebarResizableContainer>
-      <ProfileCard />
+      <UserDropdown />
       <Navigation />
       <div className="text-accent-foreground/40 mt-2.5 select-none px-3 text-xs font-bold">
         Documents
