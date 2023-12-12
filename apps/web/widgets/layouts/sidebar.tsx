@@ -2,7 +2,7 @@
 
 import { Icons } from "@lir/ui";
 
-import React, { type ElementRef, useRef } from "react";
+import React, { type ElementRef, useRef, useEffect } from "react";
 
 import { Navigation, NavigationItem, useSidebarStore } from "~/features/sidebar";
 import { ProfileCard } from "~/features/user";
@@ -20,6 +20,10 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
   const isResizing = useRef<boolean>(false);
   const didResize = useRef<boolean>(false);
   const lastWidth = useRef<number>(SIDEBAR_DEFAULT_WIDTH);
+
+  useEffect(() => {
+    highlightResizer(!isOpened);
+  }, [isOpened]);
 
   const onMouseDown = () => {
     if (!sidebarRef.current || !resizerRef.current) return;
@@ -78,10 +82,9 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
 
     const sidebarOpened = sidebarRef.current.clientWidth > 0;
 
-    // Update the state only when the sidebar is closed to avoid unwanted re-renders.
-    if (!sidebarOpened) {
-      setIsOpened(sidebarOpened);
+    setIsOpened(sidebarOpened);
 
+    if (!sidebarOpened) {
       highlightResizer(true);
     }
 
@@ -113,6 +116,7 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
     }
   };
 
+  // TODO: fix reset to default on oclick to previous value
   const onClick = () => {
     if (!sidebarRef.current || !resizerRef.current) return;
 
