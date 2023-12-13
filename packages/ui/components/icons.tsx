@@ -1,5 +1,6 @@
 import {
   LucideArrowLeft,
+  LucideArrowUpDown,
   LucideCheck,
   LucideChevronDown,
   LucideChevronLeft,
@@ -74,9 +75,18 @@ export const Icons = {
       />
     </svg>
   ),
+  tick: ({ ...props }: LucideProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" {...props}>
+      <path
+        fill="currentColor"
+        d="M6.2 15.8c.5 0 .9-.2 1.2-.6l8.3-12.9c.2-.3.3-.6.3-.9 0-.7-.5-1.2-1.2-1.2-.5 0-.8.2-1.1.7L6.1 12.8 2.3 7.9c-.3-.4-.6-.5-1-.5-.8 0-1.3.5-1.3 1.2 0 .3.1.6.4.9L5 15.2c.3.4.7.6 1.2.6z"
+      />
+    </svg>
+  ),
   circle: LucideCircle,
   check: LucideCheck,
   arrowLeft: LucideArrowLeft,
+  arrowUpDown: LucideArrowUpDown,
   chevronLeft: LucideChevronLeft,
   chevronUp: LucideChevronUp,
   chevronRight: LucideChevronRight,

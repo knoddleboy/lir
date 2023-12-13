@@ -4,12 +4,16 @@ import { Avatar, AvatarFallback, AvatarImage, Button, Icons } from "@lir/ui";
 
 import React, { useRef, useImperativeHandle } from "react";
 
+import { useSearchStore } from "../sidebar";
+
 interface ProfileCardProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const ProfileCard = React.forwardRef<
   React.ElementRef<"div">,
   ProfileCardProps
 >((props, ref) => {
+  const toggleSearchDialog = useSearchStore((state) => state.setOpen);
+
   const cardRef = useRef<HTMLDivElement>(null);
 
   useImperativeHandle(ref, () => cardRef.current!);
@@ -64,8 +68,10 @@ export const ProfileCard = React.forwardRef<
         variant="control-ghost"
         size="control-icon"
         onPointerDown={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
         onClick={(e) => {
           e.stopPropagation();
+          toggleSearchDialog(true);
         }}
       >
         <Icons.search className="w-4" />

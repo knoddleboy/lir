@@ -5,16 +5,18 @@ import React from "react";
 import { Input, type InputProps } from "../ui/input";
 
 type AddonWrapperProps = {
+  className?: string;
   children?: React.ReactNode;
   onClickAddon?: () => void;
 };
 
-const AddonWrapper = ({ children, onClickAddon }: AddonWrapperProps) => (
+const AddonWrapper = ({ className, children, onClickAddon }: AddonWrapperProps) => (
   <div
     onClick={onClickAddon}
     className={cn(
-      "border-input bg-muted h-8 rounded-r-md border",
-      onClickAddon && "cursor-pointer"
+      "border-input bg-muted h-8 border",
+      onClickAddon && "cursor-pointer",
+      className
     )}
   >
     <div className="flex h-full flex-col justify-center">{children}</div>
@@ -33,7 +35,9 @@ export const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
 
     return addonPrefix || addonSufix ? (
       <div className="_ring-within relative flex w-full items-center rounded-md">
-        {addonPrefix && <AddonWrapper>{addonPrefix}</AddonWrapper>}
+        {addonPrefix && (
+          <AddonWrapper className="rounded-l-md">{addonPrefix}</AddonWrapper>
+        )}
 
         <Input
           className={cn(
@@ -47,7 +51,9 @@ export const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
         />
 
         {addonSufix && (
-          <AddonWrapper onClickAddon={onClickAddon}>{addonSufix}</AddonWrapper>
+          <AddonWrapper className="rounded-r-md" onClickAddon={onClickAddon}>
+            {addonSufix}
+          </AddonWrapper>
         )}
       </div>
     ) : (

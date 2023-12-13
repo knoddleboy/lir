@@ -6,6 +6,7 @@ import React, { useRef, useEffect } from "react";
 import type { ElementRef } from "react";
 
 import { Navigation, NavigationItem, useSidebarStore } from "~/features/sidebar";
+import { Search } from "~/features/sidebar/search";
 import { UserDropdown } from "~/features/user/user-dropdown";
 
 const SIDEBAR_DEFAULT_WIDTH = 240;
@@ -206,13 +207,16 @@ const Documents = () => (
 
 export const Sidebar = () => {
   return (
-    <SidebarResizableContainer>
-      <UserDropdown />
-      <Navigation />
-      <div className="text-accent-foreground/40 mt-2.5 select-none px-3 text-xs font-bold">
-        Documents
-      </div>
-      <Documents />
-    </SidebarResizableContainer>
+    <>
+      <SidebarResizableContainer>
+        <UserDropdown />
+        <Navigation />
+        <div className="text-accent-foreground/40 mt-2.5 select-none px-3 text-xs font-bold">
+          Documents
+        </div>
+        <Documents />
+      </SidebarResizableContainer>
+      <Search />
+    </>
   );
 };
