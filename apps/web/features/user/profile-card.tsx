@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage, Button, Icons } from "@lir/ui";
 
 import React, { useRef, useImperativeHandle } from "react";
 
-import { useSearchStore } from "../sidebar";
+import { useSearchStore } from "~/entities/search/model/store";
 
 interface ProfileCardProps extends React.HTMLAttributes<HTMLDivElement> {}
 

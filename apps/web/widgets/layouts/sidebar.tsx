@@ -5,8 +5,9 @@ import { Icons } from "@lir/ui";
 import React, { useRef, useEffect } from "react";
 import type { ElementRef } from "react";
 
-import { Navigation, NavigationItem, useSidebarStore } from "~/features/sidebar";
-import { Search } from "~/features/sidebar/search";
+import { SearchMenu } from "~/features/search-menu/search-menu";
+import { Navigation, NavigationItem } from "~/features/sidebar/navigation";
+import { useSidebarStore } from "~/features/sidebar/store";
 import { UserDropdown } from "~/features/user/user-dropdown";
 
 const SIDEBAR_DEFAULT_WIDTH = 240;
@@ -216,7 +217,7 @@ export const Sidebar = () => {
         </div>
         <Documents />
       </SidebarResizableContainer>
-      <Search />
+      <SearchMenu />
     </>
   );
 };

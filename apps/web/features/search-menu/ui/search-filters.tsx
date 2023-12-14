@@ -27,7 +27,7 @@ export const SortDirection = {
   NewestFirst: "Newest first",
 } as const;
 
-export const SearchSort = ({ children }: Props) => {
+export const SearchFilters = ({ children }: Props) => {
   const [open, setOpen] = useState(false);
   const [sortBy, setSortBy] = useState<string>(SortBy.Manually);
   const [sortDirection, setSortDirection] = useState<{
