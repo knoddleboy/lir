@@ -1,7 +1,9 @@
+import { WEBAPP_URL } from "@lir/lib";
+import { LoginDto, SignupDto } from "@lir/lib/dto";
 import { ErrorResponseCode } from "@lir/lib/error";
-import { authResponseSchema } from "@lir/lib/schema";
+import { UserProps } from "@lir/lib/schema";
 
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { randomBytes } from "crypto";
 import dayjs from "dayjs";
@@ -16,8 +18,6 @@ import {
   Logger,
 } from "@nestjs/common";
 
-import { AuthResponseDto, LoginDto, SignupDto } from "~/lib/dto/auth";
-import { UserDto } from "~/lib/dto/user";
 import { HashingService } from "~/lib/services/hashing.service";
 import { MailService } from "~/mail/mail.service";
 
@@ -64,7 +64,7 @@ export class AuthService {
     }
   }
 
-  async logout(user: UserDto, response: Response) {
+  async logout(user: User, response: Response) {
     await this.tokenService.deleteRefreshToken(user.id);
 
     response.clearCookie("Authorization");
@@ -73,7 +73,7 @@ export class AuthService {
     response.status(200).send({});
   }
 
-  async verifyEmail(token: string) {
+  async verifyEmail(token: string, response: Response) {
     const foundToken = await this.prismaService.verificationToken.findFirst({
       where: { token },
     });
@@ -96,9 +96,11 @@ export class AuthService {
         id: foundToken.id,
       },
     });
+
+    return response.status(200).redirect(`${WEBAPP_URL}/last-edited-document`);
   }
 
-  async handleAuthResponse(user: UserDto, response: Response<AuthResponseDto>) {
+  async handleAuthResponse(user: User, response: Response<UserProps>) {
     const { accessToken, refreshToken } = await this.tokenService.refreshTokens(
       user.id,
       user.email
@@ -107,9 +109,16 @@ export class AuthService {
     response.cookie("Authorization", accessToken, cookieOptionsFactory("access"));
     response.cookie("Refresh", refreshToken, cookieOptionsFactory("refresh"));
 
-    const responseBody = authResponseSchema.parse(user);
-
-    response.status(200).send(responseBody);
+    response.status(200).send({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      emailVerified: user.emailVerified,
+      avatar: user.avatar,
+      identityProvider: user.identityProvider,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    });
   }
 
   async validateUser({ email, password }: LoginDto): Promise<User> {
@@ -142,7 +151,7 @@ export class AuthService {
         data: {
           identifier: email,
           token,
-          expiresAt: dayjs().add(1, "D").toDate(),
+          expiresAt: dayjs().add(1, "day").toDate(),
         },
       });
 

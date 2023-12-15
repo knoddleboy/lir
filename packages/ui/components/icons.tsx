@@ -1,5 +1,6 @@
 import {
   LucideArrowLeft,
+  LucideArrowRight,
   LucideArrowUpDown,
   LucideCheck,
   LucideChevronDown,
@@ -13,6 +14,7 @@ import {
   LucidePlus,
   LucideSettings,
   LucideSun,
+  LucideXCircle,
 } from "lucide-react";
 import type { LucideIcon, LucideProps } from "lucide-react";
 
@@ -86,6 +88,7 @@ export const Icons = {
   circle: LucideCircle,
   check: LucideCheck,
   arrowLeft: LucideArrowLeft,
+  arrowRight: LucideArrowRight,
   arrowUpDown: LucideArrowUpDown,
   chevronLeft: LucideChevronLeft,
   chevronUp: LucideChevronUp,
@@ -97,4 +100,5 @@ export const Icons = {
   plus: LucidePlus,
   sun: LucideSun,
   moon: LucideMoon,
+  xCircle: LucideXCircle,
 } as const;

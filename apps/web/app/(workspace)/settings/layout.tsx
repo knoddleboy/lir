@@ -1,5 +1,11 @@
+import { type Metadata } from "next";
+
 import { GoBack } from "~/features/header/go-back";
 import { Header } from "~/widgets/layouts/header";
+
+export const metadata: Metadata = {
+  title: "Settings",
+};
 
 type Props = {
   children: React.ReactNode;

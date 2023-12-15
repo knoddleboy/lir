@@ -1,6 +1,7 @@
 "use client";
 
-import { signupUserSchema } from "@lir/lib/schema";
+import { ErrorResponseCode } from "@lir/lib/error";
+import { type SingupUserInput, signupUserSchema } from "@lir/lib/schema";
 import {
   Button,
   Form,
@@ -13,13 +14,27 @@ import {
   Input,
   PasswordField,
   EmailField,
+  Alert,
+  Icons,
+  AlertDescription,
 } from "@lir/ui";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { useRouter } from "next/navigation";
+
+import { useSignup } from "../api/signup";
+
 export const SignupForm = () => {
-  const form = useForm({
+  const router = useRouter();
+
+  const { mutateAsync: signup, isPending, isSuccess } = useSignup();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const form = useForm<SingupUserInput>({
     resolver: zodResolver(signupUserSchema),
     defaultValues: {
       name: "",
@@ -29,12 +44,40 @@ export const SignupForm = () => {
     mode: "onChange",
   });
 
-  const onSubmit = () => {};
+  const errorMessages: { [key: string]: string } = {
+    [ErrorResponseCode.InvalidCredentials]: "Invalid email or password",
+    [ErrorResponseCode.InternalServerError]:
+      "Something went wrong. Please try again",
+  };
+
+  const onSubmit = async (data: SingupUserInput) => {
+    try {
+      setErrorMessage(null);
+      const res = await signup(data);
+
+      if (!res)
+        setErrorMessage(errorMessages[ErrorResponseCode.InternalServerError]);
+
+      router.replace("/signup/verify-email");
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setErrorMessage(errorMessages[error.response?.data.message]);
+      } else {
+        setErrorMessage(errorMessages[ErrorResponseCode.InternalServerError]);
+      }
+    }
+  };
 
   return (
     <Form {...form}>
       <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)} noValidate>
         <div className="space-y-4">
+          {errorMessage && (
+            <Alert variant="destructive">
+              <Icons.xCircle size={18} />
+              <AlertDescription>{errorMessage}</AlertDescription>
+            </Alert>
+          )}
           <FormField
             control={form.control}
             name="name"
@@ -75,7 +118,7 @@ export const SignupForm = () => {
             )}
           />
         </div>
-        <Button className="w-full" type="submit">
+        <Button className="w-full" type="submit" disabled={isPending || isSuccess}>
           Sign up
         </Button>
       </form>

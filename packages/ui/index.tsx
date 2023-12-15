@@ -1,3 +1,5 @@
+export * from "./components/ui/alert";
+
 export * from "./components/ui/avatar";
 
 export { Button, buttonVariants } from "./components/ui/button";

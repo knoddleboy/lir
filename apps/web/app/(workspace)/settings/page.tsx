@@ -8,16 +8,10 @@ import {
   Label,
 } from "@lir/ui";
 
-import { type Metadata } from "next";
-
 import { EmailSetting } from "~/features/settings/email";
 import { PasswordSetting } from "~/features/settings/password";
 import { Setting } from "~/features/settings/ui/setting";
 import { SettingTitle } from "~/features/settings/ui/setting-title";
-
-export const metadata: Metadata = {
-  title: "Settings",
-};
 
 export default function SettingsPage() {
   return (

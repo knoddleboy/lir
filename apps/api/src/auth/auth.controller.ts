@@ -1,15 +1,16 @@
-import { Response } from "express";
-
-import { Body, Controller, Get, Post, Query, Res, UseGuards } from "@nestjs/common";
-
 import {
   ChangePasswordDto,
   ForgotPasswordDto,
   ResetPasswordDto,
   SignupDto,
   VerificationTokenDto,
-} from "~/lib/dto/auth";
-import { UserDto } from "~/lib/dto/user";
+} from "@lir/lib/dto";
+
+import type { User as UserType } from "@prisma/client";
+import { Response } from "express";
+
+import { Body, Controller, Get, Post, Query, Res, UseGuards } from "@nestjs/common";
+
 import { User } from "~/user/decorators/user.decorator";
 
 import { AuthService } from "./auth.service";
@@ -37,7 +38,7 @@ export class AuthController {
   @UseGuards(LocalGuard)
   @Post("login")
   async login(
-    @User() user: UserDto,
+    @User() user: UserType,
     @Res({ passthrough: true }) response: Response
   ) {
     return this.authService.handleAuthResponse(user, response);
@@ -46,7 +47,7 @@ export class AuthController {
   @UseGuards(RefreshGuard)
   @Post("refresh")
   async refresh(
-    @User() user: UserDto,
+    @User() user: UserType,
     @Res({ passthrough: true }) response: Response
   ) {
     return this.authService.handleAuthResponse(user, response);
@@ -55,22 +56,25 @@ export class AuthController {
   @UseGuards(JwtGuard)
   @Post("logout")
   async logout(
-    @User() user: UserDto,
+    @User() user: UserType,
     @Res({ passthrough: true }) response: Response
   ) {
     return this.authService.logout(user, response);
   }
 
   @Get("verify-email")
-  async verifyEmail(@Query() query: VerificationTokenDto) {
-    return this.authService.verifyEmail(query.token);
+  async verifyEmail(
+    @Query() query: VerificationTokenDto,
+    @Res() response: Response
+  ) {
+    return this.authService.verifyEmail(query.token, response);
   }
 
   @UseGuards(JwtGuard)
   @Post("verify-password")
   async verifyPassword(
     @User("password") hashedPassword: string,
-    @Body() password: UserDto["password"]
+    @Body() password: string
   ) {
     return this.passwordService.verifyPassword(password, hashedPassword);
   }
@@ -81,6 +85,11 @@ export class AuthController {
     @Res() response: Response
   ) {
     return this.passwordService.forgotPassword(forgotPasswordDto.email, response);
+  }
+
+  @Post("verify-reset-request")
+  async verifyResetRequest(@Body() { requestId }: { requestId: string }) {
+    return this.passwordService.verifyResetRequest(requestId);
   }
 
   @Post("reset-password")
@@ -94,7 +103,7 @@ export class AuthController {
   @UseGuards(JwtGuard)
   @Post("change-password")
   async changePassword(
-    @User() user: UserDto,
+    @User() user: UserType,
     @Body() { oldPassword, newPassword }: ChangePasswordDto
   ) {
     return this.passwordService.changePassword(user, oldPassword, newPassword);

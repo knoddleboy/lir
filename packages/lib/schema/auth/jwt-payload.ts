@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { idSchema } from "../shared/id";
+import { idSchema } from "../shared";
 
 export const jwtPayloadSchema = z.object({
   sub: idSchema,

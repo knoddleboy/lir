@@ -1,5 +1,8 @@
 import { Layout } from "@lir/ui";
 
+import { redirect } from "next/navigation";
+
+import { isAuth } from "~/shared/lib/is-auth";
 import { Header } from "~/widgets/layouts/landing/header";
 
 type Props = {
@@ -7,6 +10,10 @@ type Props = {
 };
 
 export default function AuthLayout({ children }: Props) {
+  if (isAuth()) {
+    redirect("/last-edited-document");
+  }
+
   return (
     <>
       <Header />

@@ -1,5 +1,7 @@
 import { type Metadata } from "next";
+import { redirect } from "next/navigation";
 
+import { isAuth } from "~/shared/lib/is-auth";
 import { Sidebar } from "~/widgets/layouts/sidebar";
 
 import { defaultMetadata } from "../metadata";
@@ -14,6 +16,10 @@ type Props = {
 };
 
 export default function WorkspaceLayout({ children }: Props) {
+  if (!isAuth()) {
+    redirect("/login");
+  }
+
   return (
     <>
       <div className="flex h-screen w-screen overflow-hidden">

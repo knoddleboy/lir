@@ -1,10 +1,20 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Check your email",
-};
+import { redirect } from "next/navigation";
 
-export default function Page() {
+import { sessionModel } from "~/entities/session";
+
+export const VerifyEmail = () => {
+  const user = sessionModel.useCurrentUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  if (user.emailVerified) {
+    redirect("/last-edited-document");
+  }
+
   return (
     <>
       <div className="space-y-3">
@@ -16,7 +26,7 @@ export default function Page() {
           <h2 className="text-center text-3xl font-bold">Check your email</h2>
           <div className="mt-6 text-center">
             We&apos;ve just sent a link to
-            <div className="text-lg font-medium">test@test.com</div>
+            <div className="text-lg font-medium">{user.email}</div>
             <div className="my-6">
               Follow the link in your email to finish signing in.
             </div>
@@ -27,4 +37,4 @@ export default function Page() {
       </div>
     </>
   );
-}
+};

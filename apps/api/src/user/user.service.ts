@@ -1,7 +1,7 @@
 import { ErrorResponseCode } from "@lir/lib/error";
 import { UpdateUserInput } from "@lir/lib/schema";
 
-import { Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
 
 import {
@@ -12,7 +12,6 @@ import {
 } from "@nestjs/common";
 
 import { AvatarService } from "~/avatar/avatar.service";
-import { UserDto } from "~/lib/dto/user";
 import { HashingService } from "~/lib/services/hashing.service";
 
 @Injectable()
@@ -38,7 +37,7 @@ export class UserService {
     });
   }
 
-  async updateUserProfile(user: UserDto, input: UpdateUserInput) {
+  async updateUserProfile(user: User, input: UpdateUserInput) {
     const data: Prisma.UserUpdateInput = { ...input };
 
     const emailChanged = input.email && input.email !== user.email;

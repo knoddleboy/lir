@@ -40,6 +40,7 @@
   "globalDependencies": [".env"],
   "globalEnv": [
     "NODE_ENV",
+    "NEXT_PUBLIC_WEBAPP_URL",
     "PORT",
     "DATABASE_URL",
     "JWT_ACCESS_SECRET",

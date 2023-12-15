@@ -1,14 +1,14 @@
-import { APP_URL } from "@lir/lib";
+import { WEBAPP_URL } from "@lir/lib";
 import { ErrorResponseCode } from "@lir/lib/error";
 import { AuthResponse } from "@lir/lib/responses";
 
+import { User } from "@prisma/client";
 import dayjs from "dayjs";
 import { Response } from "express";
 import { PrismaService } from "nestjs-prisma";
 
 import { BadRequestException, Injectable } from "@nestjs/common";
 
-import { UserDto } from "~/lib/dto/user";
 import { HashingService } from "~/lib/services/hashing.service";
 import { MailService } from "~/mail/mail.service";
 
@@ -26,7 +26,7 @@ export class PasswordService {
 
   async forgotPassword(email: string, response: Response) {
     const expiresAt = dayjs().add(8, "hours").toDate();
-    const createdPasswordResetId =
+    const createdPasswordReset =
       await this.prismaService.passwordResetRequest.create({
         data: { email, expiresAt },
       });
@@ -46,18 +46,34 @@ export class PasswordService {
       templateType: "forgot-password-email",
       payload: {
         user,
-        resetPasswordLink: `${APP_URL}/forgot-password/${createdPasswordResetId}`,
+        resetPasswordLink: `${WEBAPP_URL}/forgot-password/${createdPasswordReset.id}`,
       },
     });
 
     return response.status(201).json(AuthResponse.PasswordResetEmailSent);
   }
 
+  async verifyResetRequest(requestId: string) {
+    try {
+      const foundRequest =
+        await this.prismaService.passwordResetRequest.findFirstOrThrow({
+          where: { id: requestId },
+        });
+
+      if (dayjs(foundRequest.expiresAt).isBefore(dayjs())) {
+        throw new Error();
+      }
+
+      return foundRequest;
+    } catch (error) {
+      throw new BadRequestException(
+        ErrorResponseCode.InvalidOrExpiredPasswordResetRequest
+      );
+    }
+  }
+
   async resetPassword(newPassword: string, requestId: string, response: Response) {
-    const foundRequest =
-      await this.prismaService.passwordResetRequest.findFirstOrThrow({
-        where: { id: requestId },
-      });
+    const verifiedRequest = await this.verifyResetRequest(requestId);
 
     const hashedPassword = await this.hashingService.hash(newPassword);
 
@@ -65,7 +81,7 @@ export class PasswordService {
     // we may want to return a 404 in case something went wrong here
     try {
       await this.prismaService.user.update({
-        where: { email: foundRequest.email },
+        where: { email: verifiedRequest.email },
         data: { password: hashedPassword },
       });
     } catch (error) {
@@ -81,7 +97,7 @@ export class PasswordService {
     return response.status(201).json(AuthResponse.PasswordReset);
   }
 
-  async changePassword(user: UserDto, oldPassword: string, newPassword: string) {
+  async changePassword(user: User, oldPassword: string, newPassword: string) {
     if (oldPassword === newPassword) {
       throw new BadRequestException(ErrorResponseCode.NewPasswordMatchesOldPassword);
     }

@@ -1,7 +1,10 @@
 "use client";
 
-import { loginUserSchema } from "@lir/lib/schema";
+import { ErrorResponseCode } from "@lir/lib/error";
+import { type LoginUserInput, loginUserSchema } from "@lir/lib/schema";
 import {
+  Alert,
+  AlertDescription,
   Button,
   EmailField,
   Form,
@@ -10,16 +13,27 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  Icons,
   PasswordField,
 } from "@lir/ui";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { useLogin } from "../api/login";
 
 export const LoginForm = () => {
-  const form = useForm({
+  const router = useRouter();
+
+  const { mutateAsync: login, isPending, isSuccess } = useLogin();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const form = useForm<LoginUserInput>({
     resolver: zodResolver(loginUserSchema),
     defaultValues: {
       email: "",
@@ -27,12 +41,40 @@ export const LoginForm = () => {
     },
   });
 
-  const onSubmit = () => {};
+  const errorMessages: { [key: string]: string } = {
+    [ErrorResponseCode.InvalidCredentials]: "Invalid email or password",
+    [ErrorResponseCode.InternalServerError]:
+      "Something went wrong. Please try again",
+  };
+
+  const onSubmit = async (data: LoginUserInput) => {
+    try {
+      setErrorMessage(null);
+      const res = await login(data);
+
+      if (!res)
+        setErrorMessage(errorMessages[ErrorResponseCode.InternalServerError]);
+
+      router.replace("/last-edited-document");
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setErrorMessage(errorMessages[error.response?.data.message]);
+      } else {
+        setErrorMessage(errorMessages[ErrorResponseCode.InternalServerError]);
+      }
+    }
+  };
 
   return (
     <Form {...form}>
       <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)} noValidate>
         <div className="space-y-4">
+          {errorMessage && (
+            <Alert variant="destructive">
+              <Icons.xCircle size={18} />
+              <AlertDescription>{errorMessage}</AlertDescription>
+            </Alert>
+          )}
           <FormField
             control={form.control}
             name="email"
@@ -65,7 +107,7 @@ export const LoginForm = () => {
             )}
           />
         </div>
-        <Button className="w-full" type="submit">
+        <Button className="w-full" type="submit" disabled={isPending || isSuccess}>
           Log in
         </Button>
       </form>

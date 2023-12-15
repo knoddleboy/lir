@@ -6,7 +6,6 @@
     "plugins": [{ "name": "next" }],
     "paths": {
       "~/*": ["./*"]
-      // "~ui/*": ["../../packages/ui/*"]
     }
   },
   "include": [

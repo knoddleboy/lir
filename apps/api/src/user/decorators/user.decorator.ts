@@ -1,13 +1,12 @@
+import type { User as PrismaUser } from "@prisma/client";
 import { Request } from "express";
 
 import { ExecutionContext, createParamDecorator } from "@nestjs/common";
 
-import { UserDto } from "~/lib/dto/user";
-
 export const User = createParamDecorator(
-  (data: keyof UserDto, context: ExecutionContext) => {
+  (data: keyof PrismaUser, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest() as Request;
-    const user = request.user as UserDto;
+    const user = request.user as PrismaUser;
 
     return data ? user?.[data] : user;
   }

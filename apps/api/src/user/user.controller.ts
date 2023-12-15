@@ -1,3 +1,7 @@
+import { DeleteUserDto, UpdateUserDto } from "@lir/lib/dto";
+
+import type { User as UserType } from "@prisma/client";
+
 import {
   Body,
   Controller,
@@ -9,7 +13,6 @@ import {
 } from "@nestjs/common";
 
 import { JwtGuard } from "~/auth/guards/jwt.guard";
-import { DeleteUserDto, UpdateUserDto, UserDto } from "~/lib/dto/user";
 
 import { User } from "./decorators/user.decorator";
 import { UserService } from "./user.service";
@@ -25,7 +28,7 @@ export class UserController {
   }
 
   @Patch()
-  async update(@User() user: UserDto, @Body() data: UpdateUserDto) {
+  async update(@User() user: UserType, @Body() data: UpdateUserDto) {
     return this.userService.updateUserProfile(user, data);
   }
 

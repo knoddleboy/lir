@@ -2,7 +2,7 @@
 
 import { Button, Icons } from "@lir/ui";
 
-import { useSidebarStore } from "~/features/sidebar";
+import { useSidebarStore } from "../sidebar/store";
 
 export const ToggleSidebar = () => {
   const isSidebarOpened = useSidebarStore((state) => state.isOpened);

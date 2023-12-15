@@ -14,12 +14,25 @@ import {
 
 import { useState } from "react";
 
+import { useRouter } from "next/navigation";
+
 import { ThemeSwitch } from "~/shared/theme-switch";
 
+import { useLogout } from "../auth/logout/api/logout";
 import { ProfileCard } from "./profile-card";
 
 export const UserDropdown = () => {
   const [open, setOpen] = useState(false);
+
+  const router = useRouter();
+
+  // TODO: refactor -> widgets
+  const { mutateAsync: _logout } = useLogout();
+
+  const logout = async () => {
+    await _logout();
+    router.replace("/");
+  };
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -43,7 +56,10 @@ export const UserDropdown = () => {
         <DropdownMenuSeparator className="mb-0 mt-1" />
 
         <DropdownMenuGroup className="bg-accent/40 py-1">
-          <DropdownMenuItem className="mx-1 cursor-pointer text-sm font-medium">
+          <DropdownMenuItem
+            onClick={logout}
+            className="mx-1 cursor-pointer text-sm font-medium"
+          >
             Log out
           </DropdownMenuItem>
         </DropdownMenuGroup>
