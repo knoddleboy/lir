@@ -59,7 +59,9 @@ export class AuthController {
     @User() user: UserType,
     @Res({ passthrough: true }) response: Response
   ) {
-    return this.authService.logout(user, response);
+    try {
+      return this.authService.logout(user, response);
+    } catch (error) {}
   }
 
   @Get("verify-email")

@@ -10,13 +10,13 @@ import { PrismaService } from "nestjs-prisma";
 import { BadRequestException, Injectable } from "@nestjs/common";
 
 import { HashingService } from "~/lib/services/hashing.service";
-import { MailService } from "~/mail/mail.service";
+import { MailBaseService } from "~/mail/mail-base.service";
 
 @Injectable()
 export class PasswordService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly mailService: MailService,
+    private readonly mailBaseService: MailBaseService,
     private readonly hashingService: HashingService
   ) {}
 
@@ -42,7 +42,7 @@ export class PasswordService {
       return response.status(201).json(AuthResponse.PasswordResetEmailSent);
     }
 
-    await this.mailService.sendMail({
+    await this.mailBaseService.sendMail({
       templateType: "forgot-password-email",
       payload: {
         user,

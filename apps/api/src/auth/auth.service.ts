@@ -5,7 +5,6 @@ import { UserProps } from "@lir/lib/schema";
 
 import type { User } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { randomBytes } from "crypto";
 import dayjs from "dayjs";
 import { Response } from "express";
 import { PrismaService } from "nestjs-prisma";
@@ -47,7 +46,7 @@ export class AuthService {
         },
       });
 
-      this.sendEmailVerification(user.name, user.email);
+      this.mailService.sendEmailVerification(user.name, user.email);
 
       return user;
     } catch (error) {
@@ -139,32 +138,6 @@ export class AuthService {
       return user;
     } catch (error) {
       throw new BadRequestException(ErrorResponseCode.InvalidCredentials);
-    }
-  }
-
-  private async sendEmailVerification(name: string, email: string) {
-    try {
-      const token = randomBytes(32).toString("hex");
-      const params = new URLSearchParams({ token });
-
-      await this.prismaService.verificationToken.create({
-        data: {
-          identifier: email,
-          token,
-          expiresAt: dayjs().add(1, "day").toDate(),
-        },
-      });
-
-      await this.mailService.sendMail({
-        templateType: "verify-email",
-        payload: {
-          user: { name, email },
-          verificationLink: `http://localhost:3001/api/auth/verify-email?${params.toString()}`,
-        },
-      });
-    } catch (error) {
-      Logger.error(error);
-      throw new InternalServerErrorException(error);
     }
   }
 }

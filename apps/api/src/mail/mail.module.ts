@@ -7,6 +7,7 @@ import { ConfigService } from "@nestjs/config";
 
 import { Config } from "~/config/schema";
 
+import { MailBaseService } from "./mail-base.service";
 import { MailService } from "./mail.service";
 
 @Module({
@@ -50,7 +51,7 @@ import { MailService } from "./mail.service";
       },
     }),
   ],
-  providers: [MailService],
-  exports: [MailService],
+  providers: [MailService, MailBaseService],
+  exports: [MailService, MailBaseService],
 })
 export class MailModule {}

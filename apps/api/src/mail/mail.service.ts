@@ -1,50 +1,41 @@
-import { ISendMailOptions, MailerService } from "@nestjs-modules/mailer";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { randomBytes } from "crypto";
+import dayjs from "dayjs";
+import { PrismaService } from "nestjs-prisma";
 
-import { MailTemplatePayload } from "./types";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+
+import { MailBaseService } from "./mail-base.service";
 
 @Injectable()
 export class MailService {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(
+    private readonly mailBaseService: MailBaseService,
+    private readonly prismaService: PrismaService
+  ) {}
 
-  private optionsFactory({
-    payload,
-    templateType,
-  }: MailTemplatePayload): ISendMailOptions {
-    const options = {
-      to: payload.user.email,
-    } as ISendMailOptions;
+  async sendEmailVerification(name: string, email: string) {
+    try {
+      const token = randomBytes(32).toString("hex");
+      const params = new URLSearchParams({ token });
 
-    switch (templateType) {
-      case "verify-email": {
-        options.subject = "Lir: Verify your account";
-        options.template = "./verify-email.hbs";
-        options.context = {
-          name: payload.user.name,
-          url: payload.verificationLink,
-        };
-        break;
-      }
+      await this.prismaService.verificationToken.create({
+        data: {
+          identifier: email,
+          token,
+          expiresAt: dayjs().add(1, "day").toDate(),
+        },
+      });
 
-      case "forgot-password-email": {
-        options.subject = "Lir: Password reset request";
-        options.template = "./forgot-password-email.hbs";
-        options.context = {
-          name: payload.user.name,
-          url: payload.resetPasswordLink,
-        };
-        break;
-      }
-
-      default:
-        throw new InternalServerErrorException(/** Invalid `templateType` */);
+      await this.mailBaseService.sendMail({
+        templateType: "verify-email",
+        payload: {
+          user: { name, email },
+          verificationLink: `http://localhost:3001/api/auth/verify-email?${params.toString()}`,
+        },
+      });
+    } catch (error) {
+      Logger.error(error);
+      throw new InternalServerErrorException(error);
     }
-
-    return options;
-  }
-
-  async sendMail(payload: MailTemplatePayload): Promise<void> {
-    const options = this.optionsFactory(payload);
-    await this.mailerService.sendMail(options);
   }
 }

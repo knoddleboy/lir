@@ -29,7 +29,7 @@ export class UserController {
 
   @Patch()
   async update(@User() user: UserType, @Body() data: UpdateUserDto) {
-    return this.userService.updateUserProfile(user, data);
+    return this.userService.updateUser(user, data);
   }
 
   @Post()

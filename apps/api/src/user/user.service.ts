@@ -1,34 +1,32 @@
 import { ErrorResponseCode } from "@lir/lib/error";
-import { UpdateUserInput } from "@lir/lib/schema";
+import { UpdateUserInput, UserProps } from "@lir/lib/schema";
 
 import { Prisma, User } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
 
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
 import { AvatarService } from "~/avatar/avatar.service";
 import { HashingService } from "~/lib/services/hashing.service";
+import { MailService } from "~/mail/mail.service";
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly hashingService: HashingService,
-    private readonly avatarService: AvatarService
+    private readonly avatarService: AvatarService,
+    private readonly mailService: MailService
   ) {}
 
-  async getUserInfo(id: string) {
+  async getUserInfo(id: string): Promise<UserProps> {
     return await this.prismaService.user.findUniqueOrThrow({
       where: { id },
       select: {
         id: true,
         name: true,
         email: true,
+        emailVerified: true,
         avatar: true,
         identityProvider: true,
         createdAt: true,
@@ -37,12 +35,13 @@ export class UserService {
     });
   }
 
-  async updateUserProfile(user: User, input: UpdateUserInput) {
+  async updateUser(user: User, input: UpdateUserInput): Promise<UserProps> {
     const data: Prisma.UserUpdateInput = { ...input };
 
     const emailChanged = input.email && input.email !== user.email;
     if (emailChanged) {
       data.emailVerified = null;
+      this.mailService.sendEmailVerification(input.name || user.name, input.email!);
     }
 
     if (input.avatar && input.avatar.startsWith("data:image/png;base64,")) {
@@ -55,13 +54,14 @@ export class UserService {
       data.avatar = null;
     }
 
-    const updatedUser = await this.prismaService.user.update({
+    const updatedUser: UserProps = await this.prismaService.user.update({
       where: { id: user.id },
       data,
       select: {
         id: true,
         name: true,
         email: true,
+        emailVerified: true,
         avatar: true,
         identityProvider: true,
         createdAt: true,
@@ -89,7 +89,7 @@ export class UserService {
       user.password
     );
     if (!passwordsMatch) {
-      throw new ForbiddenException(ErrorResponseCode.InvalidCredentials);
+      throw new BadRequestException(ErrorResponseCode.InvalidCredentials);
     }
 
     await this._deleteUser(id);

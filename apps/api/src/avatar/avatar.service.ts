@@ -1,5 +1,3 @@
-import { DEFAULT_AVATAR } from "@lir/lib";
-
 import { randomUUID as v4 } from "crypto";
 import { Response } from "express";
 import { PrismaService } from "nestjs-prisma";
@@ -27,12 +25,7 @@ export class AvatarService {
 
       response.end(buffer);
     } catch (error) {
-      response.writeHead(302, {
-        Location: DEFAULT_AVATAR,
-      });
-
-      response.end();
-      return;
+      return response.send({});
     }
   }
 
@@ -56,7 +49,9 @@ export class AvatarService {
   }
 
   async deleteAvatar(userId: string) {
-    await this.prismaService.avatar.delete({
+    // Using `deleteMany` as a replacement for a unimplemented yet `deleteIfExists`
+    // @see https://github.com/prisma/prisma/issues/4072
+    await this.prismaService.avatar.deleteMany({
       where: { userId },
     });
   }
