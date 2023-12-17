@@ -2,6 +2,7 @@ import { ErrorResponseCode } from "@lir/lib/error";
 import { UpdateUserInput, UserProps } from "@lir/lib/schema";
 
 import { Prisma, User } from "@prisma/client";
+import { Response } from "express";
 import { PrismaService } from "nestjs-prisma";
 
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
@@ -75,7 +76,7 @@ export class UserService {
     return { ...input, ...updatedUser };
   }
 
-  async deleteUser(id: string, password: string) {
+  async deleteUser(id: string, password: string, response: Response) {
     const user = await this.prismaService.user.findUnique({
       where: { id },
     });
@@ -92,10 +93,10 @@ export class UserService {
       throw new BadRequestException(ErrorResponseCode.InvalidCredentials);
     }
 
-    await this._deleteUser(id);
+    await this._deleteUser(id, response);
   }
 
-  async deleteUserWithoutPassword(id: string) {
+  async deleteUserWithoutPassword(id: string, response: Response) {
     const user = await this.prismaService.user.findUnique({
       where: { id },
       select: {
@@ -114,15 +115,20 @@ export class UserService {
       );
     }
 
-    await this._deleteUser(id);
+    await this._deleteUser(id, response);
   }
 
-  private async _deleteUser(userId: string) {
+  private async _deleteUser(userId: string, response: Response) {
     await Promise.all([
       this.prismaService.user.delete({
         where: { id: userId },
       }),
       this.avatarService.deleteAvatar(userId),
     ]);
+
+    response.clearCookie("Authorization");
+    response.clearCookie("Refresh");
+
+    response.status(200).send({});
   }
 }

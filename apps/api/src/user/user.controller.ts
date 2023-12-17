@@ -1,6 +1,7 @@
 import { DeleteUserDto, UpdateUserDto } from "@lir/lib/dto";
 
 import type { User as UserType } from "@prisma/client";
+import { Response } from "express";
 
 import {
   Body,
@@ -9,6 +10,7 @@ import {
   Get,
   Patch,
   Post,
+  Res,
   UseGuards,
 } from "@nestjs/common";
 
@@ -33,12 +35,16 @@ export class UserController {
   }
 
   @Post()
-  async delete(@User("id") id: string, @Body() { password }: DeleteUserDto) {
-    return this.userService.deleteUser(id, password);
+  async delete(
+    @User("id") id: string,
+    @Body() { password }: DeleteUserDto,
+    @Res() response: Response
+  ) {
+    await this.userService.deleteUser(id, password, response);
   }
 
   @Delete()
-  async deleteWithoutPassword(@User("id") id: string) {
-    return this.userService.deleteUserWithoutPassword(id);
+  async deleteWithoutPassword(@User("id") id: string, @Res() response: Response) {
+    return this.userService.deleteUserWithoutPassword(id, response);
   }
 }
