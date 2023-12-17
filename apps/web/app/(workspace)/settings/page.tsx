@@ -1,19 +1,36 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Button,
-  Icons,
-  Input,
-  Label,
-} from "@lir/ui";
+"use client";
 
+import { getInitials } from "@lir/lib";
+import { Avatar, AvatarFallback, AvatarImage, Button, Icons } from "@lir/ui";
+
+import { useEffect } from "react";
+
+import { useRouter } from "next/navigation";
+
+import { sessionModel } from "~/entities/session";
+import { ChangePasswordForm } from "~/features/auth/change-password";
+import { useLogout } from "~/features/auth/logout";
+import { DeleteAccount } from "~/features/settings/delete";
 import { EmailSetting } from "~/features/settings/email";
+import { NameSetting } from "~/features/settings/name";
 import { PasswordSetting } from "~/features/settings/password";
 import { Setting } from "~/features/settings/ui/setting";
 import { SettingTitle } from "~/features/settings/ui/setting-title";
 
 export default function SettingsPage() {
+  useEffect(() => {
+    sessionModel.sessionStore.persist.rehydrate();
+  }, []);
+
+  const user = sessionModel.useCurrentUser();
+  const router = useRouter();
+  const { mutateAsync: _logout } = useLogout();
+
+  const logout = async () => {
+    await _logout();
+    router.replace("/");
+  };
+
   return (
     <div className="flex h-full justify-center overflow-y-auto overflow-x-hidden px-2.5">
       <div className="w-full max-w-[calc(960px+2*8px)] space-y-14">
@@ -22,25 +39,30 @@ export default function SettingsPage() {
 
           <div className="flex items-center">
             <Avatar className="mr-5 h-16 w-16">
-              <AvatarImage src="" alt="" />
-              <AvatarFallback className="text-3xl">KN</AvatarFallback>
+              <AvatarImage src={user?.avatar || ""} />
+              <AvatarFallback className="text-3xl">
+                {getInitials(user?.name)}
+              </AvatarFallback>
             </Avatar>
-            <div className="w-56">
-              <Label className="mb-1.5 block text-xs" htmlFor="displayName">
-                Display name
-              </Label>
-              <Input id="displayName" type="text" className="h-8 px-2" />
-            </div>
+
+            <NameSetting user={user} />
           </div>
 
-          <EmailSetting />
-          <PasswordSetting />
+          <EmailSetting email={user?.email || ""} />
+
+          <PasswordSetting>
+            <ChangePasswordForm />
+          </PasswordSetting>
         </div>
 
         <div className="space-y-4 pb-4">
           <SettingTitle className="mx-2">Account management</SettingTitle>
 
-          <Button variant="control-ghost" className="h-fit w-full px-2 py-1">
+          <Button
+            variant="control-ghost"
+            className="h-fit w-full px-2 py-1"
+            onClick={logout}
+          >
             <Setting
               label="Log out"
               description="Tap here to log out."
@@ -52,17 +74,7 @@ export default function SettingsPage() {
             />
           </Button>
 
-          <Button variant="control-ghost" className="h-fit w-full px-2 py-1">
-            <Setting
-              label={<span className="text-destructive">Delete account</span>}
-              description="Permanently delete this account and all related data."
-              actionSuffix={
-                <div className="text-accent-foreground/60 absolute -right-2.5 h-7 w-7 p-1">
-                  <Icons.chevronRight className="w-full" />
-                </div>
-              }
-            />
-          </Button>
+          <DeleteAccount onDelete={logout} />
         </div>
       </div>
     </div>

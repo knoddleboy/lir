@@ -28,14 +28,12 @@ const createSessionSlice: StateCreator<
 
 export const sessionStore = createStore<SessionState>()(
   persist(
-    devtools(
-      (...a) => ({
-        ...createSessionSlice(...a),
-      }),
-      { name: "Session Store" }
-    ),
+    devtools((...a) => ({
+      ...createSessionSlice(...a),
+    })),
     {
       name: "session",
+      skipHydration: true,
     }
   )
 );

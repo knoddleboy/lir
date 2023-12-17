@@ -1,6 +1,8 @@
 import { cn } from "@lir/lib";
 import "@lir/ui/styles/globals.css";
 
+import { Toaster } from "sonner";
+
 import type { Metadata, Viewport } from "next";
 
 import { Providers } from "~/providers";
@@ -34,6 +36,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         )}
       >
         <Providers>{children}</Providers>
+        <Toaster duration={3000} />
       </body>
     </html>
   );

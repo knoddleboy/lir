@@ -1,9 +1,7 @@
-import type { z } from "zod";
+import { z } from "zod";
 
-import { userSchema } from "./user";
-
-export const deleteUserSchema = userSchema.required().pick({
-  password: true,
+export const deleteUserSchema = z.object({
+  password: z.string(),
 });
 
 export type DeleteUserInput = z.infer<typeof deleteUserSchema>;

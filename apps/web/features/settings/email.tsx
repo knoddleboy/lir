@@ -1,15 +1,14 @@
-import {
-  Button,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  EmailField,
-} from "@lir/ui";
+import { Button, DialogDescription, DialogHeader, DialogTitle } from "@lir/ui";
 
+import { ChangeEmailForm } from "./ui/change-email-form";
 import { Setting } from "./ui/setting";
 import { SettingDialog } from "./ui/setting-dialog";
 
-export const EmailSetting = () => (
+type Props = {
+  email: string;
+};
+
+export const EmailSetting = ({ email }: Props) => (
   <Setting
     label="Email"
     description="You can have only one account per email."
@@ -21,7 +20,7 @@ export const EmailSetting = () => (
             size="link"
             className="text-sm font-medium"
           >
-            test@test.com
+            {email}
           </Button>
         }
       >
@@ -32,12 +31,8 @@ export const EmailSetting = () => (
             verification link to this email, which you can use to log back in.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex items-center space-x-4">
-          <EmailField placeholder="" defaultValue="text@text.com" />
-          <Button variant="control" className="h-[30px] font-medium" size="link">
-            Send verification link
-          </Button>
-        </div>
+
+        <ChangeEmailForm currentEmail={email} />
       </SettingDialog>
     }
   />

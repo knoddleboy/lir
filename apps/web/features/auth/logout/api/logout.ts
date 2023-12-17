@@ -5,7 +5,7 @@ import { queryClient } from "~/shared/api/query-client";
 
 export const useLogout = () =>
   useMutation({
-    mutationKey: sessionApi.sessionKeys.mutation.signup(),
+    mutationKey: sessionApi.sessionKeys.mutation.logout(),
     mutationFn: sessionApi.logout,
     onSettled: () => {
       sessionModel.unsetUser();

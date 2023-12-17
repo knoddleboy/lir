@@ -45,7 +45,7 @@ export const SignupForm = () => {
   });
 
   const errorMessages: { [key: string]: string } = {
-    [ErrorResponseCode.InvalidCredentials]: "Invalid email or password",
+    [ErrorResponseCode.UserAlreadyExists]: "User with this email already exists.",
     [ErrorResponseCode.InternalServerError]:
       "Something went wrong. Please try again",
   };
@@ -58,7 +58,7 @@ export const SignupForm = () => {
       if (!res)
         setErrorMessage(errorMessages[ErrorResponseCode.InternalServerError]);
 
-      router.replace("/signup/verify-email");
+      router.push("/signup/verify-email");
     } catch (error) {
       if (error instanceof AxiosError) {
         setErrorMessage(errorMessages[error.response?.data.message]);

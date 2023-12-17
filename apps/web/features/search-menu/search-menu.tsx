@@ -131,7 +131,7 @@ const SearchDialog = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
         withCloseButton={false}
-        className="data-[state=closed]:slide-out-to-top-[0] data-[state=open]:slide-in-from-top-[0] top-[100px] flex h-auto max-h-[max(50vh,384px)] max-w-xl translate-y-0 flex-col gap-0 overflow-hidden !rounded-xl p-0 outline-none"
+        className="data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1 top-[min(15%,100px)] flex h-auto max-h-[max(50vh,384px)] max-w-xl translate-y-[0%] flex-col gap-0 overflow-hidden !rounded-xl p-0 outline-none"
       >
         <SearchBar />
         <Separator />

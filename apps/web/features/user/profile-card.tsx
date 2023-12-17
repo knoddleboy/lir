@@ -1,10 +1,13 @@
 "use client";
 
+import { getInitials } from "@lir/lib";
 import { Avatar, AvatarFallback, AvatarImage, Button, Icons } from "@lir/ui";
 
-import React, { useRef, useImperativeHandle } from "react";
+import React, { useRef, useImperativeHandle, useEffect } from "react";
 
 import { useSearchStore } from "~/entities/search/model/store";
+import { sessionModel } from "~/entities/session";
+import { useCurrentUser } from "~/entities/session/model/session-model";
 
 interface ProfileCardProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -12,6 +15,12 @@ export const ProfileCard = React.forwardRef<
   React.ElementRef<"div">,
   ProfileCardProps
 >((props, ref) => {
+  useEffect(() => {
+    sessionModel.sessionStore.persist.rehydrate();
+  }, []);
+
+  const user = useCurrentUser();
+
   const toggleSearchDialog = useSearchStore((state) => state.setOpen);
 
   const cardRef = useRef<HTMLDivElement>(null);
@@ -42,8 +51,10 @@ export const ProfileCard = React.forwardRef<
     >
       <div className="mr-2 shrink-0 grow-0">
         <Avatar className="h-8 w-8">
-          <AvatarImage src="" alt="" />
-          <AvatarFallback>KN</AvatarFallback>
+          <AvatarImage src={user?.avatar || ""} />
+          <AvatarFallback className="text-[15px]">
+            {getInitials(user?.name)}
+          </AvatarFallback>
         </Avatar>
       </div>
 
@@ -51,7 +62,7 @@ export const ProfileCard = React.forwardRef<
         <div className="flex items-center">
           <div className="mr-1 overflow-hidden">
             <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium">
-              Dmytro Knysh
+              {user?.name}
             </div>
           </div>
           <Icons.chevronDown

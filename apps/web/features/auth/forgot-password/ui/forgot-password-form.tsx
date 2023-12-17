@@ -21,7 +21,11 @@ import Link from "next/link";
 import { useForgotPassword } from "../api";
 
 export const FotgotPasswordForm = () => {
-  const { mutateAsync, isPending, isSuccess } = useForgotPassword();
+  const {
+    mutateAsync: sendVerification,
+    isPending,
+    isSuccess,
+  } = useForgotPassword();
 
   const form = useForm<ForgotPasswordInput>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -31,7 +35,7 @@ export const FotgotPasswordForm = () => {
   });
 
   const onSubmit = async (data: ForgotPasswordInput) => {
-    await mutateAsync(data);
+    await sendVerification(data);
   };
 
   const Success = () => (

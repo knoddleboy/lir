@@ -14,6 +14,8 @@ const buttonVariants = cva(
          hover:bg-primary/90 disabled:hover:bg-primary disabled:opacity-30`,
         control: `bg-primary/95 hover:bg-primary/80 active:bg-primary
          text-primary-foreground transition-none`,
+        "control-destructive": `bg-destructive/95 hover:bg-destructive/80 active:bg-destructive
+         text-destructive-foreground transition-none`,
         // destructive:
         //   "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         // outline:

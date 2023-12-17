@@ -1,10 +1,13 @@
 import { Button, DialogDescription, DialogHeader, DialogTitle } from "@lir/ui";
 
-import { ChangePasswordForm } from "../auth/change-password/change-password-form";
 import { Setting } from "./ui/setting";
 import { SettingDialog } from "./ui/setting-dialog";
 
-export const PasswordSetting = () => (
+type Props = {
+  children: React.ReactNode;
+};
+
+export const PasswordSetting = ({ children }: Props) => (
   <Setting
     label="Password"
     description="Remember to keep your password safe."
@@ -30,7 +33,7 @@ export const PasswordSetting = () => (
             below.
           </DialogDescription>
         </DialogHeader>
-        <ChangePasswordForm />
+        {children}
       </SettingDialog>
     }
   />

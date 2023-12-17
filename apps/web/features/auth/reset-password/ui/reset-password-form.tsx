@@ -20,12 +20,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+import { useRouter } from "next/navigation";
 
 import { useResetPassword } from "../api";
 
 export const ResetPasswordForm = ({ requestId }: { requestId: string }) => {
+  const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
   const { mutateAsync: resetPassword, isPending } = useResetPassword();
 
   const form = useForm<ResetPasswordInput>({
@@ -42,6 +45,8 @@ export const ResetPasswordForm = ({ requestId }: { requestId: string }) => {
   const errorMessages: { [key: string]: string } = {
     [ErrorResponseCode.InvalidOrExpiredPasswordResetRequest]:
       "The request is expired",
+    [ErrorResponseCode.NewPasswordMatchesOldPassword]:
+      "New password cannot be the same as your current password.",
     [ErrorResponseCode.InternalServerError]:
       "Something went wrong. Please try again",
   };
@@ -49,6 +54,12 @@ export const ResetPasswordForm = ({ requestId }: { requestId: string }) => {
   const onSubmit = async (data: ResetPasswordInput) => {
     try {
       await resetPassword(data);
+
+      toast.success(
+        "Password has been changed successfully. Now use you can use your new password to login."
+      );
+
+      router.push("/login");
     } catch (error) {
       if (error instanceof AxiosError) {
         setErrorMessage(errorMessages[error.response?.data.message]);
