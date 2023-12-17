@@ -29,6 +29,7 @@ export const ChangeEmailForm = ({ currentEmail }: Props) => {
       email: currentEmail,
     },
   });
+  const isDirty = form.formState.isDirty;
 
   const onSubmit = async (data: UpdateUserInput) => {
     try {
@@ -52,20 +53,22 @@ export const ChangeEmailForm = ({ currentEmail }: Props) => {
         onSubmit={form.handleSubmit(onSubmit)}
         noValidate
       >
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <EmailField defaultValue={currentEmail} {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        <div className="flex-1">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <EmailField defaultValue={currentEmail} {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
         <Button
           type="submit"
-          disabled={isPending}
+          disabled={!isDirty || isPending}
           variant="control"
           size="link"
           className="h-[30px] font-medium"

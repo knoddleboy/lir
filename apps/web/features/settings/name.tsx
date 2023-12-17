@@ -14,6 +14,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  Skeleton,
 } from "@lir/ui";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,6 +60,23 @@ export const NameSetting = ({ user }: { user: UserProps | null }) => {
     }
   }, [isValid]);
 
+  useEffect(() => {
+    if (user) {
+      form.reset({ name: user.name });
+    }
+  }, []);
+
+  if (!user) {
+    return (
+      <>
+        <div className="flex flex-col">
+          <Skeleton className="mb-1 h-4 w-20" />
+          <Skeleton className="h-8 w-56" />
+        </div>
+      </>
+    );
+  }
+
   return (
     <Form {...form}>
       <form
@@ -76,18 +94,15 @@ export const NameSetting = ({ user }: { user: UserProps | null }) => {
                 <FormControl>
                   <Input
                     type="text"
-                    className={cn(
-                      "h-8 px-2",
-                      isClient && !isValid && "border-destructive"
-                    )}
-                    defaultValue={user?.name}
+                    className={cn("h-8 px-2", !isValid && "border-destructive")}
+                    defaultValue={user.name}
                     {...form.register("name", {
                       onChange: (e) => {
                         const parsed = updateUserSchema.safeParse({
                           name: e.target.value,
                         });
 
-                        if (user && parsed.success) {
+                        if (parsed.success) {
                           sessionModel.setUser({
                             ...user,
                             name: parsed.data.name!,

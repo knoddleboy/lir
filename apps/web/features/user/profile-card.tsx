@@ -1,13 +1,14 @@
 "use client";
 
-import { getInitials } from "@lir/lib";
-import { Avatar, AvatarFallback, AvatarImage, Button, Icons } from "@lir/ui";
+import { Button, Icons, Skeleton } from "@lir/ui";
 
 import React, { useRef, useImperativeHandle, useEffect } from "react";
 
 import { useSearchStore } from "~/entities/search/model/store";
 import { sessionModel } from "~/entities/session";
 import { useCurrentUser } from "~/entities/session/model/session-model";
+
+import { Avatar } from "./avatar";
 
 interface ProfileCardProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -39,6 +40,15 @@ export const ProfileCard = React.forwardRef<
     cardRef.current.classList.add("hover:bg-control");
   };
 
+  if (!user) {
+    return (
+      <div className="m-1.5 flex h-10 w-[228px] items-center px-1.5 py-1">
+        <Avatar size="base" />
+        <Skeleton className="h-5 w-[188px]" />
+      </div>
+    );
+  }
+
   return (
     <div
       ref={cardRef}
@@ -49,20 +59,15 @@ export const ProfileCard = React.forwardRef<
       onPointerUp={unsetCardActive}
       className="_ring hover:bg-control m-1.5 flex cursor-pointer select-none items-center rounded-md px-1.5 py-1"
     >
-      <div className="mr-2 shrink-0 grow-0">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src={user?.avatar || ""} />
-          <AvatarFallback className="text-[15px]">
-            {getInitials(user?.name)}
-          </AvatarFallback>
-        </Avatar>
+      <div className="shrink-0 grow-0">
+        <Avatar avatarUrl={user.avatar} fallbackName={user.name} size="base" />
       </div>
 
       <div className="flex-1 overflow-hidden">
         <div className="flex items-center">
           <div className="mr-1 overflow-hidden">
             <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium">
-              {user?.name}
+              {user.name}
             </div>
           </div>
           <Icons.chevronDown

@@ -1,7 +1,6 @@
 "use client";
 
-import { getInitials } from "@lir/lib";
-import { Avatar, AvatarFallback, AvatarImage, Button, Icons } from "@lir/ui";
+import { Button, Icons } from "@lir/ui";
 
 import { useEffect } from "react";
 
@@ -16,6 +15,7 @@ import { NameSetting } from "~/features/settings/name";
 import { PasswordSetting } from "~/features/settings/password";
 import { Setting } from "~/features/settings/ui/setting";
 import { SettingTitle } from "~/features/settings/ui/setting-title";
+import { Avatar } from "~/features/user/avatar";
 
 export default function SettingsPage() {
   useEffect(() => {
@@ -38,17 +38,12 @@ export default function SettingsPage() {
           <SettingTitle className="mt-1">Profile</SettingTitle>
 
           <div className="flex items-center">
-            <Avatar className="mr-5 h-16 w-16">
-              <AvatarImage src={user?.avatar || ""} />
-              <AvatarFallback className="text-3xl">
-                {getInitials(user?.name)}
-              </AvatarFallback>
-            </Avatar>
+            <Avatar avatarUrl={user?.avatar} fallbackName={user?.name} size="lg" />
 
             <NameSetting user={user} />
           </div>
 
-          <EmailSetting email={user?.email || ""} />
+          <EmailSetting email={user?.email} />
 
           <PasswordSetting>
             <ChangePasswordForm />
@@ -74,7 +69,7 @@ export default function SettingsPage() {
             />
           </Button>
 
-          <DeleteAccount onDelete={logout} />
+          <DeleteAccount />
         </div>
       </div>
     </div>

@@ -5,6 +5,8 @@ import { cn } from "@lir/lib";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import * as React from "react";
 
+import { Skeleton } from "./skeleton";
+
 const Avatar = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>
@@ -35,16 +37,20 @@ AvatarImage.displayName = AvatarPrimitive.Image.displayName;
 const AvatarFallback = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Fallback>,
   React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Fallback
-    ref={ref}
-    className={cn(
-      "bg-accent-foreground/60 text-accent flex h-full w-full select-none items-center justify-center rounded-full",
-      className
-    )}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) =>
+  props.children ? (
+    <AvatarPrimitive.Fallback
+      ref={ref}
+      className={cn(
+        "bg-accent-foreground/60 text-accent flex h-full w-full select-none items-center justify-center rounded-full",
+        className
+      )}
+      {...props}
+    />
+  ) : (
+    <Skeleton className="h-full w-full" />
+  )
+);
 AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName;
 
 export { Avatar, AvatarImage, AvatarFallback };
