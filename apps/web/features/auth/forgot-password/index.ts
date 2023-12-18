@@ -1,1 +1,1 @@
-export { FotgotPasswordForm } from "./ui/forgot-password-form";
+export { FotgotPasswordForm } from "./forgot-password-form";

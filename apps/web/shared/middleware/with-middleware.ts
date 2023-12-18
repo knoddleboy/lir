@@ -11,7 +11,12 @@ export async function withMiddleware(
   let nextResponse: NextResponse | null = null;
 
   for (const { global, paths = [], handler } of middlewares) {
-    if (!global && !paths.filter((path) => pathname.startsWith(path)).length) {
+    const match = paths.some((path) => {
+      const regex = new RegExp(`^${path.replace(/:[^\s/]+/g, "([\\w-]+)")}$`);
+      return regex.test(pathname);
+    });
+
+    if (!global && !match) {
       continue;
     }
 

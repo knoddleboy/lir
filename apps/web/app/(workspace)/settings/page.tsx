@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 import { sessionModel } from "~/entities/session";
 import { useLogout } from "~/features/auth";
-import { ChangePasswordForm } from "~/features/auth/change-password";
+import { ChangePasswordForm } from "~/features/auth";
 import { DeleteAccount } from "~/features/settings/delete";
 import { EmailSetting } from "~/features/settings/email";
 import { NameSetting } from "~/features/settings/name";

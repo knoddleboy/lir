@@ -10,4 +10,6 @@ export {
 export { AuthMiddleware } from "./middlewares/auth-middleware";
 export { UnAuthMiddleware } from "./middlewares/unauth-middleware";
 
+export { ChangePasswordForm } from "./ui/form/change-password-form";
+
 export { isAuth } from "./utils/is-auth";
