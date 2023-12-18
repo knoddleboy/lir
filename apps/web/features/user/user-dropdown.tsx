@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { sessionModel } from "~/entities/session";
-import { ThemeSwitch } from "~/shared/theme-switch";
+import { ThemeSwitch } from "~/shared";
 
 import { useLogout } from "../auth/logout/api/logout";
 import { Avatar } from "./avatar";

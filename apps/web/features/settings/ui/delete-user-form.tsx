@@ -16,12 +16,14 @@ import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 
 import { useDeleteUser } from "../api";
 
 export const DeleteUserForm = () => {
   const router = useRouter();
+  const { setTheme } = useTheme();
 
   const { mutateAsync: deleteAccount, isPending } = useDeleteUser();
 
@@ -42,6 +44,8 @@ export const DeleteUserForm = () => {
       await deleteAccount({ ...data });
 
       toast.success("Account successfully deleted. See you!");
+
+      setTheme("system");
       router.replace("/");
     } catch (error) {
       if (error instanceof AxiosError) {
