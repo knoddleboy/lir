@@ -22,7 +22,6 @@ export const Nav = ({ classNames }: Props) => {
   }, []);
 
   const isAuth = sessionModel.useAuth();
-  console.log(isAuth);
 
   return (
     <nav className={cn(classNames)}>

@@ -6,3 +6,13 @@ export const useChangePassword = () =>
   useMutation({
     mutationFn: sessionApi.changePassword,
   });
+
+export const useForgotPassword = () =>
+  useMutation({
+    mutationFn: sessionApi.forgotPassword,
+  });
+
+export const useResetPassword = () =>
+  useMutation({
+    mutationFn: sessionApi.resetPassword,
+  });

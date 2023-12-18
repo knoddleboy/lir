@@ -5,7 +5,13 @@ import { type Middleware, Route } from "~/shared";
 
 export class UnAuthMiddleware implements Middleware {
   global = false;
-  paths = [Route.Login, Route.Signup, Route.ForgotPassword, Route.ResetPassword];
+  paths = [
+    Route.Login,
+    Route.Signup,
+    Route.VerifyEmail,
+    Route.ForgotPassword,
+    Route.ResetPassword,
+  ];
 
   handler(request: NextRequest) {
     const isAuthenticated = isAuth(request);

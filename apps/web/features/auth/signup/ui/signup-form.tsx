@@ -26,7 +26,7 @@ import { useForm } from "react-hook-form";
 
 import { useRouter } from "next/navigation";
 
-import { useSignup } from "../api/signup";
+import { useSignup } from "~/features/auth";
 
 export const SignupForm = () => {
   const router = useRouter();

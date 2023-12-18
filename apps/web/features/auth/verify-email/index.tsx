@@ -1,19 +1,9 @@
 "use client";
 
-import { redirect } from "next/navigation";
-
 import { sessionModel } from "~/entities/session";
 
 export const VerifyEmail = () => {
   const user = sessionModel.useCurrentUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  if (user.emailVerified) {
-    redirect("/last-edited-document");
-  }
 
   return (
     <>
@@ -26,7 +16,7 @@ export const VerifyEmail = () => {
           <h2 className="text-center text-3xl font-bold">Check your email</h2>
           <div className="mt-6 text-center">
             We&apos;ve just sent a link to
-            <div className="text-lg font-medium">{user.email}</div>
+            <div className="text-lg font-medium">{user?.email}</div>
             <div className="my-6">
               Follow the link in your email to finish signing in.
             </div>

@@ -19,7 +19,7 @@ import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { useChangePassword } from "../api";
+import { useChangePassword } from "~/features/auth";
 
 export const ChangePasswordForm = () => {
   const { mutateAsync: changePassword, isPending } = useChangePassword();

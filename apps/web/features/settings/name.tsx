@@ -48,7 +48,7 @@ export const NameSetting = ({ user }: { user: UserProps | null }) => {
 
       form.reset({}, { keepValues: true });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

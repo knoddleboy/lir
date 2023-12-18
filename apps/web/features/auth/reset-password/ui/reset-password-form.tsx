@@ -24,7 +24,7 @@ import { toast } from "sonner";
 
 import { useRouter } from "next/navigation";
 
-import { useResetPassword } from "../api";
+import { useResetPassword } from "~/features/auth";
 
 export const ResetPasswordForm = ({ requestId }: { requestId: string }) => {
   const router = useRouter();

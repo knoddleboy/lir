@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 
 import Link from "next/link";
 
-import { useForgotPassword } from "../api";
+import { useForgotPassword } from "~/features/auth";
 
 export const FotgotPasswordForm = () => {
   const {

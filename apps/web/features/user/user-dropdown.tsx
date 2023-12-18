@@ -14,9 +14,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { sessionModel } from "~/entities/session";
+import { useLogout } from "~/features/auth";
 import { ThemeSwitch } from "~/shared";
 
-import { useLogout } from "../auth/logout/api/logout";
 import { Avatar } from "./avatar";
 import { ProfileCard } from "./profile-card";
 

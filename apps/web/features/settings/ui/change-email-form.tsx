@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 import { useRouter } from "next/navigation";
 
-import { useLogout } from "~/features/auth/logout";
+import { useLogout } from "~/features/auth";
 
 import { useUpdateUser } from "../api";
 
