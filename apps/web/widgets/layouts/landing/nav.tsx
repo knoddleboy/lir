@@ -45,7 +45,7 @@ export const Nav = ({ classNames }: Props) => {
             ) : (
               <li>
                 <Button variant="ghost" size="link" text="base" asChild>
-                  <Link href="/last-edited-document">
+                  <Link href="/d">
                     Go to web app <Icons.arrowRight className="ml-1" size={16} />
                   </Link>
                 </Button>

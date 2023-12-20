@@ -74,3 +74,31 @@ model PasswordResetRequest {
 
   @@map(name: "password_reset_request")
 }
+
+model Document {
+  id        String   @id @default(cuid())
+  title     String?
+  ownerId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("documents")
+}
+
+// enum RecordType {
+//   document
+// }
+
+// model Record {
+//   id        String     @id @default(cuid())
+//   type      RecordType
+//   title     String
+//   ownerId   String
+//   parentId  String?
+//   parent    Record?    @relation("record", fields: [parentId], references: [id])
+//   content   Record[]   @relation("record")
+//   createdAt DateTime   @default(now())
+//   updatedAt DateTime   @updatedAt
+
+//   @@map("records")
+// }

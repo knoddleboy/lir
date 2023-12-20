@@ -10,6 +10,7 @@ import { PrismaModule } from "~/prisma/prisma.module";
 import { UserModule } from "~/user/user.module";
 
 import { AvatarModule } from "./avatar/avatar.module";
+import { DocumentModule } from "./document/document.module";
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AvatarModule } from "./avatar/avatar.module";
     UserModule,
     MailModule,
     AvatarModule,
+    DocumentModule,
   ],
   providers: [
     {

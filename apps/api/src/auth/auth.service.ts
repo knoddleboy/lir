@@ -46,6 +46,13 @@ export class AuthService {
         },
       });
 
+      this.prismaService.document.create({
+        data: {
+          title: "Untitled",
+          ownerId: user.id,
+        },
+      });
+
       this.mailService.sendEmailVerification(user.name, user.email);
 
       return user;
@@ -96,7 +103,7 @@ export class AuthService {
       },
     });
 
-    return response.status(200).redirect(`${WEBAPP_URL}/last-edited-document`);
+    return response.status(200).redirect(`${WEBAPP_URL}/d`);
   }
 
   async handleAuthResponse(user: User, response: Response<UserProps>) {

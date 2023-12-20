@@ -55,7 +55,7 @@ export const LoginForm = () => {
       if (!res)
         setErrorMessage(errorMessages[ErrorResponseCode.InternalServerError]);
 
-      router.push("/last-edited-document");
+      router.push("/d");
     } catch (error) {
       if (error instanceof AxiosError) {
         setErrorMessage(errorMessages[error.response?.data.message]);

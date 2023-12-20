@@ -6,10 +6,10 @@ type Props = {
 
 export function generateMetadata({ params }: Props): Metadata {
   return {
-    title: params.documentId,
+    title: params.documentId.split("-").slice(0, -1).join("-"),
   };
 }
 
 export default function WorkspacePage({ params: { documentId } }: Props) {
-  return <div></div>;
+  return <div>{documentId}</div>;
 }

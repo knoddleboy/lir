@@ -1,12 +1,11 @@
 "use client";
 
-import { Icons } from "@lir/ui";
-
 import React, { useRef, useEffect } from "react";
 import type { ElementRef } from "react";
 
 import { SearchMenu } from "~/features/search-menu/search-menu";
-import { Navigation, NavigationItem } from "~/features/sidebar/navigation";
+import { Documents } from "~/features/sidebar/documents";
+import { Navigation } from "~/features/sidebar/navigation";
 import { useSidebarStore } from "~/features/sidebar/store";
 import { UserDropdown } from "~/features/user/user-dropdown";
 
@@ -187,24 +186,6 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
     </nav>
   );
 };
-
-const Documents = () => (
-  <nav className="flex-1">
-    <NavigationItem item={{ name: "", icon: <Icons.document /> }} />
-    <NavigationItem
-      item={{
-        name: "New document",
-        icon: (
-          <Icons.plus
-            size={16}
-            strokeWidth={3}
-            className="text-accent-foreground/60 group-active:text-accent-foreground/90"
-          />
-        ),
-      }}
-    />
-  </nav>
-);
 
 export const Sidebar = () => {
   return (
