@@ -4,11 +4,11 @@ import { cn } from "@lir/lib";
 import { Button, Icons, Skeleton } from "@lir/ui";
 
 import { useEffect } from "react";
+import { useIsClient } from "usehooks-ts";
 
 import Link from "next/link";
 
 import { sessionModel } from "~/entities/session";
-import { useIsClient } from "~/shared/lib/use-is-client";
 
 type Props = {
   classNames?: string;

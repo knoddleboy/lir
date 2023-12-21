@@ -1,9 +1,8 @@
 export { apiClient } from "./api/api-client";
 export { queryClient } from "./api/query-client";
 
-export { useIsClient } from "./lib/use-is-client";
-export { extractURIHash } from "./lib/extract-uri-hash";
 export { Lir_encodeURIComponent } from "./lib/encode-uri-component";
+export { extractURIHash } from "./lib/extract-uri-hash";
 export { generateDocumentURL } from "./lib/generate-document-url";
 
 export type { Middleware } from "./middleware/middleware";

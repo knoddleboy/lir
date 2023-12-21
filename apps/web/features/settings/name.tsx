@@ -21,9 +21,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useIsClient } from "usehooks-ts";
 
 import { sessionModel } from "~/entities/session";
-import { useIsClient } from "~/shared/lib/use-is-client";
 
 import { useUpdateUser } from "./api";
 
