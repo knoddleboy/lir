@@ -6,8 +6,7 @@ import { type Middleware, Route } from "~/shared";
 export class AuthMiddleware implements Middleware {
   global = false;
 
-  // TODO: workaround for workspace "/:documentId"
-  paths = [Route.Settings];
+  paths = [Route.Documents, Route.Settings];
 
   handler(request: NextRequest) {
     const isAuthenticated = isAuth(request);

@@ -1,6 +1,6 @@
 export const Route = {
   Home: "/",
-  App: "/:documentId",
+  Documents: "/d/:documentId",
   Settings: "/settings",
   Signup: "/signup",
   VerifyEmail: "/signup/verify-email",

@@ -1,4 +1,4 @@
-import { CreateDocumentInput } from "@lir/lib/schema";
+import { CreateDocumentInput, UpdateDocumentInput } from "@lir/lib/schema";
 
 import { PrismaService } from "nestjs-prisma";
 
@@ -21,6 +21,13 @@ export class DocumentService {
         ...input,
         ownerId: userId,
       },
+    });
+  }
+
+  async updateDocument(input: UpdateDocumentInput) {
+    return await this.prismaService.document.update({
+      where: { id: input.id },
+      data: { title: input.title },
     });
   }
 }

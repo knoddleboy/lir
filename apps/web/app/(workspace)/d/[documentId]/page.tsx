@@ -1,15 +1,22 @@
-import type { Metadata } from "next";
+"use client";
+
+import { APP_NAME } from "@lir/lib";
+
+import { useDocumentTitle } from "usehooks-ts";
+
+import { documentModel } from "~/entities/document";
+import { extractURIHash } from "~/shared";
 
 type Props = {
-  params: { documentId: string };
+  params: {
+    documentId: string;
+  };
 };
 
-export function generateMetadata({ params }: Props): Metadata {
-  return {
-    title: params.documentId.split("-").slice(0, -1).join("-"),
-  };
-}
-
 export default function WorkspacePage({ params: { documentId } }: Props) {
-  return <div>{documentId}</div>;
+  const document = documentModel.useDocument(extractURIHash(documentId)!);
+
+  useDocumentTitle(document ? document.title ?? "Untitled" : APP_NAME);
+
+  return <div></div>;
 }

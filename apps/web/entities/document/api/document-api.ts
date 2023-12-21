@@ -1,5 +1,9 @@
-import type { CreateDocumentDto } from "@lir/lib/dto";
-import type { CreateDocumentInput, DocumentProps } from "@lir/lib/schema";
+import type { CreateDocumentDto, UpdateDocumentDto } from "@lir/lib/dto";
+import type {
+  CreateDocumentInput,
+  DocumentProps,
+  UpdateDocumentInput,
+} from "@lir/lib/schema";
 
 import type { AxiosResponse } from "axios";
 
@@ -16,6 +20,7 @@ export const documentKeys = {
 
   mutation: {
     createDocument: () => [...documentKeys.document.root, "createDocument"],
+    updateDocument: () => [...documentKeys.document.root, "updateDocument"],
   },
 };
 
@@ -33,6 +38,16 @@ export const createDocument = async (data: CreateDocumentInput) => {
     DocumentProps,
     AxiosResponse<DocumentProps>,
     CreateDocumentDto
+  >("/documents", data);
+
+  return response.data;
+};
+
+export const updateDocument = async (data: UpdateDocumentInput) => {
+  const response = await apiClient.patch<
+    DocumentProps,
+    AxiosResponse<DocumentProps>,
+    UpdateDocumentDto
   >("/documents", data);
 
   return response.data;
