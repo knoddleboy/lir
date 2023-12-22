@@ -60,7 +60,7 @@ export const ChangeEmailForm = ({ currentEmail }: Props) => {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <EmailField defaultValue={currentEmail} {...field} />
+                  <EmailField {...field} />
                 </FormControl>
               </FormItem>
             )}

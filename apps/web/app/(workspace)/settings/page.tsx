@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Icons } from "@lir/ui";
+import { Button, Icons, Spinner } from "@lir/ui";
 
 import { useEffect } from "react";
 
@@ -30,6 +30,14 @@ export default function SettingsPage() {
     await _logout();
     router.replace("/");
   };
+
+  if (!user) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full justify-center overflow-y-auto overflow-x-hidden px-2.5">

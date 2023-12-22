@@ -9,6 +9,7 @@ import {
   LucideChevronUp,
   LucideCircle,
   LucideDownload,
+  LucideLoader2,
   LucideMenu,
   LucideMoon,
   LucidePlus,
@@ -101,4 +102,5 @@ export const Icons = {
   sun: LucideSun,
   moon: LucideMoon,
   xCircle: LucideXCircle,
+  spinner: LucideLoader2,
 } as const;

@@ -29,3 +29,5 @@ export { PasswordField, EmailField } from "./components/inputs/fields";
 
 export { Separator } from "./components/ui/separator";
 export { Skeleton } from "./components/ui/skeleton";
+
+export { Spinner } from "./components/ui/spinner";

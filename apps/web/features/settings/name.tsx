@@ -14,31 +14,30 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  Skeleton,
 } from "@lir/ui";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useIsClient } from "usehooks-ts";
 
 import { sessionModel } from "~/entities/session";
 
 import { useUpdateUser } from "./api";
 
-export const NameSetting = ({ user }: { user: UserProps | null }) => {
-  const isClient = useIsClient();
-
+export const NameSetting = ({ user }: { user: UserProps }) => {
   const { mutateAsync: updateUser } = useUpdateUser();
 
   const form = useForm<UpdateUserInput>({
     resolver: zodResolver(updateUserSchema),
-    defaultValues: { name: user?.name },
+    defaultValues: { name: user.name },
     mode: "onChange",
   });
-  const isDirty = form.formState.isDirty;
-  const isValid = form.formState.isValid;
+  // Do not use `isDirty` directly here because the submission does not
+  // trigger the reset, and as a result, the update button does not disappear.
+  // @see https://github.com/react-hook-form/react-hook-form/issues/4740
+  const isDirty = form.formState.dirtyFields.name;
+  const errorMessage = form.formState.errors.name?.message;
 
   const onSubmit = async () => {
     try {
@@ -46,6 +45,7 @@ export const NameSetting = ({ user }: { user: UserProps | null }) => {
         name: form.getValues().name,
       });
 
+      // Hide the update button
       form.reset({}, { keepValues: true });
     } catch (error) {
       console.error(error);
@@ -53,29 +53,12 @@ export const NameSetting = ({ user }: { user: UserProps | null }) => {
   };
 
   useEffect(() => {
-    if (!isValid && isClient) {
-      toast.error(form.formState.errors.name?.message);
+    if (errorMessage) {
+      toast.error(errorMessage);
     } else {
       toast.dismiss();
     }
-  }, [isValid]);
-
-  useEffect(() => {
-    if (user) {
-      form.reset({ name: user.name });
-    }
-  }, []);
-
-  if (!user) {
-    return (
-      <>
-        <div className="flex flex-col">
-          <Skeleton className="mb-1 h-4 w-20" />
-          <Skeleton className="h-8 w-56" />
-        </div>
-      </>
-    );
-  }
+  }, [errorMessage]);
 
   return (
     <Form {...form}>
@@ -94,8 +77,7 @@ export const NameSetting = ({ user }: { user: UserProps | null }) => {
                 <FormControl>
                   <Input
                     type="text"
-                    className={cn("h-8 px-2", !isValid && "border-destructive")}
-                    defaultValue={user.name}
+                    className={cn("h-8 px-2", errorMessage && "border-destructive")}
                     {...form.register("name", {
                       onChange: (e) => {
                         const parsed = updateUserSchema.safeParse({
@@ -117,7 +99,7 @@ export const NameSetting = ({ user }: { user: UserProps | null }) => {
             )}
           />
         </div>
-        {isDirty && isValid && (
+        {isDirty && !errorMessage && (
           <Button type="submit" className="h-8 px-2" variant="control-ghost">
             Update
           </Button>
