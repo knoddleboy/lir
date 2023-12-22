@@ -7,11 +7,12 @@ import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useOnClickOutside } from "usehooks-ts";
 
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { documentApi, documentModel } from "~/entities/document";
-import { generateDocumentURL } from "~/shared";
+import { LinkOr, generateDocumentURL } from "~/shared";
+
+import { NavigationItemMenu } from "./navigation-item-menu";
 
 export type NavigationItemType = {
   id?: string;
@@ -24,10 +25,15 @@ export type NavigationItemType = {
 
 type Props = {
   item: NavigationItemType;
+  withMenu?: boolean;
   contentEditable?: boolean;
 };
 
-export const NavigationItem = ({ item, contentEditable = false }: Props) => {
+export const NavigationItem = ({
+  item,
+  withMenu = false,
+  contentEditable = false,
+}: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const current = item.isCurrent?.({ pathname }) ?? false;
@@ -38,6 +44,9 @@ export const NavigationItem = ({ item, contentEditable = false }: Props) => {
     mutationKey: documentApi.documentKeys.mutation.updateDocument(),
     mutationFn: documentApi.updateDocument,
   });
+
+  const itemRef = useRef<HTMLAnchorElement & HTMLDivElement>(null);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -76,19 +85,27 @@ export const NavigationItem = ({ item, contentEditable = false }: Props) => {
     setIsEditing(true);
   };
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <div className="mx-1.5 my-0.5">
+    <div
+      className="relative mx-1.5 my-0.5 flex items-center"
+      onMouseEnter={() => setMenuVisible(true)}
+      onMouseLeave={() => setMenuVisible(false)}
+    >
       <LinkOr
+        ref={itemRef}
         role="button"
         tabIndex={0}
         href={item.href}
         onClick={item.onClick}
         onDoubleClick={handleDoubleClick}
         className={cn(
-          `_ring text-accent-foreground/75 group flex h-7 cursor-pointer select-none items-center rounded-md py-1 pl-3.5 pr-1.5 font-medium`,
+          `_ring text-accent-foreground/75 group flex h-7 flex-1 cursor-pointer select-none items-center rounded-md py-1 pl-3.5 pr-1.5 font-medium`,
           current && "bg-control",
           !isEditing &&
             "hover:bg-control active:text-accent-foreground active:bg-control-foreground",
+          !isEditing && "hover:bg-control",
           isEditing && "bg-control-foreground"
         )}
       >
@@ -117,29 +134,26 @@ export const NavigationItem = ({ item, contentEditable = false }: Props) => {
                   await handleUpdate();
                 }
               }}
-              className="bg-accent placeholder:text-accent-foreground/20 text-accent-foreground/75 w-full border outline-none"
+              className="bg-accent placeholder:text-accent-foreground/20 text-accent-foreground/75 w-full outline-none"
               autoFocus
+              autoCapitalize="off"
+              autoComplete="off"
+              spellCheck={false}
             />
           ) : (
             item.name ?? "Untitled Document"
           )}
         </div>
       </LinkOr>
+      {!isEditing && withMenu && (menuVisible || menuOpen) && (
+        <div className="absolute right-1.5 h-5 w-5">
+          <NavigationItemMenu
+            itemId={item.id!}
+            open={menuOpen}
+            setOpen={setMenuOpen}
+          />
+        </div>
+      )}
     </div>
-  );
-};
-
-type LinkOrProps = {
-  href?: string;
-  children: React.ReactNode;
-} & Record<string, unknown>;
-
-const LinkOr = ({ href, children, ...passThrough }: LinkOrProps) => {
-  return href ? (
-    <Link href={href} {...passThrough}>
-      {children}
-    </Link>
-  ) : (
-    <div {...passThrough}>{children}</div>
   );
 };

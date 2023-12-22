@@ -23,6 +23,7 @@ model User {
   avatar           String?
   accounts         Account?
   identityProvider IdentityProvider @default(EMAIL)
+  documents        Document[]
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
@@ -78,6 +79,7 @@ model PasswordResetRequest {
 model Document {
   id        String   @id @default(cuid())
   title     String?
+  owner     User     @relation(fields: [ownerId], references: [id])
   ownerId   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

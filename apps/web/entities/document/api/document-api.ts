@@ -1,8 +1,13 @@
-import type { CreateDocumentDto, UpdateDocumentDto } from "@lir/lib/dto";
 import type {
-  CreateDocumentInput,
+  CreateDocumentDto,
+  UpdateDocumentDto,
+  DeleteDocumentDto,
+} from "@lir/lib/dto";
+import type {
   DocumentProps,
+  CreateDocumentInput,
   UpdateDocumentInput,
+  DeleteDocumentInput,
 } from "@lir/lib/schema";
 
 import type { AxiosResponse } from "axios";
@@ -38,7 +43,7 @@ export const createDocument = async (data: CreateDocumentInput) => {
     DocumentProps,
     AxiosResponse<DocumentProps>,
     CreateDocumentDto
-  >("/documents", data);
+  >("/documents/createUserDocument", data);
 
   return response.data;
 };
@@ -48,7 +53,17 @@ export const updateDocument = async (data: UpdateDocumentInput) => {
     DocumentProps,
     AxiosResponse<DocumentProps>,
     UpdateDocumentDto
-  >("/documents", data);
+  >("/documents/updateUserDocument", data);
+
+  return response.data;
+};
+
+export const deleteDocument = async (data: DeleteDocumentInput) => {
+  const response = await apiClient.post<
+    DocumentProps,
+    AxiosResponse<DocumentProps>,
+    DeleteDocumentDto
+  >("/documents/deleteUserDocument", data);
 
   return response.data;
 };

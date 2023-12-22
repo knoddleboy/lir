@@ -1,4 +1,8 @@
-import { type DocumentProps, type UpdateDocumentInput } from "@lir/lib/schema";
+import type {
+  DocumentProps,
+  UpdateDocumentInput,
+  DeleteDocumentInput,
+} from "@lir/lib/schema";
 
 import { create, useStore, type StateCreator } from "zustand";
 
@@ -6,6 +10,7 @@ type DocumentState = {
   documents: DocumentProps[];
   setDocument: (updateInput: UpdateDocumentInput) => void;
   setDocuments: (documents: DocumentProps[]) => void;
+  unsetDocument: (deleteInput: DeleteDocumentInput) => void;
 };
 
 const createDocumentSlice: StateCreator<DocumentState, [], [], DocumentState> = (
@@ -32,6 +37,12 @@ const createDocumentSlice: StateCreator<DocumentState, [], [], DocumentState> = 
       documents: [...state.documents, ...documents],
     }));
   },
+
+  unsetDocument: ({ id }) => {
+    set((state) => ({
+      documents: state.documents.filter((document) => document.id !== id),
+    }));
+  },
 });
 
 export const documentStore = create<DocumentState>((...a) => ({
@@ -49,3 +60,6 @@ export const setDocument = (updateInput: UpdateDocumentInput) =>
 
 export const setDocuments = (documents: DocumentProps[]) =>
   documentStore.getState().setDocuments(documents);
+
+export const unsetDocument = (deleteInput: DeleteDocumentInput) =>
+  documentStore.getState().unsetDocument(deleteInput);

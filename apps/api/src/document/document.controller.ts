@@ -1,4 +1,8 @@
-import { CreateDocumentDto, UpdateDocumentDto } from "@lir/lib/dto";
+import {
+  CreateDocumentDto,
+  UpdateDocumentDto,
+  DeleteDocumentDto,
+} from "@lir/lib/dto";
 
 import { Body, Controller, Get, Patch, Post, UseGuards } from "@nestjs/common";
 
@@ -17,13 +21,18 @@ export class DocumentController {
     return this.documentService.getUserDocuments(id);
   }
 
-  @Post()
+  @Post("createUserDocument")
   async createRecord(@User("id") id: string, @Body() data: CreateDocumentDto) {
     return this.documentService.createDocument(id, data);
   }
 
-  @Patch()
+  @Patch("updateUserDocument")
   async updateDocument(@Body() data: UpdateDocumentDto) {
     return this.documentService.updateDocument(data);
+  }
+
+  @Post("deleteUserDocument")
+  async deleteDocument(@Body() data: DeleteDocumentDto) {
+    return this.documentService.deleteDocument(data);
   }
 }

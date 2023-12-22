@@ -16,6 +16,7 @@ import {
   LucideSettings,
   LucideSun,
   LucideXCircle,
+  MoreHorizontal,
 } from "lucide-react";
 import type { LucideIcon, LucideProps } from "lucide-react";
 
@@ -103,4 +104,5 @@ export const Icons = {
   moon: LucideMoon,
   xCircle: LucideXCircle,
   spinner: LucideLoader2,
+  more: MoreHorizontal,
 } as const;

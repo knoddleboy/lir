@@ -57,6 +57,7 @@ export const ProfileCard = React.forwardRef<
       tabIndex={0}
       onPointerDown={setCardActive}
       onPointerUp={unsetCardActive}
+      onPointerLeave={unsetCardActive}
       className="_ring hover:bg-control m-1.5 flex cursor-pointer select-none items-center rounded-md px-1.5 py-1"
     >
       <div className="shrink-0 grow-0">

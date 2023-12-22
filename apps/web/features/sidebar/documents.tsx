@@ -67,6 +67,7 @@ export const Documents = () => {
             icon: <Icons.document />,
             isCurrent: ({ pathname }) => pathname.startsWith(documentUrl) ?? false,
           }}
+          withMenu
           contentEditable
         />
       );
@@ -74,7 +75,7 @@ export const Documents = () => {
   };
 
   return (
-    <nav className="h-full flex-1 overflow-y-auto overflow-x-hidden pb-4">
+    <nav className="h-full flex-1 overflow-y-auto overflow-x-hidden pb-4 pt-px">
       <DocumentList />
       <NavigationItem
         item={{

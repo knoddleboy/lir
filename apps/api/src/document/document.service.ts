@@ -1,4 +1,8 @@
-import { CreateDocumentInput, UpdateDocumentInput } from "@lir/lib/schema";
+import {
+  CreateDocumentInput,
+  DeleteDocumentInput,
+  UpdateDocumentInput,
+} from "@lir/lib/schema";
 
 import { PrismaService } from "nestjs-prisma";
 
@@ -19,7 +23,7 @@ export class DocumentService {
     return await this.prismaService.document.create({
       data: {
         ...input,
-        ownerId: userId,
+        owner: { connect: { id: userId } },
       },
     });
   }
@@ -28,6 +32,12 @@ export class DocumentService {
     return await this.prismaService.document.update({
       where: { id: input.id },
       data: { title: input.title },
+    });
+  }
+
+  async deleteDocument(input: DeleteDocumentInput) {
+    return await this.prismaService.document.delete({
+      where: { id: input.id },
     });
   }
 }
