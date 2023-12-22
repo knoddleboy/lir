@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 
+import { sessionApi } from "~/entities/session";
 import { isAuth } from "~/features/auth";
 import { type Middleware, Route } from "~/shared";
 
@@ -11,6 +12,13 @@ export class AuthMiddleware implements Middleware {
   handler(request: NextRequest) {
     const isAuthenticated = isAuth(request);
     const redirectUrl = new URL(Route.Login, request.url);
-    if (!isAuthenticated) return NextResponse.redirect(redirectUrl);
+
+    if (!isAuthenticated) {
+      try {
+        sessionApi.handleRefresh();
+      } catch (error) {
+        return NextResponse.redirect(redirectUrl);
+      }
+    }
   }
 }

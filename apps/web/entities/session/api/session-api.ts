@@ -32,7 +32,7 @@ export const sessionKeys = {
 
 // SESSION
 
-const handleRefresh = async () => {
+export const handleRefresh = async () => {
   try {
     await apiClient.post("/auth/refresh");
     return Promise.resolve();
@@ -41,7 +41,7 @@ const handleRefresh = async () => {
   }
 };
 
-const handleInvalidateRefresh = async () => {
+export const handleInvalidateRefresh = async () => {
   try {
     queryClient.removeQueries({
       queryKey: sessionKeys.session.currentUser(),
