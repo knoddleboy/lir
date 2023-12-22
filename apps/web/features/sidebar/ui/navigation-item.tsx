@@ -24,9 +24,10 @@ export type NavigationItemType = {
 
 type Props = {
   item: NavigationItemType;
+  contentEditable?: boolean;
 };
 
-export const NavigationItem = ({ item }: Props) => {
+export const NavigationItem = ({ item, contentEditable = false }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const current = item.isCurrent?.({ pathname }) ?? false;
@@ -71,6 +72,7 @@ export const NavigationItem = ({ item }: Props) => {
   };
 
   const handleDoubleClick = () => {
+    if (!contentEditable) return;
     setIsEditing(true);
   };
 

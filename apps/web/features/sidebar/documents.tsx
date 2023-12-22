@@ -67,6 +67,7 @@ export const Documents = () => {
             icon: <Icons.document />,
             isCurrent: ({ pathname }) => pathname.startsWith(documentUrl) ?? false,
           }}
+          contentEditable
         />
       );
     });
