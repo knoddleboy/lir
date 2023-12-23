@@ -1,9 +1,9 @@
-import { getInitials } from "@lir/lib";
+import { cn, getInitials } from "@lir/lib";
 import { Avatar as UIAvatar, AvatarFallback, AvatarImage } from "@lir/ui";
 
 import { cva, type VariantProps } from "class-variance-authority";
 
-const avatarVariants = cva("", {
+export const avatarVariants = cva("", {
   variants: {
     size: {
       base: "mr-2 h-8 w-8",
@@ -30,12 +30,15 @@ const avatarVariants = cva("", {
 interface Props extends VariantProps<typeof avatarVariants> {
   avatarUrl?: string | null;
   fallbackName?: string;
+  className?: string;
 }
 
-export const Avatar = ({ avatarUrl, fallbackName, size }: Props) => (
-  <UIAvatar className={avatarVariants({ size, fallbackSize: null })}>
+export const Avatar = ({ avatarUrl, fallbackName, size, className }: Props) => (
+  <UIAvatar className={cn(avatarVariants({ size, fallbackSize: null }), className)}>
     <AvatarImage src={avatarUrl || ""} />
-    <AvatarFallback className={avatarVariants({ fallbackSize: size, size: null })}>
+    <AvatarFallback
+      className={cn(avatarVariants({ fallbackSize: size, size: null }))}
+    >
       {getInitials(fallbackName)}
     </AvatarFallback>
   </UIAvatar>

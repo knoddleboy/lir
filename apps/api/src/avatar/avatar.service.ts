@@ -4,6 +4,8 @@ import { PrismaService } from "nestjs-prisma";
 
 import { Injectable } from "@nestjs/common";
 
+import { cropImage } from "~/lib/crop-image";
+
 @Injectable()
 export class AvatarService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -11,7 +13,7 @@ export class AvatarService {
   async getAvatar(avatarId: string, response: Response) {
     try {
       const { data } = await this.prismaService.avatar.findUniqueOrThrow({
-        where: { avatarId },
+        where: { avatarId: avatarId.replace(".png", "") },
         select: { data: true },
       });
 
@@ -29,8 +31,12 @@ export class AvatarService {
     }
   }
 
-  async uploadAvatar(userId: string, data: string) {
+  async uploadAvatar(userId: string, input: string) {
     const avatarId = v4();
+
+    const data = await cropImage(input);
+
+    if (!data) return;
 
     await this.prismaService.avatar.upsert({
       where: { userId },

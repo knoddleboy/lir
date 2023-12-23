@@ -37,7 +37,7 @@ export class UserService {
   }
 
   async updateUser(user: User, input: UpdateUserInput): Promise<UserProps> {
-    const data: Prisma.UserUpdateInput = { ...input };
+    const data: Prisma.UserUpdateInput = { ...input, avatar: user.avatar };
 
     const emailChanged = input.email && input.email !== user.email;
     if (emailChanged) {
@@ -45,13 +45,16 @@ export class UserService {
       this.mailService.sendEmailVerification(input.name || user.name, input.email!);
     }
 
-    if (input.avatar && input.avatar.startsWith("data:image/png;base64,")) {
+    if (
+      input.avatar &&
+      (input.avatar.startsWith("data:image/png;base64,") ||
+        input.avatar.startsWith("data:image/jpeg;base64,"))
+    ) {
       data.avatar = await this.avatarService.uploadAvatar(user.id, input.avatar);
     }
 
-    // When a user deletes their avatar, we expect to receive null from the client,
-    // which then gets transformed by zod schema to an empty string
-    if (input.avatar === "") {
+    // When a user deletes their avatar, we expect to receive null from the client
+    if (input.avatar === null) {
       data.avatar = null;
     }
 

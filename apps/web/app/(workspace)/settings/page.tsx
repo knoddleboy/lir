@@ -9,13 +9,13 @@ import { useRouter } from "next/navigation";
 import { sessionModel } from "~/entities/session";
 import { useLogout } from "~/features/auth";
 import { ChangePasswordForm } from "~/features/auth";
+import { AvatarSetting } from "~/features/settings/avatar";
 import { DeleteAccount } from "~/features/settings/delete";
 import { EmailSetting } from "~/features/settings/email";
 import { NameSetting } from "~/features/settings/name";
 import { PasswordSetting } from "~/features/settings/password";
 import { Setting } from "~/features/settings/ui/setting";
 import { SettingTitle } from "~/features/settings/ui/setting-title";
-import { Avatar } from "~/features/user/avatar";
 
 export default function SettingsPage() {
   useEffect(() => {
@@ -46,12 +46,12 @@ export default function SettingsPage() {
           <SettingTitle className="mt-1">Profile</SettingTitle>
 
           <div className="flex items-center">
-            <Avatar avatarUrl={user?.avatar} fallbackName={user?.name} size="lg" />
+            <AvatarSetting user={user} />
 
             <NameSetting user={user} />
           </div>
 
-          <EmailSetting email={user?.email} />
+          <EmailSetting email={user.email} />
 
           <PasswordSetting>
             <ChangePasswordForm />

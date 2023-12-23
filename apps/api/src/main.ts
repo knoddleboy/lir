@@ -1,4 +1,5 @@
 import cookieParser from "cookie-parser";
+import { json } from "express";
 import helmet from "helmet";
 
 import { Logger } from "@nestjs/common";
@@ -16,6 +17,13 @@ async function bootstrap() {
   });
 
   const configService = app.get(ConfigService<Config>);
+
+  // TODO: revise on avatar uploading
+  app.use(
+    json({
+      limit: "5mb",
+    })
+  );
 
   app.use(cookieParser());
 
