@@ -5,6 +5,7 @@ export { Lir_encodeURIComponent } from "./lib/encode-uri-component";
 export { extractURIHash } from "./lib/extract-uri-hash";
 export { generateDocumentURL } from "./lib/generate-document-url";
 export { toBase64 } from "./lib/to-base64";
+export { formatResultString } from "./lib/format-result-string";
 
 export type { Middleware } from "./middleware/middleware";
 export { withMiddleware } from "./middleware/with-middleware";

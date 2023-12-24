@@ -4,7 +4,7 @@ import { Button, Icons, Skeleton } from "@lir/ui";
 
 import React, { useRef, useImperativeHandle, useEffect } from "react";
 
-import { useSearchStore } from "~/entities/search/model/store";
+import { searchModel } from "~/entities/search";
 import { sessionModel } from "~/entities/session";
 import { useCurrentUser } from "~/entities/session/model/session-model";
 
@@ -22,7 +22,7 @@ export const ProfileCard = React.forwardRef<
 
   const user = useCurrentUser();
 
-  const toggleSearchDialog = useSearchStore((state) => state.setOpen);
+  const toggleSearchDialog = searchModel.useSearchStore((state) => state.setOpen);
 
   const cardRef = useRef<HTMLDivElement>(null);
 

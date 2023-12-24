@@ -11,6 +11,7 @@ import { UserModule } from "~/user/user.module";
 
 import { AvatarModule } from "./avatar/avatar.module";
 import { DocumentModule } from "./document/document.module";
+import { SearchModule } from "./search/search.module";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { DocumentModule } from "./document/document.module";
     MailModule,
     AvatarModule,
     DocumentModule,
+    SearchModule,
   ],
   providers: [
     {

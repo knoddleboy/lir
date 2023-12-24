@@ -1,3 +1,4 @@
+import type { SearchInput } from "@lir/lib/schema";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,36 +8,37 @@ import {
   DropdownMenuTrigger,
 } from "@lir/ui";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
-type Props = {
-  children: React.ReactNode;
+import { searchModel } from "~/entities/search";
+
+const sortByMapping: [SearchInput["sort"]["sortBy"], string][] = [
+  ["fixed", "Fixed"],
+  ["byTitle", "By title"],
+  ["dateModified", "Date modified"],
+  ["dateCreated", "Date created"],
+];
+
+const sortDirectionMapping: Record<
+  "byTitle" | "byDate",
+  [NonNullable<SearchInput["sort"]["sortDirection"]>, string][]
+> = {
+  byTitle: [
+    ["asc", "A to Z"],
+    ["desc", "Z to A"],
+  ],
+  byDate: [
+    ["asc", "Oldest first"],
+    ["desc", "Newest first"],
+  ],
 };
 
-export const SortBy = {
-  Manually: "Manually",
-  Title: "By title",
-  DateModified: "Date modified",
-  DateCreated: "Date created",
-} as const;
-
-export const SortDirection = {
-  AtoZ: "A to Z",
-  ZtoA: "Z to A",
-  OldestFirst: "Oldest first",
-  NewestFirst: "Newest first",
-} as const;
-
-export const SearchFilters = ({ children }: Props) => {
+export const SearchFilters = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
-  const [sortBy, setSortBy] = useState<string>(SortBy.Manually);
-  const [sortDirection, setSortDirection] = useState<{
-    title: string;
-    date: string;
-  }>({
-    title: SortDirection.AtoZ,
-    date: SortDirection.NewestFirst,
-  });
+
+  const sortBy = searchModel.useSearchStore((state) => state.sortBy);
+  const sortDirection = searchModel.useSearchStore((state) => state.sortDirection);
+  const setSort = searchModel.useSearchStore((state) => state.setSort);
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -51,66 +53,50 @@ export const SearchFilters = ({ children }: Props) => {
       <DropdownMenuContent className="font-medium">
         <DropdownMenuRadioGroup
           value={sortBy}
-          onValueChange={setSortBy}
+          onValueChange={(value) => {
+            setSort({ sortBy: value as SearchInput["sort"]["sortBy"] });
+          }}
           className="[&>*]:py-0.5 [&>*]:pl-1.5 [&>*]:pr-2"
         >
-          <DropdownMenuRadioItem
-            value={SortBy.Manually}
-            onSelect={(e) => e.preventDefault()}
-          >
-            {SortBy.Manually}
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem
-            value={SortBy.Title}
-            onSelect={(e) => e.preventDefault()}
-          >
-            {SortBy.Title}
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem
-            value={SortBy.DateModified}
-            onSelect={(e) => e.preventDefault()}
-          >
-            {SortBy.DateModified}
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem
-            value={SortBy.DateCreated}
-            onSelect={(e) => e.preventDefault()}
-          >
-            {SortBy.DateCreated}
-          </DropdownMenuRadioItem>
+          {sortByMapping.map(([key, mapping]) => (
+            <Fragment key={key}>
+              <DropdownMenuRadioItem
+                value={key}
+                onSelect={(e) => e.preventDefault()}
+              >
+                {mapping}
+              </DropdownMenuRadioItem>
+
+              {key === "fixed" && (
+                <DropdownMenuSeparator
+                  // Overriding the group's paddings with
+                  // !important appears to be the only way here.
+                  className="!p-0"
+                />
+              )}
+            </Fragment>
+          ))}
         </DropdownMenuRadioGroup>
 
-        {sortBy !== SortBy.Manually && <DropdownMenuSeparator />}
+        {sortBy !== "fixed" && <DropdownMenuSeparator />}
 
-        {sortBy === SortBy.Title && (
+        {sortBy !== "fixed" && (
           <DropdownMenuRadioGroup
-            value={sortDirection.title}
-            onValueChange={(title) =>
-              setSortDirection((prev) => ({ ...prev, title }))
+            value={sortDirection}
+            onValueChange={(value) =>
+              setSort({
+                sortDirection: value as SearchInput["sort"]["sortDirection"],
+              })
             }
             className="[&>*]:py-0.5 [&>*]:pl-1.5 [&>*]:pr-2"
           >
-            <DropdownMenuRadioItem value={SortDirection.AtoZ}>
-              {SortDirection.AtoZ}
-            </DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value={SortDirection.ZtoA}>
-              {SortDirection.ZtoA}
-            </DropdownMenuRadioItem>
-          </DropdownMenuRadioGroup>
-        )}
-
-        {(sortBy === SortBy.DateModified || sortBy === SortBy.DateCreated) && (
-          <DropdownMenuRadioGroup
-            value={sortDirection.date}
-            onValueChange={(date) => setSortDirection((prev) => ({ ...prev, date }))}
-            className="[&>*]:py-0.5 [&>*]:pl-1.5 [&>*]:pr-2"
-          >
-            <DropdownMenuRadioItem value={SortDirection.NewestFirst}>
-              {SortDirection.NewestFirst}
-            </DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value={SortDirection.OldestFirst}>
-              {SortDirection.OldestFirst}
-            </DropdownMenuRadioItem>
+            {sortDirectionMapping[sortBy === "byTitle" ? "byTitle" : "byDate"].map(
+              ([key, mapping]) => (
+                <DropdownMenuRadioItem key={key} value={key}>
+                  {mapping}
+                </DropdownMenuRadioItem>
+              )
+            )}
           </DropdownMenuRadioGroup>
         )}
       </DropdownMenuContent>
