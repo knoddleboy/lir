@@ -22,7 +22,9 @@ export const ProfileCard = React.forwardRef<
 
   const user = useCurrentUser();
 
-  const toggleSearchDialog = searchModel.useSearchStore((state) => state.setOpen);
+  const setSearchMenuOpen = searchModel.useSearchStore(
+    (state) => state.setSearchMenuOpen
+  );
 
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -88,7 +90,7 @@ export const ProfileCard = React.forwardRef<
         onKeyDown={(e) => e.stopPropagation()}
         onClick={(e) => {
           e.stopPropagation();
-          toggleSearchDialog(true);
+          setSearchMenuOpen(true);
         }}
       >
         <Icons.search className="w-4" />
