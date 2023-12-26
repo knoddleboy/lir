@@ -20,7 +20,7 @@ export default function NestedLayout({ children }: Props) {
       <Header>
         <ToggleSidebar />
       </Header>
-      <main className="h-[calc(100%-52px)] w-full">{children}</main>
+      <main className="h-full w-full pt-[52px]">{children}</main>
     </>
   );
 }

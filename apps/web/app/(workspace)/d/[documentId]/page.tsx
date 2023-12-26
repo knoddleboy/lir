@@ -1,11 +1,4 @@
-"use client";
-
-import { APP_NAME } from "@lir/lib";
-
-import { useDocumentTitle } from "usehooks-ts";
-
-import { documentModel } from "~/entities/document";
-import { extractURIHash } from "~/shared";
+import { EditorContainer } from "~/features/editor";
 
 type Props = {
   params: {
@@ -14,9 +7,5 @@ type Props = {
 };
 
 export default function WorkspacePage({ params: { documentId } }: Props) {
-  const document = documentModel.useDocument(extractURIHash(documentId)!);
-
-  useDocumentTitle(document ? document.title ?? "Untitled" : APP_NAME);
-
-  return <div></div>;
+  return <EditorContainer documentId={documentId} />;
 }

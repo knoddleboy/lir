@@ -10,6 +10,7 @@ import { PrismaModule } from "~/prisma/prisma.module";
 import { UserModule } from "~/user/user.module";
 
 import { AvatarModule } from "./avatar/avatar.module";
+import { BlockModule } from "./block/block.module";
 import { DocumentModule } from "./document/document.module";
 import { SearchModule } from "./search/search.module";
 
@@ -23,6 +24,7 @@ import { SearchModule } from "./search/search.module";
     AvatarModule,
     DocumentModule,
     SearchModule,
+    BlockModule,
   ],
   providers: [
     {

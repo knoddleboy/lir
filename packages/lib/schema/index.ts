@@ -3,3 +3,4 @@ export * from "./shared";
 export * from "./user-schema";
 export * from "./document";
 export * from "./search";
+export * from "./block";

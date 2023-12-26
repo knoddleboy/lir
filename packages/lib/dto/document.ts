@@ -1,7 +1,13 @@
 import { createZodDto } from "nestjs-zod";
 
-import { deleteDocumentSchema, updateDocumentSchema } from "../schema";
+import {
+  deleteDocumentSchema,
+  getDocumentDataSchema,
+  updateDocumentSchema,
+} from "../schema";
 import { createDocumentSchema } from "../schema/document/create";
+
+export class GetDocumentDataDto extends createZodDto(getDocumentDataSchema) {}
 
 export class CreateDocumentDto extends createZodDto(createDocumentSchema) {}
 

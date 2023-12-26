@@ -2,9 +2,18 @@ import {
   CreateDocumentDto,
   UpdateDocumentDto,
   DeleteDocumentDto,
+  GetDocumentDataDto,
 } from "@lir/lib/dto";
 
-import { Body, Controller, Get, Patch, Post, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from "@nestjs/common";
 
 import { JwtGuard } from "~/auth/guards/jwt.guard";
 import { User } from "~/user/decorators/user.decorator";
@@ -19,6 +28,13 @@ export class DocumentController {
   @Get("getUserDocuments")
   async getUserRecords(@User("id") id: string) {
     return this.documentService.getUserDocuments(id);
+  }
+
+  @Get("getDocumentData/:documentId")
+  async getDocumentData(
+    @Param("documentId") documentId: GetDocumentDataDto["documentId"]
+  ) {
+    return this.documentService.getDocumentData(documentId);
   }
 
   @Post("createUserDocument")

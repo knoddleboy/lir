@@ -14,16 +14,12 @@ type Props = {
 };
 
 export default function WorkspaceLayout({ children }: Props) {
-  // if (!isAuth()) {
-  //   redirect("/login");
-  // }
-
   return (
     <>
       <div className="flex h-screen w-screen overflow-hidden">
         <Sidebar />
         <div className="flex h-full w-full flex-col">
-          <div className="bg-muted h-full flex-1">{children}</div>
+          <div className="bg-muted relative h-full flex-1">{children}</div>
         </div>
       </div>
     </>

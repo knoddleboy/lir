@@ -92,6 +92,11 @@
   background: hsl(var(--foreground));
 }
 
+[contenteditable] {
+  -webkit-tap-highlight-color: transparent;
+  outline: 0;
+}
+
 @layer utilities {
   ._ring {
     @apply ring-offset-background focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring focus-visible:ring-offset-0

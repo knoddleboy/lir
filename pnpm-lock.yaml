@@ -183,6 +183,9 @@ importers:
       '@lir/ui':
         specifier: '*'
         version: link:../../packages/ui
+      '@paralleldrive/cuid2':
+        specifier: ^2.2.2
+        version: 2.2.2
       '@tanstack/react-query':
         specifier: ^5.13.4
         version: 5.13.4(react@18.2.0)

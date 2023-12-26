@@ -81,6 +81,7 @@ model Document {
   title     String?
   owner     User     @relation(fields: [ownerId], references: [id])
   ownerId   String
+  content   Block[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -88,20 +89,24 @@ model Document {
   @@map("documents")
 }
 
-// enum RecordType {
-//   document
-// }
+enum BlockType {
+  title
+  heading1
+  heading2
+  text
+}
 
-// model Record {
-//   id        String     @id @default(cuid())
-//   type      RecordType
-//   title     String
-//   ownerId   String
-//   parentId  String?
-//   parent    Record?    @relation("record", fields: [parentId], references: [id])
-//   content   Record[]   @relation("record")
-//   createdAt DateTime   @default(now())
-//   updatedAt DateTime   @updatedAt
+model Block {
+  id         String    @id @default(cuid())
+  document   Document  @relation(fields: [documentId], references: [id])
+  documentId String
+  type       BlockType
+  content    Json
+  nextId     String?   @unique
+  next       Block?    @relation("block_nextBlock", fields: [nextId], references: [id])
+  prev       Block?    @relation("block_nextBlock")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
-//   @@map("records")
-// }
+  @@map("blocks")
+}
