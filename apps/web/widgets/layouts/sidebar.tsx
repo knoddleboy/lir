@@ -173,7 +173,7 @@ const SidebarResizableContainer = ({ children }: { children: React.ReactNode }) 
       }}
     >
       <div className="flex h-full flex-col overflow-hidden">{children}</div>
-      <div className="absolute bottom-0 right-0 top-0 h-full w-0 grow-0">
+      <div className="absolute bottom-0 right-0 top-0 z-50 h-full w-0 grow-0">
         <div
           ref={resizerRef}
           onClick={onClick}
