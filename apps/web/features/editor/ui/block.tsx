@@ -1,5 +1,5 @@
 import { cn } from "@lir/lib";
-import { type BlockProps, BlockType, Alignment } from "@lir/lib/schema";
+import { type BlockProps, BlockType, Alignment, Emphasis } from "@lir/lib/schema";
 
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
@@ -65,7 +65,7 @@ export const Block = ({ block, documentId }: Props) => {
           title: [[""]],
           formats: {
             emphasis: [],
-            fontSize: 12,
+            fontSize: 16,
           },
           alignment: Alignment.Left,
           lineSpacing: block.content.lineSpacing || 1.2,
@@ -111,9 +111,24 @@ export const Block = ({ block, documentId }: Props) => {
       spellCheck={true}
       className={cn(
         "w-full max-w-full whitespace-pre-wrap break-words py-1",
-        block.type === BlockType.Title && "mb-1 mt-8 text-3xl font-bold",
-        block.type === BlockType.Heading1 && "mt-6 text-xl font-bold",
-        block.type === BlockType.Heading2 && "mt-4 text-base font-bold",
+        block.type === BlockType.Title &&
+          "mb-1 mt-8 text-[32px]" &&
+          block.content.formats.emphasis.includes(Emphasis.Bold) &&
+          "font-bold",
+        block.type === BlockType.Heading1 &&
+          "mt-6 text-[24px]" &&
+          block.content.formats.emphasis.includes(Emphasis.Bold) &&
+          "font-bold",
+        block.type === BlockType.Heading2 &&
+          "mt-4 text-[18px]" &&
+          block.content.formats.emphasis.includes(Emphasis.Bold) &&
+          "font-bold",
+
+        block.content.formats.emphasis.includes(Emphasis.Bold) && "font-bold",
+        block.content.formats.emphasis.includes(Emphasis.Italic) && "italic",
+        block.content.formats.emphasis.includes(Emphasis.Underline) && "underline",
+        block.content.formats.emphasis.includes(Emphasis.Strikethrough) &&
+          "line-through",
 
         block.content.alignment === Alignment.Left && "text-left",
         block.content.alignment === Alignment.Center && "text-center",
@@ -121,6 +136,7 @@ export const Block = ({ block, documentId }: Props) => {
         block.content.alignment === Alignment.Justify && "text-justify"
       )}
       style={{
+        fontSize: block.content.formats.fontSize,
         lineHeight: block.content.lineSpacing,
         WebkitUserModify: "read-write-plaintext-only",
       }}

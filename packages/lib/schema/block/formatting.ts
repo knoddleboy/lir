@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { constructZodLiteralUnionType } from "../../constructZodLiteralUnionType";
+import type { BlockType } from "./block";
 
 export enum Emphasis {
   Regular = "r",
@@ -10,11 +11,28 @@ export enum Emphasis {
   Strikethrough = "s",
 }
 
-export const FontSizes = [
-  8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 24, 36, 48, 64, 72, 96,
-] as const;
+export const FontSizes = [10, 12, 13, 14, 16, 18, 24, 32, 48] as const;
 
 export type FontSize = (typeof FontSizes)[number];
+
+export const typeFormatsMapping: Record<BlockType, BlockContent["formats"]> = {
+  text: {
+    emphasis: [Emphasis.Regular],
+    fontSize: 16,
+  },
+  title: {
+    emphasis: [Emphasis.Bold],
+    fontSize: 32,
+  },
+  heading1: {
+    emphasis: [Emphasis.Bold],
+    fontSize: 24,
+  },
+  heading2: {
+    emphasis: [Emphasis.Bold],
+    fontSize: 18,
+  },
+};
 
 export enum Alignment {
   Left = "l",

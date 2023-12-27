@@ -1,4 +1,5 @@
-import { BlockType } from "@lir/lib/schema";
+import { cn } from "@lir/lib";
+import { BlockType, typeFormatsMapping } from "@lir/lib/schema";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -45,22 +46,36 @@ export const BlockTypeSelect = () => {
 
     if (!currentBlock || currentBlock.type === newType) return;
 
+    const newContent = {
+      formats: {
+        ...currentBlock.content.formats,
+        ...typeFormatsMapping[newType],
+      },
+    };
+
     setBlock({
       id: currentBlock.id,
       setType: "update",
       type: newType,
+      content: newContent,
     });
 
     await updateBlockType({
       id: currentBlock.id,
       type: newType,
+      content: newContent,
     });
   };
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button className="border-muted-foreground/30 hover:bg-muted-foreground/30 text-primary h-5 w-48 select-none justify-between rounded-sm border bg-transparent px-1 py-0 text-left text-xs transition-none hover:border-transparent">
+      <DropdownMenuTrigger asChild disabled={!!!currentBlock}>
+        <Button
+          className={cn(
+            "border-muted-foreground/30 disabled:hover:bg-muted-foreground/30 hover:bg-muted-foreground/30 text-primary h-5 w-48 select-none justify-between rounded-sm border bg-transparent px-1 py-0 text-left text-xs transition-none hover:border-transparent",
+            !!!currentBlock && "opacity-40"
+          )}
+        >
           {blockTypeMapping[type]}
           <Icons.chevronDown size={12} strokeWidth={3} />
         </Button>

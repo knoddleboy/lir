@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import { usePathname, useRouter } from "next/navigation";
 
+import { blockModel } from "~/entities/block";
 import { documentApi, documentModel } from "~/entities/document";
 import { generateDocumentURL } from "~/shared";
 
@@ -24,6 +25,7 @@ export const NavigationItemMenu = ({ itemId, open, setOpen }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
 
+  const setCurrentBlock = blockModel.setCurrentBlock;
   const documents = documentModel.useDocuments();
   const documentIndex = documentModel
     .useDocuments()
@@ -40,6 +42,8 @@ export const NavigationItemMenu = ({ itemId, open, setOpen }: Props) => {
   });
 
   const handleDeleteDocument = async () => {
+    setCurrentBlock(null);
+
     await deleteDocument({ id: itemId });
 
     if (documents.length === 1) {

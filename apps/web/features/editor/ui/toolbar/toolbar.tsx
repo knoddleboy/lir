@@ -4,6 +4,7 @@ import {
   BlockTypeSelect,
   EmphasisSelect,
   FontSizeSelect,
+  EmphasisFormats,
   AlignmentFormats,
   LineSpacingSelect,
 } from "./ui";
@@ -14,7 +15,7 @@ export const Toolbar = () => {
       <BlockTypeSelect />
       <EmphasisSelect />
       <FontSizeSelect />
-      {/* <EmphasisFormats /> */}
+      <EmphasisFormats />
       <AlignmentFormats />
       <LineSpacingSelect />
     </div>

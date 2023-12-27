@@ -45,7 +45,7 @@ export class DocumentService {
               title: [[""]],
               formats: {
                 emphasis: [],
-                fontSize: 12,
+                fontSize: 16,
               },
               alignment: Alignment.Left,
               lineSpacing: 1.2,
