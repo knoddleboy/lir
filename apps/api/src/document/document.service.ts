@@ -1,4 +1,6 @@
 import {
+  Alignment,
+  BlockContent,
   CreateDocumentInput,
   DeleteDocumentInput,
   UpdateDocumentInput,
@@ -39,7 +41,15 @@ export class DocumentService {
         content: {
           create: {
             type: "text",
-            content: "",
+            content: {
+              title: [[""]],
+              formats: {
+                emphasis: [],
+                fontSize: 12,
+              },
+              alignment: Alignment.Left,
+              lineSpacing: 1.2,
+            } as BlockContent,
           },
         },
       },

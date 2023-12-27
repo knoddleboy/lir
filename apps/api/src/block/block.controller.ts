@@ -1,4 +1,4 @@
-import { CreateBlockDto, UpdateBlockDto } from "@lir/lib/dto";
+import { CreateBlockDto, DeleteBlockDto, UpdateBlockDto } from "@lir/lib/dto";
 
 import { Body, Controller, Patch, Post, UseGuards } from "@nestjs/common";
 
@@ -19,5 +19,10 @@ export class BlockController {
   @Patch()
   async updateBlock(@Body() data: UpdateBlockDto) {
     return this.blockService.updateBlock(data);
+  }
+
+  @Post("/deleteBlock")
+  async deleteBlock(@Body() data: DeleteBlockDto) {
+    return this.blockService.deleteBlock(data);
   }
 }

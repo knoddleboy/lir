@@ -21,7 +21,7 @@ export const Editor = ({ document }: Props) => {
   const setBlocks = blockModel.setBlocks;
 
   useEffect(() => {
-    if (!documentData) return;
+    if (!documentData || !documentData.blocks.length) return;
 
     // Check if a block is connected to this document; if not, it means we
     // have changed the document, and thus, we can dump the previous blocks.
@@ -33,18 +33,21 @@ export const Editor = ({ document }: Props) => {
       const documentBlocks = documentData.blocks;
       setBlocks(documentBlocks);
     }
-  }, [document, blocks, documentData, setBlocks]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [documentData, setBlocks]);
 
   return (
-    <div className="grid h-full w-full cursor-text grid-cols-[minmax(70px,1fr)_minmax(auto,700px)_minmax(70px,1fr)]">
-      <div className="col-span-1 col-start-2 pt-8">
-        {!blocks.length ? (
-          <Skeleton className="h-7 w-full" />
-        ) : (
-          blocks.map((block) => {
-            return <Block key={block.id} block={block} documentId={document.id} />;
-          })
-        )}
+    <div className="h-full w-full">
+      <div className="grid h-full w-full grid-cols-[minmax(70px,1fr)_minmax(auto,700px)_minmax(70px,1fr)]">
+        <div className="col-span-1 col-start-2 pt-8">
+          {!blocks.length ? (
+            <Skeleton className="h-7 w-full" />
+          ) : (
+            blocks.map((block) => {
+              return <Block key={block.id} block={block} documentId={document.id} />;
+            })
+          )}
+        </div>
       </div>
     </div>
   );

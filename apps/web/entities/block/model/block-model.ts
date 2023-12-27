@@ -17,6 +17,11 @@ type BlockState = {
   unsetBlock: (deleteInput: DeleteBlockInput) => void;
 };
 
+type CurrentBlockState = {
+  currentBlock: BlockProps | null;
+  setCurrentBlock: (blockId: BlockProps | null) => void;
+};
+
 const createBlockSlice: StateCreator<BlockState> = (set) => ({
   blocks: [],
 
@@ -33,6 +38,10 @@ const createBlockSlice: StateCreator<BlockState> = (set) => ({
               return {
                 ...block,
                 ...updateInput,
+                content: {
+                  ...block.content,
+                  ...updateInput.content,
+                },
               };
             }),
           };
@@ -69,8 +78,17 @@ const createBlockSlice: StateCreator<BlockState> = (set) => ({
   },
 });
 
-export const blockStore = create<BlockState>((...a) => ({
+const createCurrentBlockSlice: StateCreator<CurrentBlockState> = (set) => ({
+  currentBlock: null,
+
+  setCurrentBlock: (blockId) => {
+    set({ currentBlock: blockId });
+  },
+});
+
+export const blockStore = create<BlockState & CurrentBlockState>((...a) => ({
   ...createBlockSlice(...a),
+  ...createCurrentBlockSlice(...a),
 }));
 
 export const useBlock = (id: string) =>
@@ -86,3 +104,9 @@ export const setBlocks = (blocks: BlockProps[]) =>
 
 export const unsetBlock = (deleteInput: DeleteBlockInput) =>
   blockStore.getState().unsetBlock(deleteInput);
+
+export const useCurrentBlock = () =>
+  useStore(blockStore, (state) => state.currentBlock);
+
+export const setCurrentBlock = (block: BlockProps | null) =>
+  blockStore.getState().setCurrentBlock(block);

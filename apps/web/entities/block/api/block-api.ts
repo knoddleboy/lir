@@ -1,7 +1,8 @@
-import type { CreateBlockDto, UpdateBlockDto } from "@lir/lib/dto";
+import type { CreateBlockDto, DeleteBlockDto, UpdateBlockDto } from "@lir/lib/dto";
 import type {
   BlockProps,
   CreateBlockInput,
+  DeleteBlockInput,
   UpdateBlockInput,
 } from "@lir/lib/schema";
 
@@ -17,6 +18,7 @@ export const blockKeys = {
   mutation: {
     createBlock: () => [...blockKeys.block.root, "createBlock"],
     updateBlock: (id: string) => [...blockKeys.block.root, "updateBlock", id],
+    deleteBlock: () => [...blockKeys.block.root, "deleteBlock"],
   },
 };
 
@@ -36,6 +38,16 @@ export const updateBlock = async (data: UpdateBlockInput) => {
     AxiosResponse<BlockProps>,
     UpdateBlockDto
   >("/block", data);
+
+  return response.data;
+};
+
+export const deleteBlock = async (data: DeleteBlockInput) => {
+  const response = await apiClient.post<
+    BlockProps,
+    AxiosResponse<BlockProps>,
+    DeleteBlockDto
+  >("/block/deleteBlock", data);
 
   return response.data;
 };

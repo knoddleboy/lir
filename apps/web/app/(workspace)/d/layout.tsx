@@ -2,6 +2,7 @@ import { APP_NAME } from "@lir/lib";
 
 import type { Metadata } from "next";
 
+import { Toolbar } from "~/features/editor";
 import { ToggleSidebar } from "~/features/header/toggle-sidebar";
 import { Header } from "~/widgets/layouts/header";
 
@@ -19,6 +20,7 @@ export default function NestedLayout({ children }: Props) {
     <>
       <Header>
         <ToggleSidebar />
+        <Toolbar />
       </Header>
       <main className="h-full w-full pt-[52px]">{children}</main>
     </>

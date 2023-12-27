@@ -1,5 +1,10 @@
-import { CreateBlockInput, UpdateBlockInput } from "@lir/lib/schema";
+import {
+  CreateBlockInput,
+  DeleteBlockInput,
+  UpdateBlockInput,
+} from "@lir/lib/schema";
 
+import { Prisma } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
 
 import { Injectable } from "@nestjs/common";
@@ -45,10 +50,23 @@ export class BlockService {
   }
 
   async updateBlock(input: UpdateBlockInput) {
+    const blockToUpdate = await this.prismaService.block.findUnique({
+      where: { id: input.id },
+    });
+
+    if (!blockToUpdate) return;
+
+    // TODO: is this even a good way?
+    const updateContentInput = {
+      ...(blockToUpdate.content as Prisma.JsonObject),
+      ...input.content,
+    };
+
     return await this.prismaService.block.update({
       where: { id: input.id },
       data: {
         ...input,
+        content: updateContentInput,
         document: {
           update: {
             data: {
@@ -58,5 +76,42 @@ export class BlockService {
         },
       },
     });
+  }
+
+  async deleteBlock(input: DeleteBlockInput) {
+    const deletedBlock = await this.prismaService.block.delete({
+      where: { id: input.id },
+      include: {
+        prev: true,
+        next: true,
+      },
+    });
+
+    if (!deletedBlock.prev) {
+      return deletedBlock;
+    }
+
+    await this.prismaService.block.update({
+      where: {
+        id: deletedBlock.prev.id,
+      },
+      data: {
+        next: {
+          ...(deletedBlock.next
+            ? {
+                connect: {
+                  id: deletedBlock.next.id,
+                },
+              }
+            : {
+                disconnect: {
+                  id: deletedBlock.id,
+                },
+              }),
+        },
+      },
+    });
+
+    return deletedBlock;
   }
 }

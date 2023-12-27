@@ -7,6 +7,7 @@ import {
   LucideChevronLeft,
   LucideChevronRight,
   LucideChevronUp,
+  LucideChevronsUpDown,
   LucideCircle,
   LucideDownload,
   LucideLoader2,
@@ -17,6 +18,11 @@ import {
   LucideSun,
   LucideXCircle,
   MoreHorizontal,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  MoveVertical,
 } from "lucide-react";
 import type { LucideIcon, LucideProps } from "lucide-react";
 
@@ -96,6 +102,7 @@ export const Icons = {
   chevronUp: LucideChevronUp,
   chevronRight: LucideChevronRight,
   chevronDown: LucideChevronDown,
+  chevronUpDown: LucideChevronsUpDown,
   menu: LucideMenu,
   settings: LucideSettings,
   import: LucideDownload,
@@ -105,4 +112,9 @@ export const Icons = {
   xCircle: LucideXCircle,
   spinner: LucideLoader2,
   more: MoreHorizontal,
+  alignLeft: AlignLeft,
+  alignCenter: AlignCenter,
+  alignRight: AlignRight,
+  alignJustify: AlignJustify,
+  moveVertical: MoveVertical,
 } as const;
