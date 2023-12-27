@@ -36,22 +36,26 @@ export class DocumentService {
   async createDocument(userId: string, input: CreateDocumentInput) {
     return await this.prismaService.document.create({
       data: {
-        ...input,
+        title: input.title,
         owner: { connect: { id: userId } },
-        content: {
-          create: {
-            type: "text",
-            content: {
-              title: [[""]],
-              formats: {
-                emphasis: [],
-                fontSize: 16,
+        ...(input.createBlock
+          ? {
+              content: {
+                create: {
+                  type: "text",
+                  content: {
+                    title: [[""]],
+                    formats: {
+                      emphasis: [],
+                      fontSize: 16,
+                    },
+                    alignment: Alignment.Left,
+                    lineSpacing: 1.2,
+                  } as BlockContent,
+                },
               },
-              alignment: Alignment.Left,
-              lineSpacing: 1.2,
-            } as BlockContent,
-          },
-        },
+            }
+          : {}),
       },
       include: {
         content: true,

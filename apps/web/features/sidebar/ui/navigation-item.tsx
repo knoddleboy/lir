@@ -101,7 +101,7 @@ export const NavigationItem = ({
         onClick={item.onClick}
         onDoubleClick={handleDoubleClick}
         className={cn(
-          `_ring text-accent-foreground/75 group flex h-7 flex-1 cursor-pointer select-none items-center rounded-md py-1 pl-3.5 pr-1.5 font-medium`,
+          `_ring text-accent-foreground/75 group flex h-7 w-full flex-1 cursor-pointer select-none items-center rounded-md py-1 pl-3.5 pr-1.5 font-medium`,
           current && "bg-control",
           !isEditing &&
             "hover:bg-control active:text-accent-foreground active:bg-control-foreground",

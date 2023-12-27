@@ -37,8 +37,8 @@ export const Editor = ({ document }: Props) => {
   }, [documentData, setBlocks]);
 
   return (
-    <div className="h-full w-full">
-      <div className="grid h-full w-full grid-cols-[minmax(70px,1fr)_minmax(auto,700px)_minmax(70px,1fr)]">
+    <div className="h-full w-full overflow-y-auto overflow-x-hidden scroll-smooth">
+      <div className="grid w-full grid-cols-[minmax(70px,1fr)_minmax(auto,700px)_minmax(70px,1fr)] pb-[20vh]">
         <div className="col-span-1 col-start-2 pt-8">
           {!blocks.length ? (
             <Skeleton className="h-7 w-full" />

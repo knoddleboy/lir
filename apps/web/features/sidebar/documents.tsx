@@ -39,7 +39,10 @@ export const Documents = () => {
   }, [documents, userDocuments, setDocuments]);
 
   const handleCreateDocument = async () => {
-    const createdDocument = await createDocument({ title: null });
+    const createdDocument = await createDocument({
+      title: null,
+      createBlock: true,
+    });
     router.push(generateDocumentURL(createdDocument.title, createdDocument.id));
   };
 

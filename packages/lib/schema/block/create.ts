@@ -9,7 +9,7 @@ export const createBlockSchema = blockSchema
     documentId: true,
   })
   .extend({
-    prevId: z.string(),
+    prevId: z.string().nullable(),
   });
 
 export type CreateBlockInput = z.infer<typeof createBlockSchema>;
