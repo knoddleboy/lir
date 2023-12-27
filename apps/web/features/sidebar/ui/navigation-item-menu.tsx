@@ -35,6 +35,7 @@ export const NavigationItemMenu = ({ itemId, open, setOpen }: Props) => {
     mutationKey: documentApi.documentKeys.mutation.updateDocument(),
     mutationFn: documentApi.deleteDocument,
     onSuccess: (deletedDocument) => {
+      setCurrentBlock(null);
       documentModel.unsetDocument({
         id: deletedDocument.id,
       });
@@ -42,8 +43,6 @@ export const NavigationItemMenu = ({ itemId, open, setOpen }: Props) => {
   });
 
   const handleDeleteDocument = async () => {
-    setCurrentBlock(null);
-
     await deleteDocument({ id: itemId });
 
     if (documents.length === 1) {

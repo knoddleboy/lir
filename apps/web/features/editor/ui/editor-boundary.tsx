@@ -29,7 +29,7 @@ export const EditorBoundary = ({ documentId }: EditorBoundaryProps) => {
             Document not found
           </div>
           <Button
-            className="text-muted-foreground/80 h-fit px-1.5 py-0.5 font-medium dark:font-normal"
+            className="text-muted-foreground/80 h-fit select-none px-1.5 py-0.5 font-medium dark:font-normal"
             variant="control-ghost"
             text="sm"
             asChild
