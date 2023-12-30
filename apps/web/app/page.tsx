@@ -12,9 +12,7 @@ export default function LandingPage() {
 
       <Layout>
         <div className="h-20" />
-        <div className="flex w-full justify-center text-4xl font-bold">
-          Landing page
-        </div>
+        <div className="flex w-full justify-center text-4xl font-bold"></div>
       </Layout>
     </>
   );

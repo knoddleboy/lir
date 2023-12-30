@@ -98,7 +98,11 @@ export class PasswordService {
   }
 
   async changePassword(user: User, oldPassword: string, newPassword: string) {
-    if (oldPassword === newPassword) {
+    const isNewPasswordSameAsOldUserPassword = await this.verifyPassword(
+      newPassword,
+      user.password
+    );
+    if (isNewPasswordSameAsOldUserPassword) {
       throw new BadRequestException(ErrorResponseCode.NewPasswordMatchesOldPassword);
     }
 

@@ -27,7 +27,8 @@ const SearchDialog = () => {
     () => setSearchMenuOpen(!searchMenuOpen),
     {
       preventDefault: true,
-      enableOnFormTags: ["input"],
+      enableOnContentEditable: true,
+      enableOnFormTags: ["input", "select", "textarea"],
     },
     [searchMenuOpen]
   );

@@ -66,12 +66,17 @@ export const NavigationItem = ({
 
   const handleUpdate = async () => {
     if (newTitle.length && item.id) {
+      const newTitleWithMaxLength = newTitle.substring(
+        0,
+        Math.min(newTitle.length, 255)
+      );
+
       const updateInput = {
         id: item.id,
-        title: newTitle,
+        title: newTitleWithMaxLength,
       };
 
-      router.replace(generateDocumentURL(newTitle, item.id));
+      router.replace(generateDocumentURL(newTitleWithMaxLength, item.id));
       setDocument(updateInput);
       await updateDocument(updateInput);
     }
