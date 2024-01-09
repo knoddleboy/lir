@@ -1,5 +1,6 @@
 export const Route = {
   Home: "/",
+  Overview: "/d",
   Documents: "/d/:documentId",
   Settings: "/settings",
   Signup: "/signup",
