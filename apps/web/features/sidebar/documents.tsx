@@ -8,12 +8,14 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { documentApi, documentModel } from "~/entities/document";
+import { sessionModel } from "~/entities/session";
 import { generateDocumentURL } from "~/shared";
 
 import { NavigationItem } from "./ui/navigation-item";
 
 export const Documents = () => {
   const router = useRouter();
+  const isAuth = sessionModel.useAuth();
 
   const documents = documentModel.useDocuments();
   const setDocuments = documentModel.setDocuments;
@@ -46,7 +48,11 @@ export const Documents = () => {
     router.push(generateDocumentURL(createdDocument.title, createdDocument.id));
   };
 
-  if (!isGetUserDocumentsSuccess) {
+  if (!isAuth) {
+    <div className="flex-1"></div>;
+  }
+
+  if (isAuth && !isGetUserDocumentsSuccess) {
     return (
       <div className="flex-1">
         <Skeleton className="mx-1.5 my-2 h-4" />
