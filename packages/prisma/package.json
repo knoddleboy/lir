@@ -4,12 +4,14 @@
   "version": "0.0.0",
   "scripts": {
     "db:migrate": "pnpm exec prisma migrate dev",
+    "db:generate": "pnpm exec prisma generate",
     "db:deploy": "pnpm exec prisma migrate deploy",
     "db:up": "docker compose up -d",
     "dev": "run-s db:up db:deploy"
   },
   "dependencies": {
-    "@prisma/client": "^5.6.0"
+    "@prisma/client": "^5.6.0",
+    "prisma-dbml-generator": "^0.10.0"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5",
