@@ -1,13 +1,12 @@
 "use client";
 
-import { Button, Icons } from "@lir/ui";
+import { Button, Icons, Skeleton } from "@lir/ui";
 
 import React, { useRef, useImperativeHandle, useEffect } from "react";
 
-import Link from "next/link";
-
 import { searchModel } from "~/entities/search";
 import { sessionModel } from "~/entities/session";
+import { useCurrentUser } from "~/entities/session/model/session-model";
 
 import { Avatar } from "./avatar";
 
@@ -21,7 +20,7 @@ export const ProfileCard = React.forwardRef<
     sessionModel.sessionStore.persist.rehydrate();
   }, []);
 
-  const user = sessionModel.useCurrentUser();
+  const user = useCurrentUser();
 
   const setSearchMenuOpen = searchModel.useSearchStore(
     (state) => state.setSearchMenuOpen
@@ -45,32 +44,9 @@ export const ProfileCard = React.forwardRef<
 
   if (!user) {
     return (
-      <div className="m-1.5 flex h-10 w-[228px] items-center justify-between px-1.5 py-1">
-        <Avatar
-          avatarUrl="avatar.svg"
-          size="base"
-          className="bg-accent-foreground/40 text-accent mr-0"
-        />
-
-        <Link
-          href="/signup"
-          className="bg-accent-foreground/70 text-accent hover:bg-accent-foreground/60 active:bg-accent-foreground/80 rounded-md px-2 py-0.5 text-sm font-medium"
-        >
-          Sign up to sync
-        </Link>
-
-        <Button
-          variant="control-ghost"
-          size="control-icon"
-          onPointerDown={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
-          onClick={(e) => {
-            e.stopPropagation();
-            setSearchMenuOpen(true);
-          }}
-        >
-          <Icons.search className="w-4" />
-        </Button>
+      <div className="m-1.5 flex h-10 w-[228px] items-center px-1.5 py-1">
+        <Avatar size="base" />
+        <Skeleton className="h-5 w-[188px]" />
       </div>
     );
   }
