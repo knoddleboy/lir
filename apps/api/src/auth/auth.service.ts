@@ -49,7 +49,8 @@ export class AuthService {
       this.prismaService.document.create({
         data: {
           title: "Untitled",
-          ownerId: user.id,
+          userId: user.id,
+          content: {},
         },
       });
 

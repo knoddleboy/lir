@@ -8,10 +8,10 @@ import { Injectable } from "@nestjs/common";
 export class SearchService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async searchDocuments(ownerId: string, { query, sort }: SearchInput) {
+  async searchDocuments(userId: string, { query, sort }: SearchInput) {
     return await this.prismaService.document.findMany({
       where: {
-        ownerId,
+        userId,
         title: {
           contains: query,
           mode: "insensitive",

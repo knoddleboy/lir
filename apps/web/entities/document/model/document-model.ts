@@ -13,20 +13,25 @@ type DocumentState = {
   unsetDocument: (deleteInput: DeleteDocumentInput) => void;
 };
 
-const createDocumentSlice: StateCreator<DocumentState, [], [], DocumentState> = (
-  set
-) => ({
+type CurrentDocumentState = {
+  currentDocument: string | null;
+  setCurrentDocument: (id: DocumentProps["id"] | null) => void;
+};
+
+const createDocumentSlice: StateCreator<DocumentState> = (set) => ({
   documents: [],
 
-  setDocument: ({ id, title }) => {
+  setDocument: ({ id, title, content }) => {
     set((state) => ({
       documents: state.documents.map((document) => {
         if (document.id !== id) {
           return document;
         }
+
         return {
           ...document,
-          title,
+          ...(title !== undefined ? { title } : {}),
+          content,
         };
       }),
     }));
@@ -45,9 +50,20 @@ const createDocumentSlice: StateCreator<DocumentState, [], [], DocumentState> = 
   },
 });
 
-export const documentStore = create<DocumentState>((...a) => ({
-  ...createDocumentSlice(...a),
-}));
+const createCurrentDocumentSlice: StateCreator<CurrentDocumentState> = (set) => ({
+  currentDocument: null,
+
+  setCurrentDocument: (id) => {
+    set({ currentDocument: id });
+  },
+});
+
+export const documentStore = create<DocumentState & CurrentDocumentState>(
+  (...a) => ({
+    ...createDocumentSlice(...a),
+    ...createCurrentDocumentSlice(...a),
+  })
+);
 
 export const useDocument = (id: string) =>
   useStore(documentStore, (state) => state.documents.find((d) => d.id === id));
@@ -63,3 +79,9 @@ export const setDocuments = (documents: DocumentProps[]) =>
 
 export const unsetDocument = (deleteInput: DeleteDocumentInput) =>
   documentStore.getState().unsetDocument(deleteInput);
+
+export const useCurrentDocument = () =>
+  useStore(documentStore, (state) => state.currentDocument);
+
+export const setCurrentDocument = (id: DocumentProps["id"] | null) =>
+  documentStore.getState().setCurrentDocument(id);

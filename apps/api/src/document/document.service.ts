@@ -1,6 +1,4 @@
 import {
-  Alignment,
-  BlockContent,
   CreateDocumentInput,
   DeleteDocumentInput,
   UpdateDocumentInput,
@@ -10,55 +8,32 @@ import { PrismaService } from "nestjs-prisma";
 
 import { Injectable } from "@nestjs/common";
 
-import { traverseBlockArray } from "~/lib/traverse-block-array";
-
 @Injectable()
 export class DocumentService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getUserDocuments(userId: string) {
     return await this.prismaService.document.findMany({
-      where: { ownerId: userId },
+      where: { userId },
       orderBy: { createdAt: "asc" },
     });
   }
 
   async getDocumentData(documentId: string) {
-    const blocks = await this.prismaService.block.findMany({
-      where: { documentId },
-    });
-
-    return {
-      blocks: traverseBlockArray(blocks),
-    };
+    // return await this.prismaService.block.findMany({
+    //   where: { documentId },
+    // });
+    // return {
+    //   blocks: traverseBlockArray(blocks),
+    // };
   }
 
   async createDocument(userId: string, input: CreateDocumentInput) {
     return await this.prismaService.document.create({
       data: {
         title: input.title,
-        owner: { connect: { id: userId } },
-        ...(input.createBlock
-          ? {
-              content: {
-                create: {
-                  type: "text",
-                  content: {
-                    title: [[""]],
-                    formats: {
-                      emphasis: [],
-                      fontSize: 16,
-                    },
-                    alignment: Alignment.Left,
-                    lineSpacing: 1.2,
-                  } as BlockContent,
-                },
-              },
-            }
-          : {}),
-      },
-      include: {
-        content: true,
+        user: { connect: { id: userId } },
+        content: {},
       },
     });
   }
@@ -66,24 +41,27 @@ export class DocumentService {
   async updateDocument(input: UpdateDocumentInput) {
     return await this.prismaService.document.update({
       where: { id: input.id },
-      data: { title: input.title },
+      data: {
+        ...(input.title !== undefined ? { title: input.title } : {}),
+        ...(input.content ? { content: input.content } : {}),
+      },
     });
   }
 
   async deleteDocument({ id: documentId }: DeleteDocumentInput) {
-    const deleteDocumentBlocks = this.prismaService.block.deleteMany({
-      where: { documentId },
-    });
+    // const deleteDocumentBlocks = this.prismaService.block.deleteMany({
+    //   where: { documentId },
+    // });
 
-    const deleteDocument = this.prismaService.document.delete({
+    return await this.prismaService.document.delete({
       where: { id: documentId },
     });
 
-    const [, deletedDocument] = await this.prismaService.$transaction([
-      deleteDocumentBlocks,
-      deleteDocument,
-    ]);
+    // const [, deletedDocument] = await this.prismaService.$transaction([
+    //   deleteDocumentBlocks,
+    //   deleteDocument,
+    // ]);
 
-    return deletedDocument;
+    // return deletedDocument;
   }
 }

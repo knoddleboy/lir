@@ -17,3 +17,5 @@ export { Route } from "./types/routes";
 
 export { LinkOr } from "./ui/link-or";
 export { ThemeSwitch } from "./ui/theme-switch";
+
+export { isMac } from "./util/is-mac";
