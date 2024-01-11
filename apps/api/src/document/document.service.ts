@@ -16,16 +16,20 @@ export class DocumentService {
     return await this.prismaService.document.findMany({
       where: { userId },
       orderBy: { createdAt: "asc" },
+      select: {
+        id: true,
+        title: true,
+        userId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 
   async getDocumentData(documentId: string) {
-    // return await this.prismaService.block.findMany({
-    //   where: { documentId },
-    // });
-    // return {
-    //   blocks: traverseBlockArray(blocks),
-    // };
+    return await this.prismaService.document.findUnique({
+      where: { id: documentId },
+    });
   }
 
   async createDocument(userId: string, input: CreateDocumentInput) {

@@ -57,7 +57,7 @@ export const useProseMirror = (initialDoc?: ProseMirrorNode) => {
 
         if (!prevState.doc.eq(nextState.doc)) {
           const updatedDoc = await updateDocument({
-            id: currentDocument,
+            id: currentDocument.id,
             content: nextState.doc,
           });
           documentModel.setDocument({

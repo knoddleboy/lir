@@ -24,7 +24,6 @@ export const NavigationItemMenu = ({ itemId, open, setOpen }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  // const setCurrentBlock = blockModel.setCurrentBlock;
   const currentDocument = documentModel.useCurrentDocument();
   const documents = documentModel.useDocuments();
   const documentIndex = documentModel
@@ -35,12 +34,15 @@ export const NavigationItemMenu = ({ itemId, open, setOpen }: Props) => {
     mutationKey: documentApi.documentKeys.mutation.updateDocument(),
     mutationFn: documentApi.deleteDocument,
     onSuccess: (deletedDocument) => {
-      // setCurrentBlock(null);
+      // queryClient.invalidateQueries({
+      //   queryKey: documentApi.documentKeys.query.getUserDocuments(),
+      // });
+
       documentModel.unsetDocument({
         id: deletedDocument.id,
       });
 
-      if (deletedDocument.id === currentDocument) {
+      if (deletedDocument.id === currentDocument?.id) {
         documentModel.setCurrentDocument(null);
       }
     },

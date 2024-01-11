@@ -3,14 +3,13 @@
 import { APP_NAME } from "@lir/lib";
 import { Button, Icons } from "@lir/ui";
 
-import { useRef } from "react";
 import { useDocumentTitle } from "usehooks-ts";
 
 import Link from "next/link";
 
-import { documentModel } from "~/entities/document";
 import { extractURIHash } from "~/shared";
 
+import { useGetDocumentData } from "../api";
 import { Editor } from "./editor";
 
 export type EditorBoundaryProps = {
@@ -18,11 +17,11 @@ export type EditorBoundaryProps = {
 };
 
 export const EditorBoundary = ({ documentId }: EditorBoundaryProps) => {
-  const document = useRef(documentModel.useDocument(extractURIHash(documentId)!));
+  const { data: document } = useGetDocumentData(extractURIHash(documentId)!);
 
-  useDocumentTitle(document ? document.current?.title ?? "Untitled" : APP_NAME);
+  useDocumentTitle(document ? document.title ?? "Untitled" : APP_NAME);
 
-  if (!document.current) {
+  if (!document) {
     return (
       <div className="flex h-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -44,5 +43,5 @@ export const EditorBoundary = ({ documentId }: EditorBoundaryProps) => {
     );
   }
 
-  return <Editor document={document.current} />;
+  return <Editor document={document} />;
 };

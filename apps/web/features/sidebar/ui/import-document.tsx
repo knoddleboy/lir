@@ -1,4 +1,3 @@
-import { Alignment, BlockType, type BlockProps } from "@lir/lib/schema";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +13,6 @@ import { toast } from "sonner";
 
 import { useRouter } from "next/navigation";
 
-import { blockApi, blockModel } from "~/entities/block";
 import { documentApi, documentModel } from "~/entities/document";
 import { generateDocumentURL } from "~/shared";
 
@@ -63,7 +61,6 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
 
     const createdDocument = await createDocument({
       title: name.join("."),
-      createBlock: false,
     });
     documentIdRef.current = createdDocument.id;
 
@@ -73,38 +70,42 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
     reader.readAsText(file);
   };
 
-  const { mutateAsync: createBlock } = useMutation({
-    mutationKey: blockApi.blockKeys.mutation.createBlock(),
-    mutationFn: blockApi.createBlock,
-  });
+  // const { mutateAsync: createBlock } = useMutation({
+  //   mutationKey: blockApi.blockKeys.mutation.createBlock(),
+  //   mutationFn: blockApi.createBlock,
+  // });
 
-  const parseTextFile = async (data: string) => {
-    const fileBlocks = data.split("\n\n");
-    const blocks: BlockProps[] = [];
-    let prevId: BlockProps["id"] | null = null;
-
-    for (const fileBlock of fileBlocks) {
-      const createdBlock = await createBlock({
-        type: BlockType.Text,
-        documentId: documentIdRef.current,
-        prevId,
-        content: {
-          title: [[fileBlock]],
-          formats: {
-            emphasis: [],
-            fontSize: 16,
-          },
-          alignment: Alignment.Left,
-          lineSpacing: 1.2,
-        },
-      });
-
-      prevId = createdBlock.id;
-      blocks.push(createdBlock);
-    }
-
-    blockModel.setBlocks(blocks);
+  const parseTextFile = (data: string) => {
+    console.log(data);
   };
+
+  // const parseTextFile = async (data: string) => {
+  //   const fileBlocks = data.split("\n\n");
+  //   const blocks: BlockProps[] = [];
+  //   let prevId: BlockProps["id"] | null = null;
+
+  //   for (const fileBlock of fileBlocks) {
+  //     const createdBlock = await createBlock({
+  //       type: BlockType.Text,
+  //       documentId: documentIdRef.current,
+  //       prevId,
+  //       content: {
+  //         title: [[fileBlock]],
+  //         formats: {
+  //           emphasis: [],
+  //           fontSize: 16,
+  //         },
+  //         alignment: Alignment.Left,
+  //         lineSpacing: 1.2,
+  //       },
+  //     });
+
+  //     prevId = createdBlock.id;
+  //     blocks.push(createdBlock);
+  //   }
+
+  //   blockModel.setBlocks(blocks);
+  // };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

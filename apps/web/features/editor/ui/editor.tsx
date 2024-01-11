@@ -14,7 +14,7 @@ type Props = {
 
 export const Editor = ({ document }: Props) => {
   useEffect(() => {
-    documentModel.setCurrentDocument(document.id);
+    documentModel.setCurrentDocument(document);
   }, [document]);
 
   // const { data: documentData } = useGetDocumentData(document.id);

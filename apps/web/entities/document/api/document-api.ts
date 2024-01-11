@@ -8,7 +8,6 @@ import type {
   CreateDocumentInput,
   UpdateDocumentInput,
   DeleteDocumentInput,
-  DocumentData,
   GetDocumentDataInput,
 } from "@lir/lib/schema";
 
@@ -23,7 +22,10 @@ export const documentKeys = {
 
   query: {
     getUserDocuments: () => [...documentKeys.document.root, "getUserDocuments"],
-    getDocumentData: () => [...documentKeys.document.root, "getDocumentData"],
+    getDocumentData: (documentId: string) => [
+      ...documentKeys.document.root,
+      `getDocumentData${documentId}`,
+    ],
   },
 
   mutation: {
@@ -42,7 +44,7 @@ export const getUserDocuments = async () => {
 };
 
 export const getDocumentData = async (data: GetDocumentDataInput) => {
-  const response = await apiClient.get<DocumentData, AxiosResponse<DocumentData>>(
+  const response = await apiClient.get<DocumentProps, AxiosResponse<DocumentProps>>(
     `/documents/getDocumentData/${data.documentId}`
   );
 

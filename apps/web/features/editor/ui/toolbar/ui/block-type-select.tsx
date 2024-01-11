@@ -1,132 +1,132 @@
-import { cn } from "@lir/lib";
-import { BlockType, typeFormatsMapping } from "@lir/lib/schema";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  Button,
-  Icons,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from "@lir/ui";
+// import { cn } from "@lir/lib";
+// import { BlockType, typeFormatsMapping } from "@lir/lib/schema";
+// import {
+//   DropdownMenu,
+//   DropdownMenuTrigger,
+//   Button,
+//   Icons,
+//   DropdownMenuContent,
+//   DropdownMenuRadioGroup,
+//   DropdownMenuRadioItem,
+//   DropdownMenuSeparator,
+//   DropdownMenuLabel,
+// } from "@lir/ui";
 
-import { useMutation } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+// import { useMutation } from "@tanstack/react-query";
+// import { useState, useEffect } from "react";
 
-import { blockModel, blockApi } from "~/entities/block";
+// import { blockModel, blockApi } from "~/entities/block";
 
-const blockTypeMapping: Record<BlockType, string> = {
-  [BlockType.Title]: "Title",
-  [BlockType.Heading1]: "Heading 1",
-  [BlockType.Heading2]: "Heading 2",
-  [BlockType.Text]: "No Style",
-};
+// const blockTypeMapping: Record<BlockType, string> = {
+//   [BlockType.Title]: "Title",
+//   [BlockType.Heading1]: "Heading 1",
+//   [BlockType.Heading2]: "Heading 2",
+//   [BlockType.Text]: "No Style",
+// };
 
-export const BlockTypeSelect = () => {
-  const currentBlock = blockModel.useCurrentBlock();
-  const setBlock = blockModel.setBlock;
+// export const BlockTypeSelect = () => {
+//   const currentBlock = blockModel.useCurrentBlock();
+//   const setBlock = blockModel.setBlock;
 
-  const { mutateAsync: updateBlockType } = useMutation({
-    mutationKey: blockApi.blockKeys.mutation.updateBlock(currentBlock?.id ?? ""),
-    mutationFn: blockApi.updateBlock,
-  });
+//   const { mutateAsync: updateBlockType } = useMutation({
+//     mutationKey: blockApi.blockKeys.mutation.updateBlock(currentBlock?.id ?? ""),
+//     mutationFn: blockApi.updateBlock,
+//   });
 
-  const [type, setType] = useState<BlockType>(BlockType.Text);
+//   const [type, setType] = useState<BlockType>(BlockType.Text);
 
-  useEffect(() => {
-    if (currentBlock) {
-      setType(currentBlock.type);
-    }
-  }, [currentBlock]);
+//   useEffect(() => {
+//     if (currentBlock) {
+//       setType(currentBlock.type);
+//     }
+//   }, [currentBlock]);
 
-  const handleValueChange = async (newType: BlockType) => {
-    setType(newType);
+//   const handleValueChange = async (newType: BlockType) => {
+//     setType(newType);
 
-    if (!currentBlock || currentBlock.type === newType) return;
+//     if (!currentBlock || currentBlock.type === newType) return;
 
-    const newContent = {
-      formats: {
-        ...currentBlock.content.formats,
-        ...typeFormatsMapping[newType],
-      },
-    };
+//     const newContent = {
+//       formats: {
+//         ...currentBlock.content.formats,
+//         ...typeFormatsMapping[newType],
+//       },
+//     };
 
-    setBlock({
-      id: currentBlock.id,
-      setType: "update",
-      type: newType,
-      content: newContent,
-    });
+//     setBlock({
+//       id: currentBlock.id,
+//       setType: "update",
+//       type: newType,
+//       content: newContent,
+//     });
 
-    await updateBlockType({
-      id: currentBlock.id,
-      type: newType,
-      content: newContent,
-    });
-  };
+//     await updateBlockType({
+//       id: currentBlock.id,
+//       type: newType,
+//       content: newContent,
+//     });
+//   };
 
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild disabled={!!!currentBlock}>
-        <Button
-          className={cn(
-            "border-muted-foreground/30 disabled:hover:bg-muted-foreground/30 hover:bg-muted-foreground/30 text-primary h-5 w-48 select-none justify-between rounded-sm border bg-transparent px-1 py-0 text-left text-xs transition-none hover:border-transparent",
-            !!!currentBlock && "opacity-40"
-          )}
-        >
-          {blockTypeMapping[type]}
-          <Icons.chevronDown size={12} strokeWidth={3} />
-        </Button>
-      </DropdownMenuTrigger>
+//   return (
+//     <DropdownMenu>
+//       <DropdownMenuTrigger asChild disabled={!!!currentBlock}>
+//         <Button
+//           className={cn(
+//             "border-muted-foreground/30 disabled:hover:bg-muted-foreground/30 hover:bg-muted-foreground/30 text-primary h-5 w-48 select-none justify-between rounded-sm border bg-transparent px-1 py-0 text-left text-xs transition-none hover:border-transparent",
+//             !!!currentBlock && "opacity-40"
+//           )}
+//         >
+//           {blockTypeMapping[type]}
+//           <Icons.chevronDown size={12} strokeWidth={3} />
+//         </Button>
+//       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="w-48">
-        <DropdownMenuRadioGroup
-          value={type}
-          onValueChange={async (value) => {
-            await handleValueChange(value as BlockType);
-          }}
-        >
-          <div className="[&>*]:py-0.5 [&>*]:pl-1.5 [&>*]:pr-2">
-            <DropdownMenuRadioItem
-              value={BlockType.Text}
-              className="text-accent-foreground text-xs"
-            >
-              {blockTypeMapping[BlockType.Text]}
-            </DropdownMenuRadioItem>
-          </div>
+//       <DropdownMenuContent className="w-48">
+//         <DropdownMenuRadioGroup
+//           value={type}
+//           onValueChange={async (value) => {
+//             await handleValueChange(value as BlockType);
+//           }}
+//         >
+//           <div className="[&>*]:py-0.5 [&>*]:pl-1.5 [&>*]:pr-2">
+//             <DropdownMenuRadioItem
+//               value={BlockType.Text}
+//               className="text-accent-foreground text-xs"
+//             >
+//               {blockTypeMapping[BlockType.Text]}
+//             </DropdownMenuRadioItem>
+//           </div>
 
-          <DropdownMenuSeparator />
+//           <DropdownMenuSeparator />
 
-          <DropdownMenuLabel className="text-accent-foreground/40 select-none px-2 py-1 text-xs font-bold">
-            Paragraph Styles
-          </DropdownMenuLabel>
+//           <DropdownMenuLabel className="text-accent-foreground/40 select-none px-2 py-1 text-xs font-bold">
+//             Paragraph Styles
+//           </DropdownMenuLabel>
 
-          <div className="[&>*]:py-0.5 [&>*]:pl-1.5 [&>*]:pr-2">
-            <DropdownMenuRadioItem
-              value={BlockType.Title}
-              className="text-2xl font-bold"
-            >
-              {blockTypeMapping[BlockType.Title]}
-            </DropdownMenuRadioItem>
+//           <div className="[&>*]:py-0.5 [&>*]:pl-1.5 [&>*]:pr-2">
+//             <DropdownMenuRadioItem
+//               value={BlockType.Title}
+//               className="text-2xl font-bold"
+//             >
+//               {blockTypeMapping[BlockType.Title]}
+//             </DropdownMenuRadioItem>
 
-            <DropdownMenuRadioItem
-              value={BlockType.Heading1}
-              className="text-lg font-bold"
-            >
-              {blockTypeMapping[BlockType.Heading1]}
-            </DropdownMenuRadioItem>
+//             <DropdownMenuRadioItem
+//               value={BlockType.Heading1}
+//               className="text-lg font-bold"
+//             >
+//               {blockTypeMapping[BlockType.Heading1]}
+//             </DropdownMenuRadioItem>
 
-            <DropdownMenuRadioItem
-              value={BlockType.Heading2}
-              className="text-base font-semibold"
-            >
-              {blockTypeMapping[BlockType.Heading2]}
-            </DropdownMenuRadioItem>
-          </div>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
+//             <DropdownMenuRadioItem
+//               value={BlockType.Heading2}
+//               className="text-base font-semibold"
+//             >
+//               {blockTypeMapping[BlockType.Heading2]}
+//             </DropdownMenuRadioItem>
+//           </div>
+//         </DropdownMenuRadioGroup>
+//       </DropdownMenuContent>
+//     </DropdownMenu>
+//   );
+// };

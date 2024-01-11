@@ -33,16 +33,16 @@ export const Documents = () => {
   });
 
   useEffect(() => {
-    if (userDocuments?.length && !documents.length) {
+    if (userDocuments?.length) {
       setDocuments(userDocuments);
     }
-  }, [documents, userDocuments, setDocuments]);
+  }, [userDocuments, setDocuments]);
 
   const handleCreateDocument = async () => {
     const createdDocument = await createDocument({
       title: null,
-      createBlock: true,
     });
+
     router.push(generateDocumentURL(createdDocument.title, createdDocument.id));
   };
 
