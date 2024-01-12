@@ -22,8 +22,8 @@ import {
 
 const LineSpacingSelectInner = () => {
   const document = documentModel.useCurrentDocument();
-  const editorView = editorModel.useEditorStore().view?.current;
-  const editorState = editorModel.useEditorStore().state;
+  const editorView = editorModel.useEditorStore((state) => state.view?.current);
+  const editorState = editorModel.useEditorStore((state) => state.state);
   const disabled = !document || !editorView || !editorState;
 
   const [currentLineSpacing, setCurrentLineSpacing] =

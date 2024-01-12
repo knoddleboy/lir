@@ -8,7 +8,7 @@ import { editorModel, setAlignment, type Alignment } from "~/entities/editor";
 
 export const AlignmentFormats = () => {
   const document = documentModel.useCurrentDocument();
-  const editorView = editorModel.useEditorStore().view?.current;
+  const editorView = editorModel.useEditorStore((state) => state.view?.current);
   const disabled = !document || !editorView;
 
   const applyAlignment = useCallback(
