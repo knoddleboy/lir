@@ -10,7 +10,7 @@ import {
 } from "@lir/ui";
 
 import { type MarkType } from "prosemirror-model";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { documentModel } from "~/entities/document";
 import { editorModel } from "~/entities/editor";
@@ -24,74 +24,29 @@ enum Mark {
 
 export const MarkSelect = () => {
   const document = documentModel.useCurrentDocument();
-  const editorSchema = editorModel.useEditorStore().schema;
   const editorView = editorModel.useEditorStore().view?.current;
   const editorState = editorModel.useEditorStore().state;
-
-  const disabled = !document || !editorSchema || !editorView || !editorState;
+  const editorSchema = editorState?.schema;
+  const disabled = !document || !editorView || !editorState || !editorSchema;
 
   const [currentMark, setCurrentMark] = useState<Mark>(Mark.Regular);
 
-  const applyMark = (mark: Mark) => {
-    if (!editorView) return;
+  const isMarkActive = useCallback(
+    (markType: MarkType | undefined) => {
+      if (disabled || !markType) return false;
 
-    // Keep selection.
-    editorView.focus();
+      const { state } = editorView;
+      const { from, $from, to, empty } = state.selection;
 
-    const { state } = editorView;
-    const { from, to } = state.selection;
-    let transaction = state.tr;
+      if (empty) {
+        return !!markType.isInSet(state.storedMarks || $from.marks());
+      }
 
-    if (mark === currentMark) {
-      return;
-    }
-
-    if (mark === Mark.Regular) {
-      transaction = transaction.removeMark(from, to, editorSchema.marks.strong);
-      transaction = transaction.removeMark(from, to, editorSchema.marks.em);
-    }
-
-    if (mark === Mark.Bold) {
-      transaction = transaction.removeMark(from, to, editorSchema.marks.em);
-      transaction = transaction.addMark(
-        from,
-        to,
-        editorSchema.marks.strong.create()
-      );
-    }
-
-    if (mark === Mark.Italic) {
-      transaction = transaction.removeMark(from, to, editorSchema.marks.strong);
-      transaction = transaction.addMark(from, to, editorSchema.marks.em.create());
-    }
-
-    if (mark === Mark.BoldItalic) {
-      transaction = transaction.addMark(
-        from,
-        to,
-        editorSchema.marks.strong.create()
-      );
-      transaction = transaction.addMark(from, to, editorSchema.marks.em.create());
-    }
-
-    if (transaction.docChanged) {
-      editorView.dispatch(transaction);
-    }
-
-    setCurrentMark(mark);
-  };
-
-  const isMarkActive = (markType: MarkType | undefined) => {
-    if (!editorState || !markType) return false;
-
-    const { from, $from, to, empty } = editorState.selection;
-
-    if (empty) {
-      return !!markType.isInSet(editorState.storedMarks || $from.marks());
-    }
-
-    return editorState.doc.rangeHasMark(from, to, markType);
-  };
+      return state.doc.rangeHasMark(from, to, markType);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [editorView]
+  );
 
   const isBold = isMarkActive(editorSchema?.marks.strong);
   const isItalic = isMarkActive(editorSchema?.marks.em);
@@ -115,10 +70,56 @@ export const MarkSelect = () => {
     setCurrentMark(Mark.Regular);
   }, [editorState, isBold, isItalic]);
 
+  const applyMark = useCallback(
+    (mark: Mark) => {
+      if (disabled) return;
+
+      // Keep selection.
+      editorView.focus();
+
+      const { state } = editorView;
+      const { from, to } = state.selection;
+      let transaction = state.tr;
+      const marks = editorSchema.marks;
+
+      if (mark === currentMark) {
+        return;
+      }
+
+      if (mark === Mark.Regular) {
+        transaction = transaction.removeMark(from, to, marks.strong);
+        transaction = transaction.removeMark(from, to, marks.em);
+      }
+
+      if (mark === Mark.Bold) {
+        transaction = transaction.removeMark(from, to, marks.em);
+        transaction = transaction.addMark(from, to, marks.strong.create());
+      }
+
+      if (mark === Mark.Italic) {
+        transaction = transaction.removeMark(from, to, marks.strong);
+        transaction = transaction.addMark(from, to, marks.em.create());
+      }
+
+      if (mark === Mark.BoldItalic) {
+        transaction = transaction.addMark(from, to, marks.strong.create());
+        transaction = transaction.addMark(from, to, marks.em.create());
+      }
+
+      if (transaction.docChanged) {
+        editorView.dispatch(transaction);
+      }
+
+      setCurrentMark(mark);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [editorView, currentMark]
+  );
+
   return (
     <DropdownMenu
       onOpenChange={() => {
-        editorView.focus();
+        editorView?.focus();
       }}
     >
       <DropdownMenuTrigger asChild disabled={disabled}>

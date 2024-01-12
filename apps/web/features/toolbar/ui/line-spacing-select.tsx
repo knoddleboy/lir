@@ -9,7 +9,7 @@ import {
   DropdownMenuRadioItem,
 } from "@lir/ui";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { documentModel } from "~/entities/document";
 import {
@@ -22,18 +22,16 @@ import {
 
 const LineSpacingSelectInner = () => {
   const document = documentModel.useCurrentDocument();
-  const editorSchema = editorModel.useEditorStore().schema;
   const editorView = editorModel.useEditorStore().view?.current;
   const editorState = editorModel.useEditorStore().state;
-
-  const disabled = !document || !editorSchema || !editorView || !editorState;
+  const disabled = !document || !editorView || !editorState;
 
   const [currentLineSpacing, setCurrentLineSpacing] =
     useState<LineSpacing>(defaultLineSpacing);
 
   useEffect(() => {
     const getSelectionLineSpacing = () => {
-      if (!editorState) return defaultLineSpacing;
+      if (disabled) return defaultLineSpacing;
 
       const { from, to } = editorState.selection;
       let selectionLineSpacing: LineSpacing = defaultLineSpacing;
@@ -50,24 +48,29 @@ const LineSpacingSelectInner = () => {
     };
 
     setCurrentLineSpacing(getSelectionLineSpacing());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editorState]);
 
-  const applyLineSpacing = (lineSpacing: LineSpacing) => {
-    if (!editorView) return;
+  const applyLineSpacing = useCallback(
+    (lineSpacing: LineSpacing) => {
+      if (disabled) return;
 
-    // Keep selection.
-    editorView.focus();
+      // Keep selection.
+      editorView.focus();
 
-    const { state, dispatch } = editorView;
-    if (setLineSpacing(lineSpacing)(state, dispatch)) {
-      setCurrentLineSpacing(lineSpacing);
-    }
-  };
+      const { state, dispatch } = editorView;
+      if (setLineSpacing(lineSpacing)(state, dispatch)) {
+        setCurrentLineSpacing(lineSpacing);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [editorView]
+  );
 
   return (
     <DropdownMenu
       onOpenChange={() => {
-        editorView.focus();
+        editorView?.focus();
       }}
     >
       <DropdownMenuTrigger asChild disabled={disabled}>

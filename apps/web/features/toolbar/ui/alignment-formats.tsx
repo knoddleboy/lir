@@ -1,34 +1,38 @@
 import { cn } from "@lir/lib";
 import { Button, Icons } from "@lir/ui";
 
+import { useCallback } from "react";
+
 import { documentModel } from "~/entities/document";
 import { editorModel, setAlignment, type Alignment } from "~/entities/editor";
 
 export const AlignmentFormats = () => {
   const document = documentModel.useCurrentDocument();
-  const editorSchema = editorModel.useEditorStore().schema;
   const editorView = editorModel.useEditorStore().view?.current;
-  const editorState = editorModel.useEditorStore().state;
+  const disabled = !document || !editorView;
 
-  const disabled = !document || !editorSchema || !editorView || !editorState;
+  const applyAlignment = useCallback(
+    (alignment: Alignment) => {
+      if (disabled) return;
 
-  const applyAlignment = (alignment: Alignment) => {
-    if (!editorView) return;
+      // Keep selection.
+      editorView.focus();
 
-    // Keep selection.
-    editorView.focus();
+      const { state, dispatch } = editorView;
+      setAlignment(alignment)(state, dispatch);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [editorView]
+  );
 
-    const { state, dispatch } = editorView;
-    setAlignment(alignment)(state, dispatch);
-  };
+  const getCurrentAlignment = useCallback(() => {
+    if (disabled) return;
 
-  const getCurrentAlignment = () => {
-    if (!editorState) return;
-
-    const { from, to } = editorState.selection;
+    const { state } = editorView;
+    const { from, to } = state.selection;
     let alignment: Alignment = "left";
 
-    editorState.doc.nodesBetween(from, to, (node) => {
+    state.doc.nodesBetween(from, to, (node) => {
       if (["heading", "paragraph"].includes(node.type.name)) {
         if (node.attrs.align) {
           alignment = node.attrs.align;
@@ -37,7 +41,8 @@ export const AlignmentFormats = () => {
     });
 
     return alignment as Alignment;
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editorView]);
 
   const isLeftAligned = getCurrentAlignment() === "left";
   const isCenterAligned = getCurrentAlignment() === "center";

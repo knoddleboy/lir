@@ -9,7 +9,7 @@ import {
   DropdownMenuRadioItem,
 } from "@lir/ui";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { documentModel } from "~/entities/document";
 import {
@@ -22,17 +22,15 @@ import {
 
 export const FontSizeSelect = () => {
   const document = documentModel.useCurrentDocument();
-  const editorSchema = editorModel.useEditorStore().schema;
   const editorView = editorModel.useEditorStore().view?.current;
   const editorState = editorModel.useEditorStore().state;
-
-  const disabled = !document || !editorSchema || !editorView || !editorState;
+  const disabled = !document || !editorView || !editorState;
 
   const [currentFontSize, setCurrentFontSize] = useState<FontSize>(defaultFontSize);
 
   useEffect(() => {
     const getSelectionFontSize = (): FontSize => {
-      if (!editorState) return defaultFontSize;
+      if (disabled) return defaultFontSize;
 
       const { from, to } = editorState.selection;
       let selectionFontSize: FontSize = defaultFontSize;
@@ -51,24 +49,29 @@ export const FontSizeSelect = () => {
     };
 
     setCurrentFontSize(getSelectionFontSize());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editorState]);
 
-  const applyFontSize = (size: FontSize) => {
-    if (!editorView) return currentFontSize;
+  const applyFontSize = useCallback(
+    (size: FontSize) => {
+      if (disabled) return currentFontSize;
 
-    // Keep selection.
-    editorView.focus();
+      // Keep selection.
+      editorView.focus();
 
-    const { state, dispatch } = editorView;
-    if (setFontSize(size)(state, dispatch)) {
-      setCurrentFontSize(size);
-    }
-  };
+      const { state, dispatch } = editorView;
+      if (setFontSize(size)(state, dispatch)) {
+        setCurrentFontSize(size);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [editorView, currentFontSize]
+  );
 
   return (
     <DropdownMenu
       onOpenChange={() => {
-        editorView.focus();
+        editorView?.focus();
       }}
     >
       <DropdownMenuTrigger asChild disabled={disabled}>

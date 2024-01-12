@@ -3,44 +3,53 @@ import { Button } from "@lir/ui";
 
 import { toggleMark } from "prosemirror-commands";
 import { type MarkType } from "prosemirror-model";
+import { useCallback } from "react";
 
 import { documentModel } from "~/entities/document";
 import { editorModel } from "~/entities/editor";
 
 export const MarkFormats = () => {
   const document = documentModel.useCurrentDocument();
-  const editorSchema = editorModel.useEditorStore().schema;
   const editorView = editorModel.useEditorStore().view?.current;
   const editorState = editorModel.useEditorStore().state;
+  const editorSchema = editorState?.schema;
+  const disabled = !document || !editorView || !editorState;
 
-  const disabled = !document || !editorSchema || !editorView || !editorState;
+  const isMarkActive = useCallback(
+    (markType: MarkType | undefined) => {
+      if (disabled || !markType) return false;
 
-  const applyMark = (markType: MarkType) => {
-    if (!editorView) return;
+      const { state } = editorView;
+      const { from, $from, to, empty } = state.selection;
 
-    // Keep selection.
-    editorView.focus();
+      if (empty) {
+        return !!markType.isInSet(state.storedMarks || $from.marks());
+      }
 
-    const { state, dispatch } = editorView;
-    toggleMark(markType)(state, dispatch);
-  };
-
-  const isMarkActive = (markType: MarkType | undefined) => {
-    if (!editorState || !markType) return false;
-
-    const { from, $from, to, empty } = editorState.selection;
-
-    if (empty) {
-      return !!markType.isInSet(editorState.storedMarks || $from.marks());
-    }
-
-    return editorState.doc.rangeHasMark(from, to, markType);
-  };
+      return state.doc.rangeHasMark(from, to, markType);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [editorView]
+  );
 
   const isBold = isMarkActive(editorSchema?.marks.strong);
   const isItalic = isMarkActive(editorSchema?.marks.em);
   const isUnderline = isMarkActive(editorSchema?.marks.underline);
   const isStrikethrough = isMarkActive(editorSchema?.marks.strikethrough);
+
+  const applyMark = useCallback(
+    (markType: MarkType | undefined) => {
+      if (disabled || !markType) return;
+
+      // Keep selection.
+      editorView.focus();
+
+      const { state, dispatch } = editorView;
+      toggleMark(markType)(state, dispatch);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [editorView]
+  );
 
   return (
     <div className={cn("flex items-center gap-0.5", disabled && "opacity-40")}>
@@ -52,7 +61,7 @@ export const MarkFormats = () => {
             "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground"
         )}
         onClick={() => {
-          applyMark(editorSchema.marks.strong);
+          applyMark(editorSchema?.marks.strong);
         }}
         disabled={disabled}
       >
@@ -67,7 +76,7 @@ export const MarkFormats = () => {
             "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground"
         )}
         onClick={() => {
-          applyMark(editorSchema.marks.em);
+          applyMark(editorSchema?.marks.em);
         }}
         disabled={disabled}
       >
@@ -82,7 +91,7 @@ export const MarkFormats = () => {
             "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground"
         )}
         onClick={() => {
-          applyMark(editorSchema.marks.underline);
+          applyMark(editorSchema?.marks.underline);
         }}
         disabled={disabled}
       >
@@ -97,7 +106,7 @@ export const MarkFormats = () => {
             "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground"
         )}
         onClick={() => {
-          applyMark(editorSchema.marks.strikethrough);
+          applyMark(editorSchema?.marks.strikethrough);
         }}
         disabled={disabled}
       >

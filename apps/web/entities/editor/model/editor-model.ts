@@ -1,54 +1,35 @@
-import { type Schema } from "prosemirror-model";
-import { type EditorState as PMEditorState } from "prosemirror-state";
-import { type EditorView } from "prosemirror-view";
-import { type MutableRefObject } from "react";
+import type { EditorState } from "prosemirror-state";
+import type { EditorView } from "prosemirror-view";
+import type { MutableRefObject } from "react";
 import { create, type StateCreator } from "zustand";
 
-import type { SchemaNodes, SchemaMarks } from "../core/schema";
-
 type EditorViewState = {
-  view: MutableRefObject<EditorView>;
+  view: MutableRefObject<EditorView> | null;
   setView: (view: MutableRefObject<EditorView>) => void;
 };
 
-type EditorSchemaState = {
-  schema: Schema<SchemaNodes, SchemaMarks>;
-  setSchema: (schema: Schema) => void;
-};
-
 type EditorStateState = {
-  state: PMEditorState;
-  setState: (state: PMEditorState) => void;
+  state: EditorState | null;
+  setState: (state: EditorState) => void;
 };
 
 const createEditorViewSlice: StateCreator<EditorViewState> = (set) => ({
-  view: null!,
+  view: null,
 
   setView: (view) => {
     set({ view });
   },
 });
 
-const createEditorSchemaSlice: StateCreator<EditorSchemaState> = (set) => ({
-  schema: null!,
-
-  setSchema: (schema) => {
-    set({ schema });
-  },
-});
-
 const createEditorStateSlice: StateCreator<EditorStateState> = (set) => ({
-  state: null!,
+  state: null,
 
   setState: (state) => {
     set({ state });
   },
 });
 
-type EditorState = EditorViewState & EditorSchemaState & EditorStateState;
-
-export const useEditorStore = create<EditorState>((...a) => ({
+export const useEditorStore = create<EditorViewState & EditorStateState>((...a) => ({
   ...createEditorViewSlice(...a),
-  ...createEditorSchemaSlice(...a),
   ...createEditorStateSlice(...a),
 }));

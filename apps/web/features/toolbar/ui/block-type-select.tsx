@@ -12,7 +12,7 @@ import {
 } from "@lir/ui";
 
 import { type Attrs, type NodeType } from "prosemirror-model";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { documentModel } from "~/entities/document";
 import { editorModel, setBlockType, type SchemaNodes } from "~/entities/editor";
@@ -26,59 +26,15 @@ enum BlockType {
 
 export const BlockTypeSelect = () => {
   const document = documentModel.useCurrentDocument();
-  const editorSchema = editorModel.useEditorStore().schema;
   const editorView = editorModel.useEditorStore().view?.current;
   const editorState = editorModel.useEditorStore().state;
-
-  const disabled = !document || !editorSchema || !editorView || !editorState;
+  const disabled = !document || !editorView || !editorState;
 
   const [currentBlockType, setCurrentBlockType] = useState(BlockType.Paragraph);
 
-  const applyBlockType = (blockType: BlockType) => {
-    if (!editorView) return;
-
-    // Keep selection.
-    editorView.focus();
-
-    let newBlockType: NodeType;
-    let attrs: Attrs = {};
-
-    switch (blockType) {
-      case currentBlockType:
-        return;
-
-      case BlockType.Paragraph:
-        newBlockType = editorSchema.nodes.paragraph;
-        break;
-
-      case BlockType.Title:
-        newBlockType = editorSchema.nodes.heading;
-        attrs = { level: 1 };
-        break;
-
-      case BlockType.Heading1:
-        newBlockType = editorSchema.nodes.heading;
-        attrs = { level: 2 };
-        break;
-
-      case BlockType.Heading2:
-        newBlockType = editorSchema.nodes.heading;
-        attrs = { level: 3 };
-        break;
-
-      default:
-        newBlockType = editorSchema.nodes.paragraph;
-    }
-
-    const { state, dispatch } = editorView;
-    if (setBlockType(newBlockType, attrs)(state, dispatch)) {
-      setCurrentBlockType(blockType);
-    }
-  };
-
   useEffect(() => {
     const getSelectionBlockType = () => {
-      if (!editorState) return BlockType.Paragraph;
+      if (disabled) return BlockType.Paragraph;
 
       const { $from } = editorState.selection;
       let selectionBlock: {
@@ -118,12 +74,62 @@ export const BlockTypeSelect = () => {
     };
 
     setCurrentBlockType(getSelectionBlockType());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editorState]);
+
+  const applyBlockType = useCallback(
+    (blockType: BlockType) => {
+      if (disabled) return;
+
+      // Keep selection.
+      editorView.focus();
+
+      const {
+        state: { schema },
+      } = editorView;
+      let newBlockType: NodeType;
+      let attrs: Attrs = {};
+
+      switch (blockType) {
+        case currentBlockType:
+          return;
+
+        case BlockType.Paragraph:
+          newBlockType = schema.nodes.paragraph;
+          break;
+
+        case BlockType.Title:
+          newBlockType = schema.nodes.heading;
+          attrs = { level: 1 };
+          break;
+
+        case BlockType.Heading1:
+          newBlockType = schema.nodes.heading;
+          attrs = { level: 2 };
+          break;
+
+        case BlockType.Heading2:
+          newBlockType = schema.nodes.heading;
+          attrs = { level: 3 };
+          break;
+
+        default:
+          newBlockType = schema.nodes.paragraph;
+      }
+
+      const { state, dispatch } = editorView;
+      if (setBlockType(newBlockType, attrs)(state, dispatch)) {
+        setCurrentBlockType(blockType);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [editorView, currentBlockType]
+  );
 
   return (
     <DropdownMenu
       onOpenChange={() => {
-        editorView.focus();
+        editorView?.focus();
       }}
     >
       <DropdownMenuTrigger asChild disabled={disabled}>

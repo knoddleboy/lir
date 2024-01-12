@@ -18,7 +18,7 @@ const pDOM = (node: Node): DOMOutputSpec => {
   ];
 };
 const hDOM = (node: Node): DOMOutputSpec => {
-  let classes = "font-bold ";
+  let classes = "";
 
   switch (node.attrs.level) {
     case 1:

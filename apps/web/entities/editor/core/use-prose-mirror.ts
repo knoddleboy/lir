@@ -28,7 +28,6 @@ export const useProseMirror = (initialDoc?: ProseMirrorNode) => {
   const currentDocument = documentModel.useCurrentDocument();
 
   const setEditorView = editorModel.useEditorStore().setView;
-  const setEditorSchema = editorModel.useEditorStore().setSchema;
   const setEditorState = editorModel.useEditorStore().setState;
 
   const { mutateAsync: updateDocument } = useMutation({
@@ -40,7 +39,6 @@ export const useProseMirror = (initialDoc?: ProseMirrorNode) => {
     if (!currentDocument) return;
 
     const schema = new Schema({ nodes, marks });
-    setEditorSchema(schema);
 
     const plugins: Plugin[] = [
       keymap(baseKeymap),
