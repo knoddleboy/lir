@@ -1,132 +1,187 @@
-// import { cn } from "@lir/lib";
-// import { BlockType, typeFormatsMapping } from "@lir/lib/schema";
-// import {
-//   DropdownMenu,
-//   DropdownMenuTrigger,
-//   Button,
-//   Icons,
-//   DropdownMenuContent,
-//   DropdownMenuRadioGroup,
-//   DropdownMenuRadioItem,
-//   DropdownMenuSeparator,
-//   DropdownMenuLabel,
-// } from "@lir/ui";
+import { cn } from "@lir/lib";
+import {
+  Icons,
+  Button,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@lir/ui";
 
-// import { useMutation } from "@tanstack/react-query";
-// import { useState, useEffect } from "react";
+import { type Attrs, type NodeType } from "prosemirror-model";
+import { useEffect, useState } from "react";
 
-// import { blockModel, blockApi } from "~/entities/block";
+import { documentModel } from "~/entities/document";
+import { editorModel } from "~/entities/editor";
+import { setBlockType } from "~/features/editor/lib/core/commands";
 
-// const blockTypeMapping: Record<BlockType, string> = {
-//   [BlockType.Title]: "Title",
-//   [BlockType.Heading1]: "Heading 1",
-//   [BlockType.Heading2]: "Heading 2",
-//   [BlockType.Text]: "No Style",
-// };
+enum BlockType {
+  Title = "Title",
+  Heading1 = "Heading1",
+  Heading2 = "Heading2",
+  Paragraph = "No style",
+}
 
-// export const BlockTypeSelect = () => {
-//   const currentBlock = blockModel.useCurrentBlock();
-//   const setBlock = blockModel.setBlock;
+export const BlockTypeSelect = () => {
+  const document = documentModel.useCurrentDocument();
+  const editorSchema = editorModel.useEditorStore().schema;
+  const editorView = editorModel.useEditorStore().view?.current;
+  const editorState = editorModel.useEditorStore().state;
 
-//   const { mutateAsync: updateBlockType } = useMutation({
-//     mutationKey: blockApi.blockKeys.mutation.updateBlock(currentBlock?.id ?? ""),
-//     mutationFn: blockApi.updateBlock,
-//   });
+  const disabled = !document || !editorSchema || !editorView || !editorState;
 
-//   const [type, setType] = useState<BlockType>(BlockType.Text);
+  const [currentBlockType, setCurrentBlockType] = useState(BlockType.Paragraph);
 
-//   useEffect(() => {
-//     if (currentBlock) {
-//       setType(currentBlock.type);
-//     }
-//   }, [currentBlock]);
+  const applyBlockType = (blockType: BlockType) => {
+    if (!editorView) return;
 
-//   const handleValueChange = async (newType: BlockType) => {
-//     setType(newType);
+    // Keep selection.
+    editorView.focus();
 
-//     if (!currentBlock || currentBlock.type === newType) return;
+    let newBlockType: NodeType;
+    let attrs: Attrs = {};
 
-//     const newContent = {
-//       formats: {
-//         ...currentBlock.content.formats,
-//         ...typeFormatsMapping[newType],
-//       },
-//     };
+    switch (blockType) {
+      case currentBlockType:
+        return;
 
-//     setBlock({
-//       id: currentBlock.id,
-//       setType: "update",
-//       type: newType,
-//       content: newContent,
-//     });
+      case BlockType.Paragraph:
+        newBlockType = editorSchema.nodes.paragraph;
+        break;
 
-//     await updateBlockType({
-//       id: currentBlock.id,
-//       type: newType,
-//       content: newContent,
-//     });
-//   };
+      case BlockType.Title:
+        newBlockType = editorSchema.nodes.heading;
+        attrs = { level: 1 };
+        break;
 
-//   return (
-//     <DropdownMenu>
-//       <DropdownMenuTrigger asChild disabled={!!!currentBlock}>
-//         <Button
-//           className={cn(
-//             "border-muted-foreground/30 disabled:hover:bg-muted-foreground/30 hover:bg-muted-foreground/30 text-primary h-5 w-48 select-none justify-between rounded-sm border bg-transparent px-1 py-0 text-left text-xs transition-none hover:border-transparent",
-//             !!!currentBlock && "opacity-40"
-//           )}
-//         >
-//           {blockTypeMapping[type]}
-//           <Icons.chevronDown size={12} strokeWidth={3} />
-//         </Button>
-//       </DropdownMenuTrigger>
+      case BlockType.Heading1:
+        newBlockType = editorSchema.nodes.heading;
+        attrs = { level: 2 };
+        break;
 
-//       <DropdownMenuContent className="w-48">
-//         <DropdownMenuRadioGroup
-//           value={type}
-//           onValueChange={async (value) => {
-//             await handleValueChange(value as BlockType);
-//           }}
-//         >
-//           <div className="[&>*]:py-0.5 [&>*]:pl-1.5 [&>*]:pr-2">
-//             <DropdownMenuRadioItem
-//               value={BlockType.Text}
-//               className="text-accent-foreground text-xs"
-//             >
-//               {blockTypeMapping[BlockType.Text]}
-//             </DropdownMenuRadioItem>
-//           </div>
+      case BlockType.Heading2:
+        newBlockType = editorSchema.nodes.heading;
+        attrs = { level: 3 };
+        break;
 
-//           <DropdownMenuSeparator />
+      default:
+        newBlockType = editorSchema.nodes.paragraph;
+    }
 
-//           <DropdownMenuLabel className="text-accent-foreground/40 select-none px-2 py-1 text-xs font-bold">
-//             Paragraph Styles
-//           </DropdownMenuLabel>
+    const { state, dispatch } = editorView;
+    if (setBlockType(newBlockType, attrs)(state, dispatch)) {
+      setCurrentBlockType(blockType);
+    }
+  };
 
-//           <div className="[&>*]:py-0.5 [&>*]:pl-1.5 [&>*]:pr-2">
-//             <DropdownMenuRadioItem
-//               value={BlockType.Title}
-//               className="text-2xl font-bold"
-//             >
-//               {blockTypeMapping[BlockType.Title]}
-//             </DropdownMenuRadioItem>
+  const getSelectionBlockType = () => {
+    if (!editorState) return BlockType.Paragraph;
 
-//             <DropdownMenuRadioItem
-//               value={BlockType.Heading1}
-//               className="text-lg font-bold"
-//             >
-//               {blockTypeMapping[BlockType.Heading1]}
-//             </DropdownMenuRadioItem>
+    const { $from } = editorState.selection;
+    let selectionBlock = {
+      name: "paragraph" as NodeType["name"],
+      attrs: {} as Attrs,
+    };
 
-//             <DropdownMenuRadioItem
-//               value={BlockType.Heading2}
-//               className="text-base font-semibold"
-//             >
-//               {blockTypeMapping[BlockType.Heading2]}
-//             </DropdownMenuRadioItem>
-//           </div>
-//         </DropdownMenuRadioGroup>
-//       </DropdownMenuContent>
-//     </DropdownMenu>
-//   );
-// };
+    for (let depth = $from.depth; depth > 0; depth--) {
+      const node = $from.node(depth);
+      if (node.isBlock) {
+        selectionBlock = {
+          name: node.type.name,
+          attrs: node.attrs,
+        };
+      }
+    }
+
+    if (selectionBlock.name === "paragraph") {
+      return BlockType.Paragraph;
+    }
+
+    if (selectionBlock.name === "heading") {
+      switch (selectionBlock.attrs.level) {
+        case 1:
+          return BlockType.Title;
+        case 2:
+          return BlockType.Heading1;
+        case 3:
+          return BlockType.Heading2;
+      }
+    }
+
+    return BlockType.Paragraph;
+  };
+
+  useEffect(() => {
+    setCurrentBlockType(getSelectionBlockType());
+  }, [editorState]);
+
+  return (
+    <DropdownMenu
+      onOpenChange={() => {
+        editorView.focus();
+      }}
+    >
+      <DropdownMenuTrigger asChild disabled={disabled}>
+        <Button
+          className={cn(
+            "border-muted-foreground/30 disabled:hover:bg-muted-foreground/30 hover:bg-muted-foreground/30 text-primary h-5 w-48 select-none justify-between rounded-sm border bg-transparent px-1 py-0 text-left text-xs transition-none hover:border-transparent",
+            disabled && "opacity-40"
+          )}
+        >
+          {currentBlockType}
+          <Icons.chevronDown size={12} strokeWidth={3} />
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent className="w-48">
+        <DropdownMenuRadioGroup
+          value={currentBlockType}
+          onValueChange={(value) => {
+            applyBlockType(value as BlockType);
+          }}
+        >
+          <div className="[&>*]:py-0.5 [&>*]:pl-1.5 [&>*]:pr-2">
+            <DropdownMenuRadioItem
+              value={BlockType.Paragraph}
+              className="text-accent-foreground text-xs"
+            >
+              {BlockType.Paragraph}
+            </DropdownMenuRadioItem>
+          </div>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuLabel className="text-accent-foreground/40 select-none px-2 py-1 text-xs font-bold">
+            Paragraph Styles
+          </DropdownMenuLabel>
+
+          <div className="[&>*]:py-0.5 [&>*]:pl-1.5 [&>*]:pr-2">
+            <DropdownMenuRadioItem
+              value={BlockType.Title}
+              className="text-2xl font-bold"
+            >
+              {BlockType.Title}
+            </DropdownMenuRadioItem>
+
+            <DropdownMenuRadioItem
+              value={BlockType.Heading1}
+              className="text-lg font-bold"
+            >
+              {BlockType.Heading1}
+            </DropdownMenuRadioItem>
+
+            <DropdownMenuRadioItem
+              value={BlockType.Heading2}
+              className="text-base font-semibold"
+            >
+              {BlockType.Heading2}
+            </DropdownMenuRadioItem>
+          </div>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};

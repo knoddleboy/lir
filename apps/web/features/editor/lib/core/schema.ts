@@ -1,8 +1,48 @@
-import type { DOMOutputSpec, MarkSpec, NodeSpec } from "prosemirror-model";
+import type {
+  Node,
+  Mark,
+  NodeSpec,
+  MarkSpec,
+  DOMOutputSpec,
+} from "prosemirror-model";
 
-const pDOM: DOMOutputSpec = ["p", 0],
-  hrDOM: DOMOutputSpec = ["hr"],
-  brDOM: DOMOutputSpec = ["br"];
+import { defaultFontSize } from "./constants";
+
+const pDOM = (node: Node): DOMOutputSpec => {
+  return [
+    "p",
+    {
+      style: `text-align: ${node.attrs.align}; line-height: ${node.attrs.lineSpacing};`,
+    },
+    0,
+  ];
+};
+const hDOM = (node: Node): DOMOutputSpec => {
+  let classes = "font-bold ";
+
+  switch (node.attrs.level) {
+    case 1:
+      classes += "mb-1 mt-8 ";
+      break;
+    case 2:
+      classes += "mt-6 ";
+      break;
+    case 3:
+      classes += "mt-4 ";
+      break;
+  }
+
+  return [
+    `h${node.attrs.level}`,
+    {
+      style: `text-align: ${node.attrs.align}; line-height: ${node.attrs.lineSpacing};`,
+      class: classes.trim(),
+    },
+    0,
+  ];
+};
+const hrDOM: DOMOutputSpec = ["hr"];
+const brDOM: DOMOutputSpec = ["br"];
 
 export const nodes = {
   // The top level document node.
@@ -12,12 +52,14 @@ export const nodes = {
 
   // A plain paragraph textblock. Represented in the DOM as a `<p>` element.
   paragraph: {
+    attrs: {
+      align: { default: "left" },
+      lineSpacing: { default: 1.2 },
+    },
     content: "inline*",
     group: "block",
     parseDOM: [{ tag: "p" }],
-    toDOM() {
-      return pDOM;
-    },
+    toDOM: pDOM,
   } as NodeSpec,
 
   // A horizontal rule (`<hr>`).
@@ -32,7 +74,11 @@ export const nodes = {
   // A heading textblock, with a `level` attribute that should hold the
   // number 1 to 3. Parsed and serialized as `<h1>` to `<h3>` elements.
   heading: {
-    attrs: { level: { default: 1 } },
+    attrs: {
+      level: { default: 1 },
+      align: { default: "left" },
+      lineSpacing: { default: 1.2 },
+    },
     content: "inline*",
     group: "block",
     defining: true,
@@ -41,9 +87,7 @@ export const nodes = {
       { tag: "h2", attrs: { level: 2 } },
       { tag: "h3", attrs: { level: 3 } },
     ],
-    toDOM(node) {
-      return [`h${node.attrs.level}`, 0];
-    },
+    toDOM: hDOM,
   } as NodeSpec,
 
   // The text node.
@@ -63,10 +107,13 @@ export const nodes = {
   } as NodeSpec,
 };
 
-const emDOM: DOMOutputSpec = ["em", 0],
-  strongDOM: DOMOutputSpec = ["strong", 0],
-  underlineDOM: DOMOutputSpec = ["u", 0],
-  strikethroughDOM: DOMOutputSpec = ["s", 0];
+const emDOM: DOMOutputSpec = ["em", 0];
+const strongDOM: DOMOutputSpec = ["strong", 0];
+const underlineDOM: DOMOutputSpec = ["u", 0];
+const strikethroughDOM: DOMOutputSpec = ["s", 0];
+const fontSizeDOM = (mark: Mark): DOMOutputSpec => {
+  return ["span", { style: `font-size: ${mark.attrs.size}px` }, 0];
+};
 
 export const marks = {
   // An emphasis mark. Rendered as an `<em>` element. Has parse rules
@@ -137,5 +184,12 @@ export const marks = {
     toDOM() {
       return strikethroughDOM;
     },
+  } as MarkSpec,
+
+  // A fontSize mark. Rendered as `<span>`, parse rules also match `font-size`.
+  fontSize: {
+    attrs: { size: { default: defaultFontSize } },
+    parseDOM: [{ style: "font-size", getAttrs: (value) => ({ size: value }) }],
+    toDOM: fontSizeDOM,
   } as MarkSpec,
 };

@@ -1,12 +1,13 @@
 import { cn } from "@lir/lib";
-import { Button, Icons } from "@lir/ui";
+import { Button } from "@lir/ui";
+
+import { toggleMark } from "prosemirror-commands";
+import { type MarkType } from "prosemirror-model";
 
 import { documentModel } from "~/entities/document";
 import { editorModel } from "~/entities/editor";
-import { setAlignment } from "~/features/editor/lib/core/commands";
-import type { Alignment } from "~/features/editor/lib/core/constants";
 
-export const AlignmentFormats = () => {
+export const MarkFormats = () => {
   const document = documentModel.useCurrentDocument();
   const editorSchema = editorModel.useEditorStore().schema;
   const editorView = editorModel.useEditorStore().view?.current;
@@ -14,98 +15,93 @@ export const AlignmentFormats = () => {
 
   const disabled = !document || !editorSchema || !editorView || !editorState;
 
-  const applyAlignment = (alignment: Alignment) => {
+  const applyMark = (markType: MarkType) => {
     if (!editorView) return;
 
     // Keep selection.
     editorView.focus();
 
     const { state, dispatch } = editorView;
-    setAlignment(alignment)(state, dispatch);
+    toggleMark(markType)(state, dispatch);
   };
 
-  const getCurrentAlignment = () => {
-    if (!editorState) return;
+  const isMarkActive = (markType: MarkType | undefined) => {
+    if (!editorState || !markType) return false;
 
-    const { from, to } = editorState.selection;
-    let alignment: Alignment = "left";
+    const { from, $from, to, empty } = editorState.selection;
 
-    editorState.doc.nodesBetween(from, to, (node) => {
-      if (["heading", "paragraph"].includes(node.type.name)) {
-        if (node.attrs.align) {
-          alignment = node.attrs.align;
-        }
-      }
-    });
+    if (empty) {
+      return !!markType.isInSet(editorState.storedMarks || $from.marks());
+    }
 
-    return alignment as Alignment;
+    return editorState.doc.rangeHasMark(from, to, markType);
   };
 
-  const isLeftAligned = getCurrentAlignment() === "left";
-  const isCenterAligned = getCurrentAlignment() === "center";
-  const isRightAligned = getCurrentAlignment() === "right";
-  const isJustifyAligned = getCurrentAlignment() === "justify";
+  const isBold = isMarkActive(editorSchema?.marks.strong);
+  const isItalic = isMarkActive(editorSchema?.marks.em);
+  const isUnderline = isMarkActive(editorSchema?.marks.underline);
+  const isStrikethrough = isMarkActive(editorSchema?.marks.strikethrough);
 
   return (
     <div className={cn("flex items-center gap-0.5", disabled && "opacity-40")}>
       <Button
         variant="control-ghost"
         className={cn(
-          "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-[22px] w-6 rounded-sm p-0",
-          isLeftAligned &&
+          "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-5 w-6 select-none rounded-sm p-1 font-extrabold",
+          isBold &&
             "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground"
         )}
         onClick={() => {
-          applyAlignment("left");
+          applyMark(editorSchema.marks.strong);
         }}
         disabled={disabled}
       >
-        <Icons.alignLeft size={16} />
+        B
       </Button>
 
       <Button
         variant="control-ghost"
         className={cn(
-          "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-[22px] w-6 rounded-sm p-0",
-          isCenterAligned &&
+          "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-5 w-6 select-none rounded-sm p-1 font-serif font-medium italic",
+          isItalic &&
             "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground"
         )}
         onClick={() => {
-          applyAlignment("center");
+          applyMark(editorSchema.marks.em);
         }}
         disabled={disabled}
       >
-        <Icons.alignCenter size={16} />
+        I
       </Button>
 
       <Button
         variant="control-ghost"
         className={cn(
-          "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-[22px] w-6 rounded-sm p-0",
-          isRightAligned &&
+          "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-5 w-6 select-none rounded-sm p-1 font-medium underline",
+          isUnderline &&
             "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground"
         )}
         onClick={() => {
-          applyAlignment("right");
+          applyMark(editorSchema.marks.underline);
         }}
         disabled={disabled}
       >
-        <Icons.alignRight size={16} />
+        U
       </Button>
 
       <Button
         variant="control-ghost"
         className={cn(
-          "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-[22px] w-6 rounded-sm p-0",
-          isJustifyAligned &&
+          "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-5 w-6 select-none rounded-sm p-1 font-medium line-through",
+          isStrikethrough &&
             "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground"
         )}
         onClick={() => {
-          applyAlignment("justify");
+          applyMark(editorSchema.marks.strikethrough);
         }}
         disabled={disabled}
       >
-        <Icons.alignJustify size={16} />
+        S
       </Button>
     </div>
   );
