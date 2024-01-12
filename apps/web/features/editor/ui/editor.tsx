@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 import { documentModel } from "~/entities/document";
 
-import { ProseEditor } from "../lib";
+import { ProseEditor } from "./prose-editor";
 
 type Props = {
   document: DocumentProps;

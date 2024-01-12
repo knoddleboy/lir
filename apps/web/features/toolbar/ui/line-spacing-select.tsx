@@ -12,13 +12,13 @@ import {
 import { useEffect, useState } from "react";
 
 import { documentModel } from "~/entities/document";
-import { editorModel } from "~/entities/editor";
-import { setLineSpacing } from "~/features/editor/lib/core/commands";
 import {
+  editorModel,
+  setLineSpacing,
   LineSpacings,
-  type LineSpacing,
   defaultLineSpacing,
-} from "~/features/editor/lib/core/constants";
+  type LineSpacing,
+} from "~/entities/editor";
 
 const LineSpacingSelectInner = () => {
   const document = documentModel.useCurrentDocument();
@@ -31,24 +31,24 @@ const LineSpacingSelectInner = () => {
   const [currentLineSpacing, setCurrentLineSpacing] =
     useState<LineSpacing>(defaultLineSpacing);
 
-  const getSelectionLineSpacing = () => {
-    if (!editorState) return defaultLineSpacing;
-
-    const { from, to } = editorState.selection;
-    let selectionLineSpacing: LineSpacing = defaultLineSpacing;
-
-    editorState.doc.nodesBetween(from, to, (node) => {
-      if (["heading", "paragraph"].includes(node.type.name)) {
-        if (node.attrs.lineSpacing) {
-          selectionLineSpacing = node.attrs.lineSpacing;
-        }
-      }
-    });
-
-    return selectionLineSpacing;
-  };
-
   useEffect(() => {
+    const getSelectionLineSpacing = () => {
+      if (!editorState) return defaultLineSpacing;
+
+      const { from, to } = editorState.selection;
+      let selectionLineSpacing: LineSpacing = defaultLineSpacing;
+
+      editorState.doc.nodesBetween(from, to, (node) => {
+        if (["heading", "paragraph"].includes(node.type.name)) {
+          if (node.attrs.lineSpacing) {
+            selectionLineSpacing = node.attrs.lineSpacing;
+          }
+        }
+      });
+
+      return selectionLineSpacing;
+    };
+
     setCurrentLineSpacing(getSelectionLineSpacing());
   }, [editorState]);
 

@@ -4,13 +4,15 @@ import { type EditorView } from "prosemirror-view";
 import { type MutableRefObject } from "react";
 import { create, type StateCreator } from "zustand";
 
+import type { SchemaNodes, SchemaMarks } from "../core/schema";
+
 type EditorViewState = {
   view: MutableRefObject<EditorView>;
   setView: (view: MutableRefObject<EditorView>) => void;
 };
 
 type EditorSchemaState = {
-  schema: Schema;
+  schema: Schema<SchemaNodes, SchemaMarks>;
   setSchema: (schema: Schema) => void;
 };
 

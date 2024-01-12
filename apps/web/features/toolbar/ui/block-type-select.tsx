@@ -15,8 +15,7 @@ import { type Attrs, type NodeType } from "prosemirror-model";
 import { useEffect, useState } from "react";
 
 import { documentModel } from "~/entities/document";
-import { editorModel } from "~/entities/editor";
-import { setBlockType } from "~/features/editor/lib/core/commands";
+import { editorModel, setBlockType, type SchemaNodes } from "~/entities/editor";
 
 enum BlockType {
   Title = "Title",
@@ -77,44 +76,47 @@ export const BlockTypeSelect = () => {
     }
   };
 
-  const getSelectionBlockType = () => {
-    if (!editorState) return BlockType.Paragraph;
+  useEffect(() => {
+    const getSelectionBlockType = () => {
+      if (!editorState) return BlockType.Paragraph;
 
-    const { $from } = editorState.selection;
-    let selectionBlock = {
-      name: "paragraph" as NodeType["name"],
-      attrs: {} as Attrs,
+      const { $from } = editorState.selection;
+      let selectionBlock: {
+        name: SchemaNodes;
+        attrs: Attrs;
+      } = {
+        name: "paragraph",
+        attrs: {},
+      };
+
+      for (let depth = $from.depth; depth > 0; depth--) {
+        const node = $from.node(depth);
+        if (node.isBlock) {
+          selectionBlock = {
+            name: node.type.name as SchemaNodes,
+            attrs: node.attrs,
+          };
+        }
+      }
+
+      if (selectionBlock.name === "paragraph") {
+        return BlockType.Paragraph;
+      }
+
+      if (selectionBlock.name === "heading") {
+        switch (selectionBlock.attrs.level) {
+          case 1:
+            return BlockType.Title;
+          case 2:
+            return BlockType.Heading1;
+          case 3:
+            return BlockType.Heading2;
+        }
+      }
+
+      return BlockType.Paragraph;
     };
 
-    for (let depth = $from.depth; depth > 0; depth--) {
-      const node = $from.node(depth);
-      if (node.isBlock) {
-        selectionBlock = {
-          name: node.type.name,
-          attrs: node.attrs,
-        };
-      }
-    }
-
-    if (selectionBlock.name === "paragraph") {
-      return BlockType.Paragraph;
-    }
-
-    if (selectionBlock.name === "heading") {
-      switch (selectionBlock.attrs.level) {
-        case 1:
-          return BlockType.Title;
-        case 2:
-          return BlockType.Heading1;
-        case 3:
-          return BlockType.Heading2;
-      }
-    }
-
-    return BlockType.Paragraph;
-  };
-
-  useEffect(() => {
     setCurrentBlockType(getSelectionBlockType());
   }, [editorState]);
 

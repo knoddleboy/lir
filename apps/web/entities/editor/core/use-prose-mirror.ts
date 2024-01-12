@@ -85,6 +85,7 @@ export const useProseMirror = (initialDoc?: ProseMirrorNode) => {
     viewRef.current.dom.focus();
 
     return () => viewRef.current.destroy();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDocument]);
 
   return { ref };

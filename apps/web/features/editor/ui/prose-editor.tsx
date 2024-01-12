@@ -1,6 +1,6 @@
 import { type Node as ProseMirrorNode } from "prosemirror-model";
 
-import { useProseMirror } from "./core";
+import { useProseMirror } from "~/entities/editor";
 
 type Props = {
   doc?: ProseMirrorNode;

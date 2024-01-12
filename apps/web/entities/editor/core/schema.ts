@@ -193,3 +193,6 @@ export const marks = {
     toDOM: fontSizeDOM,
   } as MarkSpec,
 };
+
+export type SchemaNodes = keyof typeof nodes;
+export type SchemaMarks = keyof typeof marks;

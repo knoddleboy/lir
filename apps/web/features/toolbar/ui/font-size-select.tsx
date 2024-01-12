@@ -12,13 +12,13 @@ import {
 import { useEffect, useState } from "react";
 
 import { documentModel } from "~/entities/document";
-import { editorModel } from "~/entities/editor";
-import { setFontSize } from "~/features/editor/lib/core/commands";
 import {
-  type FontSize,
+  editorModel,
+  setFontSize,
   FontSizes,
   defaultFontSize,
-} from "~/features/editor/lib/core/constants";
+  type FontSize,
+} from "~/entities/editor";
 
 export const FontSizeSelect = () => {
   const document = documentModel.useCurrentDocument();
@@ -30,26 +30,26 @@ export const FontSizeSelect = () => {
 
   const [currentFontSize, setCurrentFontSize] = useState<FontSize>(defaultFontSize);
 
-  const getSelectionFontSize = (): FontSize => {
-    if (!editorState) return defaultFontSize;
-
-    const { from, to } = editorState.selection;
-    let selectionFontSize: FontSize = defaultFontSize;
-
-    editorState.doc.nodesBetween(from, to, (node) => {
-      if (!node.isInline) return;
-
-      node.marks.forEach((mark) => {
-        if (mark.type.name === "fontSize") {
-          selectionFontSize = mark.attrs.size;
-        }
-      });
-    });
-
-    return selectionFontSize;
-  };
-
   useEffect(() => {
+    const getSelectionFontSize = (): FontSize => {
+      if (!editorState) return defaultFontSize;
+
+      const { from, to } = editorState.selection;
+      let selectionFontSize: FontSize = defaultFontSize;
+
+      editorState.doc.nodesBetween(from, to, (node) => {
+        if (!node.isInline) return;
+
+        node.marks.forEach((mark) => {
+          if (mark.type.name === "fontSize") {
+            selectionFontSize = mark.attrs.size;
+          }
+        });
+      });
+
+      return selectionFontSize;
+    };
+
     setCurrentFontSize(getSelectionFontSize());
   }, [editorState]);
 

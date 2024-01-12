@@ -2,8 +2,8 @@ import { APP_NAME } from "@lir/lib";
 
 import type { Metadata } from "next";
 
-import { Toolbar } from "~/features/editor";
 import { ToggleSidebar } from "~/features/header/toggle-sidebar";
+import { Toolbar } from "~/features/toolbar";
 import { Header } from "~/widgets/layouts/header";
 
 // Used to display Lir as a placeholder while the document is loading

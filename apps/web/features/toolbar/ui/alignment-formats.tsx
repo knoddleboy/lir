@@ -2,9 +2,7 @@ import { cn } from "@lir/lib";
 import { Button, Icons } from "@lir/ui";
 
 import { documentModel } from "~/entities/document";
-import { editorModel } from "~/entities/editor";
-import { setAlignment } from "~/features/editor/lib/core/commands";
-import type { Alignment } from "~/features/editor/lib/core/constants";
+import { editorModel, setAlignment, type Alignment } from "~/entities/editor";
 
 export const AlignmentFormats = () => {
   const document = documentModel.useCurrentDocument();
