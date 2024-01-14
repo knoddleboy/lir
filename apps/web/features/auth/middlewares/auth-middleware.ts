@@ -7,7 +7,7 @@ import { type Middleware, Route } from "~/shared";
 export class AuthMiddleware implements Middleware {
   global = false;
 
-  paths = [Route.Overview, Route.Documents, Route.Settings];
+  paths = [Route.Settings];
 
   handler(request: NextRequest) {
     const isAuthenticated = isAuth(request);

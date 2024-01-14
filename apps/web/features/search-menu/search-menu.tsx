@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { HotkeysProvider, useHotkeys } from "react-hotkeys-hook";
 
 import { searchModel } from "~/entities/search";
+import { sessionModel } from "~/entities/session";
 import { formatResultString } from "~/shared";
 
 import { useSearchDocuments } from "./api";
@@ -13,6 +14,8 @@ import { SearchFilters } from "./ui/search-filters";
 import { SearchResult } from "./ui/search-results";
 
 const SearchDialog = () => {
+  const isAuth = sessionModel.useAuth();
+
   const { mutateAsync: searchDocuments, data: searchResults } = useSearchDocuments();
 
   const previousSearchQuery = useRef<string>("");
@@ -29,6 +32,7 @@ const SearchDialog = () => {
       preventDefault: true,
       enableOnContentEditable: true,
       enableOnFormTags: ["input", "select", "textarea"],
+      enabled: isAuth,
     },
     [searchMenuOpen]
   );

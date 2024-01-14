@@ -26,6 +26,7 @@ import { useForm } from "react-hook-form";
 
 import { useRouter } from "next/navigation";
 
+import { documentModel } from "~/entities/document";
 import { useSignup } from "~/features/auth";
 
 export const SignupForm = () => {
@@ -52,11 +53,11 @@ export const SignupForm = () => {
 
   const onSubmit = async (data: SingupUserInput) => {
     try {
+      // Clear public viewer documents.
+      documentModel.unsetDocuments();
       setErrorMessage(null);
-      const res = await signup(data);
 
-      if (!res)
-        setErrorMessage(errorMessages[ErrorResponseCode.InternalServerError]);
+      await signup(data);
 
       router.push("/signup/verify-email");
     } catch (error) {

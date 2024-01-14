@@ -25,6 +25,7 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { documentModel } from "~/entities/document";
 import { useLogin } from "~/features/auth";
 
 export const LoginForm = () => {
@@ -49,11 +50,11 @@ export const LoginForm = () => {
 
   const onSubmit = async (data: LoginUserInput) => {
     try {
+      // Clear public viewer documents.
+      documentModel.unsetDocuments();
       setErrorMessage(null);
-      const res = await login(data);
 
-      if (!res)
-        setErrorMessage(errorMessages[ErrorResponseCode.InternalServerError]);
+      await login(data);
 
       router.push("/d");
     } catch (error) {

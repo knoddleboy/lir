@@ -1,4 +1,5 @@
 import { EditorContainer } from "~/features/editor";
+import { extractURIHash } from "~/shared/lib/extract-uri-hash";
 
 type Props = {
   params: {
@@ -7,5 +8,6 @@ type Props = {
 };
 
 export default function WorkspacePage({ params: { documentId } }: Props) {
-  return <EditorContainer documentId={documentId} />;
+  const extractedDocumentId = extractURIHash(documentId)!;
+  return <EditorContainer documentId={extractedDocumentId} />;
 }

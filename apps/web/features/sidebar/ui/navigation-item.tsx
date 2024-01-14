@@ -10,6 +10,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import { usePathname, useRouter } from "next/navigation";
 
 import { documentApi, documentModel } from "~/entities/document";
+import { sessionModel } from "~/entities/session";
 import { LinkOr, generateDocumentURL } from "~/shared";
 
 import { NavigationItemMenu } from "./navigation-item-menu";
@@ -34,63 +35,18 @@ export const NavigationItem = ({
   withMenu = false,
   contentEditable = false,
 }: Props) => {
-  const router = useRouter();
   const pathname = usePathname();
   const current = item.isCurrent?.({ pathname }) ?? false;
 
-  const setDocument = documentModel.setDocument;
-
-  const { mutateAsync: updateDocument } = useMutation({
-    mutationKey: documentApi.documentKeys.mutation.updateDocument(),
-    mutationFn: documentApi.updateDocument,
-  });
-
   const itemRef = useRef<HTMLAnchorElement & HTMLDivElement>(null);
   const [menuVisible, setMenuVisible] = useState(false);
-
-  const inputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [newTitle, setNewTitle] = useState<string>(item.name ? item.name : "");
-
-  useHotkeys(
-    "Escape",
-    () => handleUpdate(),
-    {
-      enableOnFormTags: ["input"],
-      enabled: isEditing,
-    },
-    [isEditing]
-  );
-
-  useOnClickOutside(inputRef, () => handleUpdate());
-
-  const handleUpdate = async () => {
-    if (newTitle.length && item.id) {
-      const newTitleWithMaxLength = newTitle.substring(
-        0,
-        Math.min(newTitle.length, 255)
-      );
-
-      const updateInput = {
-        id: item.id,
-        title: newTitleWithMaxLength,
-      };
-
-      router.replace(generateDocumentURL(newTitleWithMaxLength, item.id));
-      setDocument(updateInput);
-      await updateDocument(updateInput);
-    }
-
-    setNewTitle("");
-    setIsEditing(false);
-  };
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleDoubleClick = () => {
     if (!contentEditable) return;
     setIsEditing(true);
   };
-
-  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div
@@ -126,24 +82,10 @@ export const NavigationItem = ({
           )}
         >
           {isEditing ? (
-            <input
-              ref={inputRef}
-              name="setTitle"
-              type="text"
-              placeholder="Untitled Document"
-              value={newTitle}
-              onClick={(e) => e.preventDefault()}
-              onChange={(e) => setNewTitle(e.target.value)}
-              onKeyDown={async (e) => {
-                if (e.key === "Enter") {
-                  await handleUpdate();
-                }
-              }}
-              className="bg-accent placeholder:text-accent-foreground/20 text-accent-foreground/75 w-full outline-none"
-              autoFocus
-              autoCapitalize="off"
-              autoComplete="off"
-              spellCheck={false}
+            <EditableTitle
+              item={item}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
             />
           ) : (
             item.name ?? "Untitled Document"
@@ -160,5 +102,81 @@ export const NavigationItem = ({
         </div>
       )}
     </div>
+  );
+};
+
+type EditableTitleProps = {
+  item: NavigationItemType;
+  isEditing: boolean;
+  setIsEditing: (state: boolean) => void;
+};
+
+const EditableTitle = ({ item, isEditing, setIsEditing }: EditableTitleProps) => {
+  const router = useRouter();
+  const isAuth = sessionModel.useAuth();
+  const [newTitle, setNewTitle] = useState<string>(item.name ? item.name : "");
+
+  const { mutateAsync: updateDocument } = useMutation({
+    mutationKey: documentApi.documentKeys.mutation.updateDocument(),
+    mutationFn: documentApi.updateDocument,
+  });
+
+  const handleUpdate = async () => {
+    if (newTitle.length && item.id) {
+      const newTitleWithMaxLength = newTitle.substring(
+        0,
+        Math.min(newTitle.length, 255)
+      );
+
+      const updateInput = {
+        id: item.id,
+        title: newTitleWithMaxLength,
+      };
+
+      router.replace(generateDocumentURL(newTitleWithMaxLength, item.id));
+      documentModel.setDocument(updateInput);
+
+      if (isAuth) {
+        await updateDocument(updateInput);
+      }
+    }
+
+    setNewTitle("");
+    setIsEditing(false);
+  };
+
+  useHotkeys(
+    "Escape",
+    () => handleUpdate(),
+    {
+      enableOnFormTags: ["input"],
+      enabled: isEditing,
+    },
+    [isEditing]
+  );
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  useOnClickOutside(inputRef, () => handleUpdate());
+
+  return (
+    <input
+      ref={inputRef}
+      name="setTitle"
+      type="text"
+      placeholder="Untitled Document"
+      value={newTitle}
+      onClick={(e) => e.preventDefault()}
+      onChange={(e) => setNewTitle(e.target.value)}
+      onKeyDown={async (e) => {
+        if (e.key === "Enter") {
+          await handleUpdate();
+        }
+      }}
+      className="bg-accent placeholder:text-accent-foreground/20 text-accent-foreground/75 w-full outline-none"
+      autoFocus
+      autoCapitalize="off"
+      autoComplete="off"
+      spellCheck={false}
+    />
   );
 };

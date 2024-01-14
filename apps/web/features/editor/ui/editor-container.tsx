@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 import dynamic from "next/dynamic";
 
 import { type EditorBoundaryProps } from "./editor-boundary";
@@ -9,6 +11,7 @@ const EditorBoundary = dynamic<EditorBoundaryProps>(
   { ssr: false }
 );
 
-export const EditorContainer = ({ documentId }: EditorBoundaryProps) => {
+export const EditorContainer = memo(({ documentId }: EditorBoundaryProps) => {
   return <EditorBoundary documentId={documentId} />;
-};
+});
+EditorContainer.displayName = "EditorContainer";

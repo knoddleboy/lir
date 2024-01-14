@@ -28,30 +28,26 @@ export const Nav = ({ classNames }: Props) => {
       <div className="flex justify-between">
         <ul className="flex items-center gap-1"></ul>
         {isClient ? (
-          <ul className="flex shrink-0 items-center gap-4">
-            {!isAuth ? (
-              <>
-                <li>
-                  <Button variant="ghost" size="link" text="base" asChild>
-                    <Link href="/login">Log in</Link>
-                  </Button>
-                </li>
-                <li>
-                  <Button size="link" className="text-[15px]" asChild>
-                    <Link href="/signup">Sign up</Link>
-                  </Button>
-                </li>
-              </>
-            ) : (
+          isAuth ? (
+            <Button variant="ghost" size="link" text="base" asChild>
+              <Link href="/d">
+                Go to web app <Icons.arrowRight className="ml-1" size={16} />
+              </Link>
+            </Button>
+          ) : (
+            <ul className="flex shrink-0 items-center gap-4">
               <li>
                 <Button variant="ghost" size="link" text="base" asChild>
-                  <Link href="/d">
-                    Go to web app <Icons.arrowRight className="ml-1" size={16} />
-                  </Link>
+                  <Link href="/login">Log in</Link>
                 </Button>
               </li>
-            )}
-          </ul>
+              <li>
+                <Button size="link" className="text-[15px]" asChild>
+                  <Link href="/signup">Sign up</Link>
+                </Button>
+              </li>
+            </ul>
+          )
         ) : (
           <Skeleton className="h-8 w-36" />
         )}

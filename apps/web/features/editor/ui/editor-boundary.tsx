@@ -1,15 +1,18 @@
 "use client";
 
 import { APP_NAME } from "@lir/lib";
+import type { DocumentProps } from "@lir/lib/schema";
 import { Button, Icons } from "@lir/ui";
 
+import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { useDocumentTitle } from "usehooks-ts";
 
 import Link from "next/link";
 
-import { extractURIHash } from "~/shared";
+import { documentApi, documentModel } from "~/entities/document";
+import { sessionModel } from "~/entities/session";
 
-import { useGetDocumentData } from "../api";
 import { Editor } from "./editor";
 
 export type EditorBoundaryProps = {
@@ -17,31 +20,65 @@ export type EditorBoundaryProps = {
 };
 
 export const EditorBoundary = ({ documentId }: EditorBoundaryProps) => {
-  const { data: document } = useGetDocumentData(extractURIHash(documentId)!);
+  const isAuth = sessionModel.useAuth();
+
+  if (!isAuth) {
+    return <PublicViewerEditor documentId={documentId} />;
+  }
+
+  return <LogginInViewerEditor documentId={documentId} />;
+};
+
+const PublicViewerEditor = ({ documentId }: EditorBoundaryProps) => {
+  const document = documentModel.useDocument(documentId);
+  const [currentDocument, setCurrentDocument] = useState<DocumentProps>();
+
+  useDocumentTitle(currentDocument ? currentDocument.title ?? "Untitled" : APP_NAME);
+
+  useEffect(() => {
+    setCurrentDocument(document);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [documentId]);
+
+  if (!currentDocument) {
+    return <NotFoundDocument />;
+  }
+
+  return <Editor document={currentDocument} />;
+};
+
+const LogginInViewerEditor = ({ documentId }: EditorBoundaryProps) => {
+  const { data: document } = useQuery({
+    queryKey: documentApi.documentKeys.query.getDocumentData(documentId),
+    queryFn: () => documentApi.getDocumentData({ documentId }),
+    refetchOnWindowFocus: false,
+  });
 
   useDocumentTitle(document ? document.title ?? "Untitled" : APP_NAME);
 
   if (!document) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="text-muted-foreground/60 select-none text-2xl">
-            Document not found
-          </div>
-          <Button
-            className="text-muted-foreground/80 h-fit select-none px-1.5 py-0.5 font-medium dark:font-normal"
-            variant="control-ghost"
-            text="sm"
-            asChild
-          >
-            <Link href="/d">
-              <Icons.arrowLeft size={14} className="mr-1" /> Back to Overview
-            </Link>
-          </Button>
-        </div>
-      </div>
-    );
+    return <NotFoundDocument />;
   }
 
   return <Editor document={document} />;
 };
+
+const NotFoundDocument = () => (
+  <div className="flex h-full items-center justify-center">
+    <div className="flex flex-col items-center gap-4">
+      <div className="text-muted-foreground/60 select-none text-2xl">
+        Document not found
+      </div>
+      <Button
+        className="text-muted-foreground/80 h-fit select-none px-1.5 py-0.5 font-medium dark:font-normal"
+        variant="control-ghost"
+        text="sm"
+        asChild
+      >
+        <Link href="/d">
+          <Icons.arrowLeft size={14} className="mr-1" /> Back to Overview
+        </Link>
+      </Button>
+    </div>
+  </div>
+);

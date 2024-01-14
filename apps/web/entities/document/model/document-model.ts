@@ -11,6 +11,7 @@ type DocumentState = {
   setDocument: (updateInput: UpdateDocumentInput) => void;
   setDocuments: (documents: DocumentProps[]) => void;
   unsetDocument: (deleteInput: DeleteDocumentInput) => void;
+  unsetDocuments: () => void;
 };
 
 type CurrentDocumentState = {
@@ -48,6 +49,10 @@ const createDocumentSlice: StateCreator<DocumentState> = (set) => ({
       documents: state.documents.filter((document) => document.id !== id),
     }));
   },
+
+  unsetDocuments: () => {
+    set({ documents: [] });
+  },
 });
 
 const createCurrentDocumentSlice: StateCreator<CurrentDocumentState> = (set) => ({
@@ -79,6 +84,8 @@ export const setDocuments = (documents: DocumentProps[]) =>
 
 export const unsetDocument = (deleteInput: DeleteDocumentInput) =>
   documentStore.getState().unsetDocument(deleteInput);
+
+export const unsetDocuments = () => documentStore.getState().unsetDocuments();
 
 export const useCurrentDocument = () =>
   useStore(documentStore, (state) => state.currentDocument);
