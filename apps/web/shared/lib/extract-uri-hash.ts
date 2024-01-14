@@ -9,11 +9,15 @@
  * console.log(hash); // Output: "clqfm5nv8010pbtw6av9id0t2"
  */
 export function extractURIHash(input: string): string | null {
-  const lastDashIndex = input.lastIndexOf("-");
+  // Explained in generate-document-url.ts
 
-  if (lastDashIndex !== -1) {
-    return input.slice(lastDashIndex + 1);
-  } else {
-    return null;
-  }
+  // const lastDashIndex = input.lastIndexOf("-");
+
+  // if (lastDashIndex !== -1) {
+  //   return input.slice(lastDashIndex + 1);
+  // } else {
+  //   return null;
+  // }
+
+  return input;
 }

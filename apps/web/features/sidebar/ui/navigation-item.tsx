@@ -5,7 +5,7 @@ import { cn } from "@lir/lib";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { useOnClickOutside } from "usehooks-ts";
+import { useDocumentTitle, useOnClickOutside } from "usehooks-ts";
 
 import { usePathname, useRouter } from "next/navigation";
 
@@ -121,6 +121,8 @@ const EditableTitle = ({ item, isEditing, setIsEditing }: EditableTitleProps) =>
     mutationFn: documentApi.updateDocument,
   });
 
+  useDocumentTitle(newTitle);
+
   const handleUpdate = async () => {
     if (newTitle.length && item.id) {
       const newTitleWithMaxLength = newTitle.substring(
@@ -134,6 +136,7 @@ const EditableTitle = ({ item, isEditing, setIsEditing }: EditableTitleProps) =>
       };
 
       router.replace(generateDocumentURL(newTitleWithMaxLength, item.id));
+
       documentModel.setDocument(updateInput);
 
       if (isAuth) {

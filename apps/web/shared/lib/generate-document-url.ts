@@ -1,5 +1,3 @@
-import { Lir_encodeURIComponent } from "./encode-uri-component";
-
 /**
  * Generates a document URL based on the provided parameters.
  * Internally uses the `Lir_encodeURIComponent` function to encode the title.
@@ -23,7 +21,13 @@ export function generateDocumentURL(
   id: string,
   prefix: string = "/d"
 ): string {
-  const titleUrl = Lir_encodeURIComponent(title);
-  const documentUrl = `${prefix}/${titleUrl ?? "Untitled"}-${id}`;
-  return documentUrl;
+  // Comment for now. Dynamic route changes via useRouter (next/navigation) cause hard-reloads.
+  // This is a highly unwanted behaviour since a new instance of the editor is created for
+  // the same document. So for now just ignore title-in-pathname feature and return just doc's id.
+
+  // const titleUrl = Lir_encodeURIComponent(title);
+  // const documentUrl = `${prefix}/${titleUrl ?? "Untitled"}-${id}`;
+  // return documentUrl;
+
+  return `${prefix}/${id}`;
 }
