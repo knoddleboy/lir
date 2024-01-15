@@ -7,6 +7,7 @@ import {
   Icons,
 } from "@lir/ui";
 
+import { createId } from "@paralleldrive/cuid2";
 import { useMutation } from "@tanstack/react-query";
 import { useRef } from "react";
 import { toast } from "sonner";
@@ -14,7 +15,10 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 import { documentApi, documentModel } from "~/entities/document";
+import { sessionModel } from "~/entities/session";
 import { generateDocumentURL } from "~/shared";
+
+import { fileParser } from "../lib";
 
 type Props = {
   open: boolean;
@@ -23,32 +27,57 @@ type Props = {
 
 export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
   const router = useRouter();
+  const isAuth = sessionModel.useAuth();
   const inputRef = useRef<HTMLInputElement>(null);
   const documentIdRef = useRef("");
 
-  const { mutateAsync: createDocument } = useMutation({
+  const { mutateAsync: createLoggedInViewerDocument } = useMutation({
     mutationKey: documentApi.documentKeys.mutation.createDocument(),
     mutationFn: documentApi.createDocument,
     onSuccess: (data) => {
       documentModel.setDocuments([data]);
-      setOpen(false);
       router.push(generateDocumentURL(data.title, data.id));
     },
   });
+
+  const createPublicViewerDocument = (title: string) => {
+    const document = {
+      id: createId(),
+      title,
+      userId: "",
+      content: {},
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    documentModel.unsetDocuments(); // make sure a public viewer has exactly one document.
+    documentModel.setDocuments([document]);
+    router.replace(generateDocumentURL(document.title, document.id));
+
+    return document;
+  };
+
+  const handleCreateDocument = async (title: string) => {
+    if (isAuth) {
+      return await createLoggedInViewerDocument({ title });
+    }
+
+    return createPublicViewerDocument(title);
+  };
 
   const onClick = () => {
     if (!inputRef.current) return;
     inputRef.current.click();
   };
 
-  const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
     const files = target.files;
 
     if (!files || files.length < 1) return;
 
     const file = files[0];
-
+    const fileType = file.type;
     const sizeInMB = file.size / (1024 * 1024);
 
     if (sizeInMB > 5) {
@@ -56,56 +85,36 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
       return;
     }
 
+    // Remove the extension from the file name.
     const name = file.name.split(".");
     name.pop();
 
-    const createdDocument = await createDocument({
-      title: name.join("."),
-    });
-    documentIdRef.current = createdDocument.id;
-
     const reader = new FileReader();
-    reader.addEventListener("load", () => parseTextFile(reader.result as string));
+    reader.addEventListener("load", async () => {
+      try {
+        const parser = fileParser(reader.result as string, fileType);
+        const parsedContent = parser.parse();
+
+        const createdDocument = await handleCreateDocument(name.join("."));
+        documentIdRef.current = createdDocument.id;
+
+        documentModel.setDocument({
+          id: createdDocument.id,
+          content: parsedContent,
+        });
+
+        setOpen(false);
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message, {
+            duration: 4000,
+          });
+        }
+      }
+    });
 
     reader.readAsText(file);
   };
-
-  // const { mutateAsync: createBlock } = useMutation({
-  //   mutationKey: blockApi.blockKeys.mutation.createBlock(),
-  //   mutationFn: blockApi.createBlock,
-  // });
-
-  const parseTextFile = (data: string) => {
-    console.log(data);
-  };
-
-  // const parseTextFile = async (data: string) => {
-  //   const fileBlocks = data.split("\n\n");
-  //   const blocks: BlockProps[] = [];
-  //   let prevId: BlockProps["id"] | null = null;
-
-  //   for (const fileBlock of fileBlocks) {
-  //     const createdBlock = await createBlock({
-  //       type: BlockType.Text,
-  //       documentId: documentIdRef.current,
-  //       prevId,
-  //       content: {
-  //         title: [[fileBlock]],
-  //         formats: {
-  //           emphasis: [],
-  //           fontSize: 16,
-  //         },
-  //         alignment: Alignment.Left,
-  //         lineSpacing: 1.2,
-  //       },
-  //     });
-
-  //     prevId = createdBlock.id;
-  //     blocks.push(createdBlock);
-  //   }
-
-  //   blockModel.setBlocks(blocks);
-  // };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -132,7 +141,7 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
               e.target.value = "";
             }}
             className="hidden"
-            accept=".txt"
+            accept="text/plain"
             multiple={false}
           />
         </button>

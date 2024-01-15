@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { baseKeymap } from "prosemirror-commands";
 import { history } from "prosemirror-history";
 import { keymap } from "prosemirror-keymap";
-import { Schema, Node as ProseMirrorNode } from "prosemirror-model";
+import { Node as ProseMirrorNode } from "prosemirror-model";
 import { EditorState, type Plugin } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { useRef, useEffect } from "react";
@@ -12,7 +12,7 @@ import { editorModel } from "~/entities/editor";
 import { sessionModel } from "~/entities/session";
 
 import { buildKeyMap } from "./keymap";
-import { nodes, marks } from "./schema";
+import schema from "./schema";
 
 const defaultDoc = {
   type: "doc",
@@ -60,8 +60,6 @@ export const useProseMirror = (initialDoc?: ProseMirrorNode) => {
 
   useEffect(() => {
     if (!currentDocumentId) return;
-
-    const schema = new Schema({ nodes, marks });
 
     const plugins: Plugin[] = [
       keymap(baseKeymap),

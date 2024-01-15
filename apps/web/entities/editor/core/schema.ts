@@ -1,9 +1,10 @@
-import type {
-  Node,
-  Mark,
-  NodeSpec,
-  MarkSpec,
-  DOMOutputSpec,
+import {
+  type Node,
+  type Mark,
+  type NodeSpec,
+  type MarkSpec,
+  type DOMOutputSpec,
+  Schema,
 } from "prosemirror-model";
 
 import { defaultFontSize } from "./constants";
@@ -196,3 +197,5 @@ export const marks = {
 
 export type SchemaNodes = keyof typeof nodes;
 export type SchemaMarks = keyof typeof marks;
+
+export default new Schema({ nodes, marks });

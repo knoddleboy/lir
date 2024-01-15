@@ -28,7 +28,7 @@ export const NavigationItemMenu = ({ itemId, open, setOpen }: Props) => {
   const pathname = usePathname();
 
   const isAuth = sessionModel.useAuth();
-  const currentDocument = documentModel.useCurrentDocument();
+  const currentDocumentId = documentModel.useCurrentDocument();
   const documents = documentModel.useDocuments();
   const documentIndex = documentModel
     .useDocuments()
@@ -37,7 +37,7 @@ export const NavigationItemMenu = ({ itemId, open, setOpen }: Props) => {
   const cleanupDocument = (deletedId: string) => {
     documentModel.unsetDocument({ id: deletedId });
 
-    if (deletedId === currentDocument?.id) {
+    if (deletedId === currentDocumentId) {
       documentModel.setCurrentDocument(null);
     }
   };

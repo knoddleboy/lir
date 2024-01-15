@@ -8,4 +8,5 @@ export { defaultFontSize, defaultLineSpacing } from "./constants";
 
 export { getHeadingFontSize } from "./helpers";
 
+export { default as schema } from "./schema";
 export type { SchemaNodes, SchemaMarks } from "./schema";

@@ -12,4 +12,12 @@ module.exports = {
       rootDir: ["apps/web"],
     },
   },
+  rules: {
+    "import/no-anonymous-default-export": [
+      "warn",
+      {
+        allowNew: true,
+      },
+    ],
+  },
 };
