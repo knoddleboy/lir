@@ -49,8 +49,7 @@ export const FontSizeSelect = () => {
     };
 
     setCurrentFontSize(getSelectionFontSize());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editorState]);
+  }, [disabled, editorState]);
 
   const applyFontSize = useCallback(
     (size: FontSize) => {

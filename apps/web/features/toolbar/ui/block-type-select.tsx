@@ -74,8 +74,7 @@ export const BlockTypeSelect = () => {
     };
 
     setCurrentBlockType(getSelectionBlockType());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editorState]);
+  }, [disabled, editorState]);
 
   const applyBlockType = useCallback(
     (blockType: BlockType) => {

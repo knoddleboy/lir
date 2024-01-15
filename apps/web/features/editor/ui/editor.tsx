@@ -15,7 +15,7 @@ type Props = {
 
 export const Editor = memo(({ document }: Props) => {
   useEffect(() => {
-    documentModel.setCurrentDocument(document);
+    documentModel.setCurrentDocument(document.id);
   }, [document]);
 
   return (

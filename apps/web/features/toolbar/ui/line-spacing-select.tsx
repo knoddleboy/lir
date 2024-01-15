@@ -48,8 +48,7 @@ const LineSpacingSelectInner = () => {
     };
 
     setCurrentLineSpacing(getSelectionLineSpacing());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editorState]);
+  }, [disabled, editorState]);
 
   const applyLineSpacing = useCallback(
     (lineSpacing: LineSpacing) => {

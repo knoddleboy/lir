@@ -23,10 +23,12 @@ const defaultDoc = {
   ],
 };
 
+const editorStateCache = new Map<string, EditorState>();
+
 export const useProseMirror = (initialDoc?: ProseMirrorNode) => {
   const ref = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView>(null!);
-  const currentDocument = documentModel.useCurrentDocument();
+  const currentDocumentId = documentModel.useCurrentDocument();
   const isAuth = sessionModel.useAuth();
 
   const setEditorView = editorModel.useEditorStore().setView;
@@ -37,7 +39,7 @@ export const useProseMirror = (initialDoc?: ProseMirrorNode) => {
     mutationFn: documentApi.updateDocument,
   });
 
-  const updateDocument = (id: string, content: any) => {
+  const updateDocument = (id: string, content: ProseMirrorNode) => {
     if (isAuth) {
       mutateAsync({
         id,
@@ -57,7 +59,7 @@ export const useProseMirror = (initialDoc?: ProseMirrorNode) => {
   };
 
   useEffect(() => {
-    if (!currentDocument) return;
+    if (!currentDocumentId) return;
 
     const schema = new Schema({ nodes, marks });
 
@@ -67,17 +69,23 @@ export const useProseMirror = (initialDoc?: ProseMirrorNode) => {
       history(),
     ];
 
-    let doc: ProseMirrorNode;
+    let state = editorStateCache.get(currentDocumentId);
 
-    if (!initialDoc || !Object.keys(initialDoc).length) {
-      doc = ProseMirrorNode.fromJSON(schema, defaultDoc);
-    } else if (initialDoc instanceof ProseMirrorNode) {
-      doc = initialDoc;
-    } else {
-      doc = ProseMirrorNode.fromJSON(schema, initialDoc);
+    if (!state) {
+      let doc: ProseMirrorNode;
+
+      if (!initialDoc || !Object.keys(initialDoc).length) {
+        doc = ProseMirrorNode.fromJSON(schema, defaultDoc);
+      } else if (initialDoc instanceof ProseMirrorNode) {
+        doc = initialDoc;
+      } else {
+        doc = ProseMirrorNode.fromJSON(schema, initialDoc);
+      }
+
+      state = EditorState.create({ schema, doc, plugins });
+      editorStateCache.set(currentDocumentId, state);
     }
 
-    const state = EditorState.create({ schema, doc, plugins });
     setEditorState(state);
 
     viewRef.current = new EditorView(ref.current, {
@@ -89,7 +97,7 @@ export const useProseMirror = (initialDoc?: ProseMirrorNode) => {
         setEditorState(nextState);
 
         if (!prevState.doc.eq(nextState.doc)) {
-          updateDocument(currentDocument.id, nextState.doc);
+          updateDocument(currentDocumentId, nextState.doc);
         }
 
         viewRef.current.updateState(nextState);
@@ -100,9 +108,12 @@ export const useProseMirror = (initialDoc?: ProseMirrorNode) => {
 
     viewRef.current.dom.focus();
 
-    return () => viewRef.current.destroy();
+    return () => {
+      editorStateCache.set(currentDocumentId, viewRef.current.state);
+      viewRef.current.destroy();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentDocument]);
+  }, [currentDocumentId]);
 
   return { ref };
 };

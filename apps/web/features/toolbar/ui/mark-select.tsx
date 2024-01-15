@@ -44,8 +44,7 @@ export const MarkSelect = () => {
 
       return state.doc.rangeHasMark(from, to, markType);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [editorView]
+    [disabled, editorView]
   );
 
   const isBold = isMarkActive(editorSchema?.marks.strong);

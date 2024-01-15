@@ -15,8 +15,8 @@ type DocumentState = {
 };
 
 type CurrentDocumentState = {
-  currentDocument: DocumentProps | null;
-  setCurrentDocument: (document: DocumentProps | null) => void;
+  currentDocument: DocumentProps["id"] | null;
+  setCurrentDocument: (documentId: DocumentProps["id"] | null) => void;
 };
 
 const createDocumentSlice: StateCreator<DocumentState> = (set) => ({
@@ -58,8 +58,8 @@ const createDocumentSlice: StateCreator<DocumentState> = (set) => ({
 const createCurrentDocumentSlice: StateCreator<CurrentDocumentState> = (set) => ({
   currentDocument: null,
 
-  setCurrentDocument: (document) => {
-    set({ currentDocument: document });
+  setCurrentDocument: (documentId) => {
+    set({ currentDocument: documentId });
   },
 });
 
@@ -90,5 +90,5 @@ export const unsetDocuments = () => documentStore.getState().unsetDocuments();
 export const useCurrentDocument = () =>
   useStore(documentStore, (state) => state.currentDocument);
 
-export const setCurrentDocument = (document: DocumentProps | null) =>
-  documentStore.getState().setCurrentDocument(document);
+export const setCurrentDocument = (documentId: DocumentProps["id"] | null) =>
+  documentStore.getState().setCurrentDocument(documentId);

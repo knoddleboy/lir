@@ -13,7 +13,7 @@ export const MarkFormats = () => {
   const editorView = editorModel.useEditorStore((state) => state.view?.current);
   const editorState = editorModel.useEditorStore((state) => state.state);
   const editorSchema = editorState?.schema;
-  const disabled = !document || !editorView || !editorState;
+  const disabled = !document || !editorView;
 
   const isMarkActive = useCallback(
     (markType: MarkType | undefined) => {
@@ -28,8 +28,7 @@ export const MarkFormats = () => {
 
       return state.doc.rangeHasMark(from, to, markType);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [editorView]
+    [disabled, editorView]
   );
 
   const isBold = isMarkActive(editorSchema?.marks.strong);
@@ -47,71 +46,46 @@ export const MarkFormats = () => {
       const { state, dispatch } = editorView;
       toggleMark(markType)(state, dispatch);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [editorView]
+    [disabled, editorView]
   );
 
   return (
     <div className={cn("flex items-center gap-0.5", disabled && "opacity-40")}>
-      <Button
-        variant="control-ghost"
-        className={cn(
-          "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-5 w-6 select-none rounded-sm p-1 font-extrabold",
-          isBold &&
-            "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground"
-        )}
-        onClick={() => {
-          applyMark(editorSchema?.marks.strong);
-        }}
-        disabled={disabled}
-      >
-        B
-      </Button>
-
-      <Button
-        variant="control-ghost"
-        className={cn(
-          "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-5 w-6 select-none rounded-sm p-1 font-serif font-medium italic",
-          isItalic &&
-            "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground"
-        )}
-        onClick={() => {
-          applyMark(editorSchema?.marks.em);
-        }}
-        disabled={disabled}
-      >
-        I
-      </Button>
-
-      <Button
-        variant="control-ghost"
-        className={cn(
-          "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-5 w-6 select-none rounded-sm p-1 font-medium underline",
-          isUnderline &&
-            "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground"
-        )}
-        onClick={() => {
-          applyMark(editorSchema?.marks.underline);
-        }}
-        disabled={disabled}
-      >
-        U
-      </Button>
-
-      <Button
-        variant="control-ghost"
-        className={cn(
-          "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-5 w-6 select-none rounded-sm p-1 font-medium line-through",
-          isStrikethrough &&
-            "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground"
-        )}
-        onClick={() => {
-          applyMark(editorSchema?.marks.strikethrough);
-        }}
-        disabled={disabled}
-      >
-        S
-      </Button>
+      {[
+        { markType: editorSchema?.marks.strong, isActive: isBold, label: "B" },
+        { markType: editorSchema?.marks.em, isActive: isItalic, label: "I" },
+        {
+          markType: editorSchema?.marks.underline,
+          isActive: isUnderline,
+          label: "U",
+        },
+        {
+          markType: editorSchema?.marks.strikethrough,
+          isActive: isStrikethrough,
+          label: "S",
+        },
+      ].map(({ markType, isActive, label }) => (
+        <Button
+          key={label}
+          variant="control-ghost"
+          className={cn(
+            "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-5 w-6 select-none rounded-sm p-1",
+            isActive &&
+              "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground",
+            markType === editorSchema?.marks.strong && "font-extrabold",
+            markType === editorSchema?.marks.em && "font-serif font-medium italic",
+            markType === editorSchema?.marks.underline && "font-medium underline",
+            markType === editorSchema?.marks.strikethrough &&
+              "font-medium line-through"
+          )}
+          onClick={() => {
+            applyMark(markType);
+          }}
+          disabled={disabled}
+        >
+          {label}
+        </Button>
+      ))}
     </div>
   );
 };

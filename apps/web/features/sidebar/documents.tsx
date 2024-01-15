@@ -4,9 +4,8 @@ import type { DocumentProps } from "@lir/lib/schema";
 import { Icons, Skeleton } from "@lir/ui";
 
 import { createId } from "@paralleldrive/cuid2";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useRef, useMemo, memo } from "react";
-import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useRef, useMemo } from "react";
 
 import { usePathname, useRouter } from "next/navigation";
 
@@ -14,6 +13,7 @@ import { documentApi, documentModel } from "~/entities/document";
 import { sessionModel } from "~/entities/session";
 import { generateDocumentURL } from "~/shared";
 
+import { CreateDocument } from "./ui/create-document";
 import { NavigationItem } from "./ui/navigation-item";
 
 export const Documents = () => {
@@ -48,7 +48,7 @@ const PublicViewerDocuments = () => {
 
     const document = {
       id: createId(),
-      title: "Untitled Document",
+      title: null,
       userId: "",
       content: {},
       createdAt: new Date(),
@@ -136,52 +136,8 @@ const DocumentList = () => {
         );
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [documents.length, JSON.stringify(documents.map((doc) => [doc.id, doc.title]))]
+    [JSON.stringify(documents.map((doc) => [doc.id, doc.title]))]
   );
 
   return memoizedDocuments;
 };
-
-const CreateDocument = memo(() => {
-  const router = useRouter();
-  const isAuth = sessionModel.useAuth();
-  const setDocuments = documentModel.setDocuments;
-
-  const { mutateAsync: createDocument } = useMutation({
-    mutationKey: documentApi.documentKeys.mutation.createDocument(),
-    mutationFn: documentApi.createDocument,
-    onSuccess: (data) => {
-      setDocuments([data]);
-    },
-  });
-
-  const handleCreateDocument = async () => {
-    if (!isAuth) {
-      toast.info("For more documents, please create a new account or sign in.");
-      return;
-    }
-
-    const createdDocument = await createDocument({
-      title: null,
-    });
-
-    router.push(generateDocumentURL(createdDocument.title, createdDocument.id));
-  };
-
-  return (
-    <NavigationItem
-      item={{
-        name: "New document",
-        icon: (
-          <Icons.plus
-            size={16}
-            strokeWidth={3}
-            className="text-accent-foreground/60 group-active:text-accent-foreground/90"
-          />
-        ),
-        onClick: handleCreateDocument,
-      }}
-    />
-  );
-});
-CreateDocument.displayName = "CreateDocument";

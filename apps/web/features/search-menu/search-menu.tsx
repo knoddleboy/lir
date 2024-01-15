@@ -3,6 +3,7 @@ import { Button, Dialog, DialogContent, Icons, Separator } from "@lir/ui";
 
 import { useRef } from "react";
 import { HotkeysProvider, useHotkeys } from "react-hotkeys-hook";
+import { toast } from "sonner";
 
 import { searchModel } from "~/entities/search";
 import { sessionModel } from "~/entities/session";
@@ -27,12 +28,17 @@ const SearchDialog = () => {
 
   useHotkeys(
     "mod+p",
-    () => setSearchMenuOpen(!searchMenuOpen),
+    () => {
+      if (isAuth) {
+        setSearchMenuOpen(!searchMenuOpen);
+      } else {
+        toast.info("Searching is available only for signed in users.");
+      }
+    },
     {
       preventDefault: true,
       enableOnContentEditable: true,
       enableOnFormTags: ["input", "select", "textarea"],
-      enabled: isAuth,
     },
     [searchMenuOpen]
   );

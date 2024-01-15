@@ -26,28 +26,34 @@ export const EditorBoundary = ({ documentId }: EditorBoundaryProps) => {
     return <PublicViewerEditor documentId={documentId} />;
   }
 
-  return <LogginInViewerEditor documentId={documentId} />;
+  return <LoggedInViewerEditor documentId={documentId} />;
 };
 
 const PublicViewerEditor = ({ documentId }: EditorBoundaryProps) => {
-  const document = documentModel.useDocument(documentId);
-  const [currentDocument, setCurrentDocument] = useState<DocumentProps>();
+  const documentFromStore = documentModel.useDocument(documentId);
+  const currentDocumentId = documentModel.useCurrentDocument();
+  const currentDocumentFromStore = documentModel.useDocument(
+    currentDocumentId || ""
+  );
+  const [document, setDocument] = useState<DocumentProps>();
 
-  useDocumentTitle(currentDocument ? currentDocument.title ?? "Untitled" : APP_NAME);
+  useDocumentTitle(document ? document.title ?? "Untitled" : APP_NAME);
 
   useEffect(() => {
-    setCurrentDocument(document);
+    setDocument(
+      currentDocumentId === documentId ? currentDocumentFromStore : documentFromStore
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentId]);
 
-  if (!currentDocument) {
+  if (!document) {
     return <NotFoundDocument />;
   }
 
-  return <Editor document={currentDocument} />;
+  return <Editor document={document} />;
 };
 
-const LogginInViewerEditor = ({ documentId }: EditorBoundaryProps) => {
+const LoggedInViewerEditor = ({ documentId }: EditorBoundaryProps) => {
   const { data: document } = useQuery({
     queryKey: documentApi.documentKeys.query.getDocumentData(documentId),
     queryFn: () => documentApi.getDocumentData({ documentId }),
