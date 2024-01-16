@@ -6,8 +6,6 @@ export { extractURIHash } from "./lib/extract-uri-hash";
 export { generateDocumentURL } from "./lib/generate-document-url";
 export { toBase64 } from "./lib/to-base64";
 export { formatResultString } from "./lib/format-result-string";
-export { parseBlock } from "./lib/parse-block";
-export { getBlockLength } from "./lib/get-block-length";
 export { useIsMounted } from "./lib/use-is-mounted";
 
 export type { Middleware } from "./middleware/middleware";
