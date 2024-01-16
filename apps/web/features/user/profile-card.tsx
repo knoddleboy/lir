@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Icons } from "@lir/ui";
+import { Button, Icons, Skeleton } from "@lir/ui";
 
 import React, { useRef, useImperativeHandle, useEffect, forwardRef } from "react";
 
@@ -8,6 +8,7 @@ import Link from "next/link";
 
 import { searchModel } from "~/entities/search";
 import { sessionModel } from "~/entities/session";
+import { useIsMounted } from "~/shared";
 
 import { Avatar } from "./avatar";
 
@@ -22,6 +23,17 @@ export const ProfileCard = React.forwardRef<
   }, []);
 
   const user = sessionModel.useCurrentUser();
+
+  const isMounted = useIsMounted();
+
+  if (!isMounted) {
+    return (
+      <div className="m-1.5 flex h-10 items-center px-1.5 py-1">
+        <Avatar size="base" />
+        <Skeleton className="h-5 w-full" />
+      </div>
+    );
+  }
 
   if (!user) {
     return <ProfileCardPublicViewer />;
@@ -46,7 +58,7 @@ const ProfileCardPublicViewer = () => {
         size="base"
         className="bg-accent-foreground/40 text-accent mr-4"
       /> */}
-      <PublicViewerAvatar className="mr-4 h-8 w-8" />
+      <PublicViewerAvatar className="mr-4 h-8 w-8 shrink-0" />
       <Link
         href="/signup"
         className="bg-accent-foreground/60 text-accent hover:bg-accent-foreground/50 active:bg-accent-foreground/70 shrink-0 select-none rounded-md px-2 py-0.5 text-sm font-medium"

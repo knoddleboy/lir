@@ -11,7 +11,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { documentApi, documentModel } from "~/entities/document";
 import { sessionModel } from "~/entities/session";
-import { generateDocumentURL } from "~/shared";
+import { generateDocumentURL, useIsMounted } from "~/shared";
 
 import { CreateDocument } from "./ui/create-document";
 import { NavigationItem } from "./ui/navigation-item";
@@ -66,6 +66,18 @@ const PublicViewerDocuments = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const isMounted = useIsMounted();
+
+  if (!isMounted) {
+    return (
+      <div className="flex-1">
+        <Skeleton className="mx-1.5 my-2 h-4" />
+        <Skeleton className="mx-1.5 my-2 h-4" />
+        <Skeleton className="mx-1.5 my-2 h-4" />
+      </div>
+    );
+  }
+
   return (
     <nav className="h-full flex-1 overflow-y-auto overflow-x-hidden pb-4 pt-px">
       <DocumentList />
@@ -94,7 +106,9 @@ const LoggedInViewerDocuments = ({ lastPathname }: { lastPathname?: string }) =>
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isGetUserDocumentsSuccess]);
 
-  if (!isGetUserDocumentsSuccess) {
+  const isMounted = useIsMounted();
+
+  if (!isGetUserDocumentsSuccess || !isMounted) {
     return (
       <div className="flex-1">
         <Skeleton className="mx-1.5 my-2 h-4" />

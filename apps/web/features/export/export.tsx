@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
   Icons,
+  Skeleton,
 } from "@lir/ui";
 
 import { memo } from "react";
@@ -18,7 +19,7 @@ import { toast } from "sonner";
 
 import { documentModel } from "~/entities/document";
 import { editorModel } from "~/entities/editor";
-import type { MIMEType } from "~/shared";
+import { useIsMounted, type MIMEType } from "~/shared";
 
 import { documentComposer } from "./lib";
 
@@ -26,6 +27,12 @@ export const Export = () => {
   const currentDocumentId = documentModel.useCurrentDocument();
   const currentDocument = documentModel.useDocument(currentDocumentId || "");
   const disabled = !currentDocument;
+
+  const isMounted = useIsMounted();
+
+  if (!isMounted) {
+    return <Skeleton className="h-6 w-6" />;
+  }
 
   return (
     <Dialog>
