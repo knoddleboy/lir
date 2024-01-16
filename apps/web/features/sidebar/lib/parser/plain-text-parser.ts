@@ -1,14 +1,16 @@
 import type { Node } from "prosemirror-model";
 
 import { schema } from "~/entities/editor";
+import { FileFormat } from "~/shared";
 
-import type { FileParser } from "./type";
+import { BaseParser } from "./base-parser";
 
-export class PlainTextParser implements FileParser<string> {
-  content: string;
+export class PlainTextParser extends BaseParser<string> {
+  protected format = FileFormat.TXT;
+  protected mimeType = "text/plain" as const;
 
   constructor(content: string) {
-    this.content = content;
+    super(content);
   }
 
   parse() {

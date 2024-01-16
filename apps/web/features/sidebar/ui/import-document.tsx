@@ -10,14 +10,14 @@ import {
 
 import { createId } from "@paralleldrive/cuid2";
 import { useMutation } from "@tanstack/react-query";
-import { useRef, type InputHTMLAttributes } from "react";
+import { useRef } from "react";
 import { toast } from "sonner";
 
 import { useRouter } from "next/navigation";
 
 import { documentApi, documentModel } from "~/entities/document";
 import { sessionModel } from "~/entities/session";
-import { generateDocumentURL } from "~/shared";
+import { type MIMEType, generateDocumentURL } from "~/shared";
 
 import { fileParser } from "../lib";
 
@@ -72,7 +72,7 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
     if (!files || files.length < 1) return;
 
     const file = files[0];
-    const fileType = file.type;
+    const mimeType = file.type as MIMEType;
     const sizeInMB = file.size / (1024 * 1024);
 
     if (sizeInMB > 5) {
@@ -87,7 +87,7 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
     const reader = new FileReader();
     reader.addEventListener("load", async () => {
       try {
-        const parser = fileParser(reader.result as string, fileType);
+        const parser = fileParser(reader.result as string, mimeType);
         const parsedContent = parser.parse();
 
         const createdDocument = await handleCreateDocument(name.join("."));
@@ -123,12 +123,18 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
 
         <div className="grid grid-cols-2 gap-2">
           <SelectFileButton
-            fileType="text/plain"
+            mimeType="text/plain"
             label="Plain text"
             icon={<Icons.alignLeft size={16} />}
-            className="col-span-2"
             onChange={onChange}
           />
+
+          {/* <SelectFileButton
+            mimeType="text/markdown"
+            label="Markdown"
+            icon={<Icons.textQuote size={16} />}
+            onChange={onChange}
+          /> */}
         </div>
       </DialogContent>
     </Dialog>
@@ -136,7 +142,7 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
 };
 
 type SelectFileButtonProps = {
-  fileType: InputHTMLAttributes<HTMLInputElement>["accept"];
+  mimeType: MIMEType;
   label: string;
   icon: React.ReactNode;
   className?: string;
@@ -144,7 +150,7 @@ type SelectFileButtonProps = {
 };
 
 const SelectFileButton = ({
-  fileType,
+  mimeType,
   label,
   icon,
   className,
@@ -177,7 +183,7 @@ const SelectFileButton = ({
           e.target.value = "";
         }}
         className="hidden"
-        accept={fileType}
+        accept={mimeType}
         multiple={false}
       />
     </button>
