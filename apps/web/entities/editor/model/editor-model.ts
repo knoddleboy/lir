@@ -5,7 +5,7 @@ import { create, type StateCreator } from "zustand";
 
 type EditorViewState = {
   view: MutableRefObject<EditorView> | null;
-  setView: (view: MutableRefObject<EditorView>) => void;
+  setView: (view: MutableRefObject<EditorView> | null) => void;
 };
 
 type EditorStateState = {
