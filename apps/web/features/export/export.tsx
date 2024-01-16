@@ -120,8 +120,13 @@ const ExportDocumentDialogContent = memo(
           <ExportDocumentButton
             label="Plain text"
             icon={<Icons.alignLeft size={16} />}
-            className="col-span-2"
             onClick={() => handleExport("text/plain")}
+          />
+
+          <ExportDocumentButton
+            label="Markdown"
+            icon={<Icons.textQuote size={16} />}
+            onClick={() => handleExport("text/markdown")}
           />
         </div>
       </>

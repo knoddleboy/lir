@@ -19,5 +19,6 @@ module.exports = {
         allowNew: true,
       },
     ],
+    "prefer-template": "off",
   },
 };

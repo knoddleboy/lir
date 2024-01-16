@@ -1,1 +1,1 @@
-export type MIMEType = "text/plain";
+export type MIMEType = "text/plain" | "text/markdown";

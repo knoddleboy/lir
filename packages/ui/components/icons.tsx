@@ -24,6 +24,7 @@ import {
   AlignJustify,
   MoveVertical,
   LucideShare,
+  LucideTextQuote,
 } from "lucide-react";
 import type { LucideIcon, LucideProps } from "lucide-react";
 
@@ -119,4 +120,5 @@ export const Icons = {
   alignRight: AlignRight,
   alignJustify: AlignJustify,
   moveVertical: MoveVertical,
+  textQuote: LucideTextQuote,
 } as const;
