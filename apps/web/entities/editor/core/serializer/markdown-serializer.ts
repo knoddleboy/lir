@@ -8,9 +8,19 @@ import type { Node } from "prosemirror-model";
 const serializeNodes = {
   ...defaultMarkdownSerializer.nodes,
 
-  paragraph(state: MarkdownSerializerState, node: Node) {
+  paragraph(
+    state: MarkdownSerializerState,
+    node: Node,
+    parent: Node,
+    index: number
+  ) {
     state.renderInline(node);
     state.ensureNewLine();
+
+    const nextNode = parent.maybeChild(index + 1);
+    if (nextNode && nextNode.isBlock && nextNode.content.size === 0) {
+      state.write("\n");
+    }
   },
 
   heading(state: MarkdownSerializerState, node: Node) {
