@@ -125,6 +125,7 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
           <SelectFileButton
             mimeType="text/plain"
             label="Plain text"
+            className="col-span-2"
             icon={<Icons.alignLeft size={16} />}
             onChange={onChange}
           />
