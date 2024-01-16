@@ -3,19 +3,32 @@ import { Button } from "@lir/ui";
 
 import { toggleMark } from "prosemirror-commands";
 import { type MarkType } from "prosemirror-model";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { documentModel } from "~/entities/document";
 import { editorModel } from "~/entities/editor";
 import { schema as editorSchema } from "~/entities/editor";
 
+const strongMark = editorSchema.marks.strong;
+const emMark = editorSchema.marks.em;
+const underlineMark = editorSchema.marks.underline;
+const strikethroughMark = editorSchema.marks.strikethrough;
+
 export const MarkFormats = () => {
   const document = documentModel.useCurrentDocument();
   const editorView = editorModel.useEditorStore((state) => state.view?.current);
+  const editorState = editorModel.useEditorStore((state) => state.state);
   const disabled = !document || !editorView;
 
-  const isMarkActive = useCallback(
-    (markType: MarkType | undefined) => {
+  const [currentMarks, setCurrentMarks] = useState({
+    bold: false,
+    italic: false,
+    underline: false,
+    strikethrough: false,
+  });
+
+  useEffect(() => {
+    const isMarkActive = (markType: MarkType | undefined) => {
       if (disabled || !markType) return false;
 
       const { state } = editorView;
@@ -26,14 +39,21 @@ export const MarkFormats = () => {
       }
 
       return state.doc.rangeHasMark(from, to, markType);
-    },
-    [disabled, editorView]
-  );
+    };
 
-  const isBold = isMarkActive(editorSchema.marks.strong);
-  const isItalic = isMarkActive(editorSchema.marks.em);
-  const isUnderline = isMarkActive(editorSchema.marks.underline);
-  const isStrikethrough = isMarkActive(editorSchema.marks.strikethrough);
+    const isBold = isMarkActive(strongMark);
+    const isItalic = isMarkActive(emMark);
+    const isUnderline = isMarkActive(underlineMark);
+    const isStrikethrough = isMarkActive(strikethroughMark);
+
+    setCurrentMarks((prevMarks) => ({
+      ...prevMarks,
+      bold: isBold,
+      italic: isItalic,
+      underline: isUnderline,
+      strikethrough: isStrikethrough,
+    }));
+  }, [disabled, editorView, editorState]);
 
   const applyMark = useCallback(
     (markType: MarkType | undefined) => {
@@ -51,19 +71,31 @@ export const MarkFormats = () => {
   return (
     <div className={cn("flex items-center gap-0.5", disabled && "opacity-40")}>
       {[
-        { markType: editorSchema.marks.strong, isActive: isBold, label: "B" },
-        { markType: editorSchema.marks.em, isActive: isItalic, label: "I" },
         {
-          markType: editorSchema.marks.underline,
-          isActive: isUnderline,
+          markType: strongMark,
+          isActive: currentMarks.bold,
+          label: "B",
+          style: "font-extrabold",
+        },
+        {
+          markType: emMark,
+          isActive: currentMarks.italic,
+          label: "I",
+          style: "font-serif font-medium italic",
+        },
+        {
+          markType: underlineMark,
+          isActive: currentMarks.underline,
           label: "U",
+          style: "font-medium underline",
         },
         {
-          markType: editorSchema.marks.strikethrough,
-          isActive: isStrikethrough,
+          markType: strikethroughMark,
+          isActive: currentMarks.strikethrough,
           label: "S",
+          style: "font-medium line-through",
         },
-      ].map(({ markType, isActive, label }) => (
+      ].map(({ markType, isActive, label, style }) => (
         <Button
           key={label}
           variant="control-ghost"
@@ -71,11 +103,7 @@ export const MarkFormats = () => {
             "disabled:active:bg-control disabled:active:text-accent-foreground/60 h-5 w-6 select-none rounded-sm p-1",
             isActive &&
               "bg-control-foreground text-accent-foreground hover:bg-control-foreground hover:text-accent-foreground",
-            markType === editorSchema.marks.strong && "font-extrabold",
-            markType === editorSchema.marks.em && "font-serif font-medium italic",
-            markType === editorSchema.marks.underline && "font-medium underline",
-            markType === editorSchema.marks.strikethrough &&
-              "font-medium line-through"
+            style
           )}
           onClick={() => {
             applyMark(markType);
