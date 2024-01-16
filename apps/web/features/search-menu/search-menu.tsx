@@ -40,7 +40,7 @@ const SearchDialog = () => {
       enableOnContentEditable: true,
       enableOnFormTags: ["input", "select", "textarea"],
     },
-    [searchMenuOpen]
+    [isAuth, searchMenuOpen]
   );
 
   const handleSearchBarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

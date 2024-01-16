@@ -12,6 +12,8 @@ export { getBlockLength } from "./lib/get-block-length";
 export type { Middleware } from "./middleware/middleware";
 export { withMiddleware } from "./middleware/with-middleware";
 
+export { FileFormat } from "./types/file-format";
+export type { MIMEType } from "./types/mime-type";
 export type { ObjectValues } from "./types/object-values";
 export { Route } from "./types/routes";
 

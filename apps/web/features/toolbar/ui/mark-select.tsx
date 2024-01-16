@@ -14,6 +14,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { documentModel } from "~/entities/document";
 import { editorModel } from "~/entities/editor";
+import { schema as editorSchema } from "~/entities/editor";
 
 enum Mark {
   Regular = "Regular",
@@ -26,8 +27,7 @@ export const MarkSelect = () => {
   const document = documentModel.useCurrentDocument();
   const editorView = editorModel.useEditorStore((state) => state.view?.current);
   const editorState = editorModel.useEditorStore((state) => state.state);
-  const editorSchema = editorState?.schema;
-  const disabled = !document || !editorView || !editorState || !editorSchema;
+  const disabled = !document || !editorView || !editorState;
 
   const [currentMark, setCurrentMark] = useState<Mark>(Mark.Regular);
 
@@ -47,8 +47,8 @@ export const MarkSelect = () => {
     [disabled, editorView]
   );
 
-  const isBold = isMarkActive(editorSchema?.marks.strong);
-  const isItalic = isMarkActive(editorSchema?.marks.em);
+  const isBold = isMarkActive(editorSchema.marks.strong);
+  const isItalic = isMarkActive(editorSchema.marks.em);
 
   useEffect(() => {
     if (isBold && isItalic) {

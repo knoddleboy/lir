@@ -1,3 +1,4 @@
+import { cn } from "@lir/lib";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +10,7 @@ import {
 
 import { createId } from "@paralleldrive/cuid2";
 import { useMutation } from "@tanstack/react-query";
-import { useRef } from "react";
+import { useRef, type InputHTMLAttributes } from "react";
 import { toast } from "sonner";
 
 import { useRouter } from "next/navigation";
@@ -28,7 +29,6 @@ type Props = {
 export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
   const router = useRouter();
   const isAuth = sessionModel.useAuth();
-  const inputRef = useRef<HTMLInputElement>(null);
   const documentIdRef = useRef("");
 
   const { mutateAsync: createLoggedInViewerDocument } = useMutation({
@@ -63,11 +63,6 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
     }
 
     return createPublicViewerDocument(title);
-  };
-
-  const onClick = () => {
-    if (!inputRef.current) return;
-    inputRef.current.click();
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,26 +121,65 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
           </DialogDescription>
         </DialogHeader>
 
-        <button
-          className="_ring bg-accent hover:bg-muted-foreground/10 active:bg-muted-foreground/[0.15] border-muted-foreground/20 flex h-8 w-full items-center justify-center gap-2 rounded-md border"
-          onClick={onClick}
-        >
-          <Icons.alignLeft size={16} />
-          <span className="text-sm">Plain text</span>
-          <input
-            ref={inputRef}
-            name="import"
-            type="file"
-            onChange={(e) => {
-              onChange(e);
-              e.target.value = "";
-            }}
-            className="hidden"
-            accept="text/plain"
-            multiple={false}
+        <div className="grid grid-cols-2 gap-2">
+          <SelectFileButton
+            fileType="text/plain"
+            label="Plain text"
+            icon={<Icons.alignLeft size={16} />}
+            className="col-span-2"
+            onChange={onChange}
           />
-        </button>
+        </div>
       </DialogContent>
     </Dialog>
+  );
+};
+
+type SelectFileButtonProps = {
+  fileType: InputHTMLAttributes<HTMLInputElement>["accept"];
+  label: string;
+  icon: React.ReactNode;
+  className?: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+const SelectFileButton = ({
+  fileType,
+  label,
+  icon,
+  className,
+  onChange,
+}: SelectFileButtonProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const onClick = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+
+  return (
+    <button
+      className={cn(
+        "_ring bg-accent hover:bg-muted-foreground/10 active:bg-muted-foreground/[0.15] border-muted-foreground/20 flex h-8 w-full items-center justify-center gap-2 rounded-md border",
+        className
+      )}
+      onClick={onClick}
+    >
+      {icon}
+      <span className="text-sm">{label}</span>
+      <input
+        ref={inputRef}
+        name="import"
+        type="file"
+        onChange={(e) => {
+          onChange(e);
+          e.target.value = "";
+        }}
+        className="hidden"
+        accept={fileType}
+        multiple={false}
+      />
+    </button>
   );
 };

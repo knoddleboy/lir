@@ -23,6 +23,7 @@ import {
   AlignRight,
   AlignJustify,
   MoveVertical,
+  LucideShare,
 } from "lucide-react";
 import type { LucideIcon, LucideProps } from "lucide-react";
 
@@ -106,6 +107,7 @@ export const Icons = {
   menu: LucideMenu,
   settings: LucideSettings,
   import: LucideDownload,
+  export: LucideShare,
   plus: LucidePlus,
   sun: LucideSun,
   moon: LucideMoon,
