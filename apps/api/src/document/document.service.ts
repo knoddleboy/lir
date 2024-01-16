@@ -4,9 +4,14 @@ import {
   UpdateDocumentInput,
 } from "@lir/lib/schema";
 
+import { Prisma } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
 
-import { Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from "@nestjs/common";
 
 @Injectable()
 export class DocumentService {
@@ -43,29 +48,39 @@ export class DocumentService {
   }
 
   async updateDocument(input: UpdateDocumentInput) {
-    return await this.prismaService.document.update({
-      where: { id: input.id },
-      data: {
-        ...(input.title !== undefined ? { title: input.title } : {}),
-        ...(input.content ? { content: input.content } : {}),
-      },
+    const updateQueries = input.map(({ id, title, content }) => {
+      const data: Prisma.DocumentUpdateInput = {};
+
+      if (title !== undefined) {
+        data.title = title;
+      }
+
+      if (content) {
+        data.content = content;
+      }
+
+      return this.prismaService.document.update({
+        where: { id },
+        data,
+      });
     });
+
+    try {
+      const results = await this.prismaService.$transaction(updateQueries);
+      const lastUpdated = results[results.length - 1];
+      return lastUpdated;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new BadRequestException();
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
 
   async deleteDocument({ id: documentId }: DeleteDocumentInput) {
-    // const deleteDocumentBlocks = this.prismaService.block.deleteMany({
-    //   where: { documentId },
-    // });
-
     return await this.prismaService.document.delete({
       where: { id: documentId },
     });
-
-    // const [, deletedDocument] = await this.prismaService.$transaction([
-    //   deleteDocumentBlocks,
-    //   deleteDocument,
-    // ]);
-
-    // return deletedDocument;
   }
 }

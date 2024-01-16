@@ -12,6 +12,7 @@ import { editorModel } from "~/entities/editor";
 import { sessionModel } from "~/entities/session";
 
 import { buildKeyMap } from "./keymap";
+import { TransactionQueue } from "./queue/transaction-queue";
 import schema from "./schema";
 
 const defaultDoc = {
@@ -39,23 +40,17 @@ export const useProseMirror = (initialDoc?: ProseMirrorNode) => {
     mutationFn: documentApi.updateDocument,
   });
 
+  const transactionQueue = useRef(new TransactionQueue(mutateAsync));
+
   const updateDocument = (id: string, content: ProseMirrorNode) => {
     if (isAuth) {
-      mutateAsync({
-        id,
-        content,
-      }).then((updatedDoc) => {
-        documentModel.setDocument({
-          id: updatedDoc.id,
-          content: updatedDoc.content,
-        });
-      });
-    } else {
-      documentModel.setDocument({
-        id,
-        content,
-      });
+      transactionQueue.current.enqueue({ id, content });
     }
+
+    documentModel.setDocument({
+      id,
+      content,
+    });
   };
 
   useEffect(() => {

@@ -8,7 +8,7 @@ import { create, useStore, type StateCreator } from "zustand";
 
 type DocumentState = {
   documents: DocumentProps[];
-  setDocument: (updateInput: UpdateDocumentInput) => void;
+  setDocument: (updateInput: UpdateDocumentInput[number]) => void;
   setDocuments: (documents: DocumentProps[]) => void;
   unsetDocument: (deleteInput: DeleteDocumentInput) => void;
   unsetDocuments: () => void;
@@ -76,7 +76,7 @@ export const useDocument = (id: string) =>
 export const useDocuments = () =>
   useStore(documentStore, (state) => state.documents);
 
-export const setDocument = (updateInput: UpdateDocumentInput) =>
+export const setDocument = (updateInput: UpdateDocumentInput[number]) =>
   documentStore.getState().setDocument(updateInput);
 
 export const setDocuments = (documents: DocumentProps[]) =>

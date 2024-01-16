@@ -26,7 +26,7 @@ const hDOM = (node: Node): DOMOutputSpec => {
       classes += "mb-1 mt-8 ";
       break;
     case 2:
-      classes += "mt-6 ";
+      classes += "mt-6 mb-1 ";
       break;
     case 3:
       classes += "mt-4 ";

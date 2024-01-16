@@ -140,7 +140,7 @@ const EditableTitle = ({ item, isEditing, setIsEditing }: EditableTitleProps) =>
       documentModel.setDocument(updateInput);
 
       if (isAuth) {
-        await updateDocument(updateInput);
+        await updateDocument([updateInput]);
       }
     }
 
