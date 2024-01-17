@@ -1,8 +1,8 @@
 import { cn } from "@lir/lib";
 import type { DocumentProps } from "@lir/lib/schema";
-import { Icons } from "@lir/ui";
+import { Icons, Spinner } from "@lir/ui";
 
-import { memo, useState, useCallback } from "react";
+import { memo, useState, useCallback, forwardRef, type ElementRef } from "react";
 
 import Link from "next/link";
 
@@ -47,36 +47,66 @@ SearchResultItem.displayName = "SearchResultItem";
 
 type SearchResultProps = {
   result: DocumentProps[];
+  isPending: boolean;
 };
 
-export const SearchResult = ({ result }: SearchResultProps) => {
-  const setSearchMenuOpen = searchModel.useSearchStore(
-    (state) => state.setSearchMenuOpen
-  );
+const MAX_DOCS_IN_VIEW = 10;
+const HALF_DOCS = Math.floor(MAX_DOCS_IN_VIEW / 2 - 1);
+const DOC_HEIGHT = 36;
+const SPINNER_SIZE = 16;
 
-  const [cursor, setCursor] = useState<number>(0);
+export const SearchResult = forwardRef<ElementRef<"div">, SearchResultProps>(
+  ({ result, isPending }, ref) => {
+    const setSearchMenuOpen = searchModel.useSearchStore(
+      (state) => state.setSearchMenuOpen
+    );
 
-  const onHover = useCallback(
-    (index: number) => {
-      setCursor(index);
-    },
-    [setCursor]
-  );
+    const [cursor, setCursor] = useState<number>(0);
 
-  return (
-    <div
-      role="menu"
-      className="h-full max-h-fit scroll-pb-2 overflow-y-auto px-2 pb-2"
-    >
-      {result.map((document, i) => (
-        <SearchResultItem
-          key={document.id}
-          item={document}
-          isActive={cursor === i}
-          onHover={() => onHover(i)}
-          onClick={() => setSearchMenuOpen(false)}
-        />
-      ))}
-    </div>
-  );
-};
+    const onHover = useCallback(
+      (index: number) => {
+        setCursor(index);
+      },
+      [setCursor]
+    );
+
+    return (
+      <div
+        ref={ref}
+        role="menu"
+        className="relative h-full max-h-fit w-full scroll-pb-2 overflow-y-auto px-2 pb-2"
+      >
+        {isPending && (
+          <div
+            className="fixed left-1/2 z-10 -translate-x-1/2"
+            style={{
+              top:
+                (result.length > MAX_DOCS_IN_VIEW
+                  ? HALF_DOCS
+                  : Math.floor(result.length / 2)) *
+                  DOC_HEIGHT +
+                (DOC_HEIGHT - SPINNER_SIZE) / 2 +
+                77 +
+                "px",
+            }}
+          >
+            <Spinner />
+          </div>
+        )}
+
+        <div className={cn(isPending && "opacity-60")}>
+          {result.map((document, i) => (
+            <SearchResultItem
+              key={document.id}
+              item={document}
+              isActive={cursor === i}
+              onHover={() => onHover(i)}
+              onClick={() => setSearchMenuOpen(false)}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+);
+SearchResult.displayName = "SearchResult";

@@ -8,8 +8,8 @@ import { Injectable } from "@nestjs/common";
 export class SearchService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async searchDocuments(userId: string, { query, sort }: SearchInput) {
-    return await this.prismaService.document.findMany({
+  async searchDocuments(userId: string, { query, sort, skip, take }: SearchInput) {
+    const documents = await this.prismaService.document.findMany({
       where: {
         userId,
         title: {
@@ -22,6 +22,20 @@ export class SearchService {
         ...(sort.sortBy === "dateModified" ? { updatedAt: sort.sortDirection } : {}),
         ...(sort.sortBy === "dateCreated" ? { createdAt: sort.sortDirection } : {}),
       },
+      skip,
+      take,
     });
+
+    const total = await this.prismaService.document.count({
+      where: {
+        userId,
+        title: {
+          contains: query,
+          mode: "insensitive",
+        },
+      },
+    });
+
+    return { documents, total };
   }
 }

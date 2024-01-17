@@ -8,6 +8,8 @@ const searchSortSchema = z.object({
 export const searchSchema = z.object({
   query: z.string(),
   sort: searchSortSchema,
+  skip: z.number().nonnegative(),
+  take: z.number().nonnegative(),
 });
 
 export type SearchInput = z.infer<typeof searchSchema>;

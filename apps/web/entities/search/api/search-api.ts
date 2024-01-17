@@ -1,5 +1,5 @@
 import type { SearchDto } from "@lir/lib/dto";
-import type { DocumentProps, SearchInput } from "@lir/lib/schema";
+import type { SearchInput, SearchResult } from "@lir/lib/schema";
 
 import type { AxiosResponse } from "axios";
 
@@ -17,8 +17,8 @@ export const searchKeys = {
 
 export const searchDocuments = async (data: SearchInput) => {
   const response = await apiClient.post<
-    DocumentProps[],
-    AxiosResponse<DocumentProps[]>,
+    SearchResult,
+    AxiosResponse<SearchResult>,
     SearchDto
   >("/search/documents", data);
 
