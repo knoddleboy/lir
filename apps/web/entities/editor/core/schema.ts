@@ -13,7 +13,7 @@ const pDOM = (node: Node): DOMOutputSpec => {
   return [
     "p",
     {
-      style: `text-align: ${node.attrs.align}; line-height: ${node.attrs.lineSpacing};`,
+      style: `text-align: ${node.attrs.align}; line-height: ${node.attrs.lineSpacing}; white-space: pre-wrap;`,
     },
     0,
   ];

@@ -1,4 +1,5 @@
 import { cn } from "@lir/lib";
+import { type CreateDocumentInput } from "@lir/lib/schema";
 import {
   Dialog,
   DialogContent,
@@ -40,12 +41,12 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
     },
   });
 
-  const createPublicViewerDocument = (title: string) => {
+  const createPublicViewerDocument = ({ title, content }: CreateDocumentInput) => {
     const document = {
       id: createId(),
       title,
       userId: "",
-      content: {},
+      content: content || {},
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -57,12 +58,12 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
     return document;
   };
 
-  const handleCreateDocument = async (title: string) => {
+  const handleCreateDocument = async ({ title, content }: CreateDocumentInput) => {
     if (isAuth) {
-      return await createLoggedInViewerDocument({ title });
+      return await createLoggedInViewerDocument({ title, content });
     }
 
-    return createPublicViewerDocument(title);
+    return createPublicViewerDocument({ title, content });
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,14 +91,12 @@ export const ImportDocumentDialog = ({ open, setOpen }: Props) => {
         const parser = fileParser(reader.result as string, mimeType);
         const parsedContent = parser.parse();
 
-        const createdDocument = await handleCreateDocument(name.join("."));
-        documentIdRef.current = createdDocument.id;
-
-        documentModel.setDocument({
-          id: createdDocument.id,
+        const createdDocument = await handleCreateDocument({
+          title: name.join("."),
           content: parsedContent,
         });
 
+        documentIdRef.current = createdDocument.id;
         setOpen(false);
       } catch (error) {
         if (error instanceof Error) {

@@ -41,8 +41,8 @@ export class DocumentService {
     return await this.prismaService.document.create({
       data: {
         title: input.title,
+        content: input.content || {},
         user: { connect: { id: userId } },
-        content: {},
       },
     });
   }
