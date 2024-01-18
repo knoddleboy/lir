@@ -124,11 +124,10 @@ const EditableTitle = ({ item, isEditing, setIsEditing }: EditableTitleProps) =>
   useDocumentTitle(newTitle);
 
   const handleUpdate = async () => {
-    if (newTitle.length && item.id) {
-      const newTitleWithMaxLength = newTitle.substring(
-        0,
-        Math.min(newTitle.length, 255)
-      );
+    if (item.id) {
+      const newTitleWithMaxLength = newTitle.length
+        ? newTitle.substring(0, Math.min(newTitle.length, 255))
+        : null;
 
       const updateInput = {
         id: item.id,
