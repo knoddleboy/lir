@@ -28,20 +28,21 @@ WORKDIR /app
 COPY --from=pruned /app/out/json/ .
 COPY --from=pruned /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-  pnpm install --prefer-offline --frozen-lockfile
+  pnpm install --frozen-lockfile
 
 # build the project
-COPY --from=pruned /app/out/full/ .
 COPY turbo.json turbo.json
+COPY --from=pruned /app/out/full/ .
 RUN pnpm exec turbo build --filter=@lir/web...
-
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-  pnpm install --prefer-offline --frozen-lockfile --prod
 
 # final stage
 FROM base
 
 WORKDIR /app
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+USER nextjs
 
 COPY --from=build /app/apps/web/next.config.js .
 COPY --from=build /app/apps/web/package.json .
@@ -52,4 +53,4 @@ COPY --from=build --chown=node:node /app/apps/web/.next/standalone ./
 COPY --from=build --chown=node:node /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=build --chown=node:node /app/apps/web/public ./apps/web/public
 
-CMD ["node", "apps/web/server.js"]
+CMD node apps/web/server.js
