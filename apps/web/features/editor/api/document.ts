@@ -1,8 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import type { DocumentProps } from "@lir/lib/schema";
+
+import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
 import { documentApi } from "~/entities/document";
 
-export const useGetDocumentData = (documentId: string) =>
+export const useGetDocumentData = (
+  documentId: string
+): UseQueryResult<DocumentProps, Error> =>
   useQuery({
     queryKey: documentApi.documentKeys.query.getDocumentData(documentId),
     queryFn: () => documentApi.getDocumentData({ documentId }),

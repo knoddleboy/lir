@@ -1,8 +1,15 @@
-import { useMutation } from "@tanstack/react-query";
+import type { ChangePasswordDto } from "@lir/lib/dto";
+
+import { useMutation, type UseMutationResult } from "@tanstack/react-query";
 
 import { sessionApi } from "~/entities/session";
 
-export const useChangePassword = () =>
+export const useChangePassword = (): UseMutationResult<
+  void,
+  Error,
+  ChangePasswordDto,
+  unknown
+> =>
   useMutation({
     mutationFn: sessionApi.changePassword,
   });
