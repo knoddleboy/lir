@@ -1,7 +1,7 @@
 import { ErrorResponseCode } from "@lir/lib/error";
 import { UpdateUserInput, UserProps } from "@lir/lib/schema";
+import { Prisma, User } from "@lir/prisma";
 
-import { Prisma, User } from "@prisma/client";
 import { Response } from "express";
 import { PrismaService } from "nestjs-prisma";
 

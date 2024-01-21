@@ -1,8 +1,8 @@
 import { WEBAPP_URL } from "@lir/lib";
 import { ErrorResponseCode } from "@lir/lib/error";
 import { AuthResponse } from "@lir/lib/responses";
+import { User } from "@lir/prisma";
 
-import { User } from "@prisma/client";
 import dayjs from "dayjs";
 import { Response } from "express";
 import { PrismaService } from "nestjs-prisma";

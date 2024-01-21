@@ -1,7 +1,7 @@
 import { ErrorResponseCode } from "@lir/lib/error";
 import { jwtPayloadSchema } from "@lir/lib/schema";
+import { Prisma, User } from "@lir/prisma";
 
-import { Prisma, User } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
 
 import {

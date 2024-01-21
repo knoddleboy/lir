@@ -1,6 +1,6 @@
 import { DeleteUserDto, UpdateUserDto } from "@lir/lib/dto";
+import type { User as UserType } from "@lir/prisma";
 
-import type { User as UserType } from "@prisma/client";
 import { Response } from "express";
 
 import {
