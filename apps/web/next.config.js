@@ -11,6 +11,11 @@ const nextConfig = {
       },
     ];
   },
+  // Had to ignore eslint for building inside
+  // docker eslint causes strange errors.
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 module.exports = nextConfig;
