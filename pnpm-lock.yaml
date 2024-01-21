@@ -29,6 +29,9 @@ importers:
       '@lir/lib':
         specifier: '*'
         version: link:../../packages/lib
+      '@lir/prisma':
+        specifier: '*'
+        version: link:../../packages/prisma
       '@nestjs-modules/mailer':
         specifier: ^1.9.1
         version: 1.9.1(@nestjs/common@10.2.10)(@nestjs/core@10.2.10)(nodemailer@6.9.7)
@@ -53,9 +56,6 @@ importers:
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
-      '@prisma/client':
-        specifier: ^5.6.0
-        version: 5.6.0(prisma@5.6.0)
       bcrypt:
         specifier: ^5.1.1
         version: 5.1.1
@@ -65,6 +65,9 @@ importers:
       dayjs:
         specifier: ^1.11.10
         version: 1.11.10
+      express:
+        specifier: ^4.18.2
+        version: 4.18.2
       handlebars:
         specifier: ^4.7.8
         version: 4.7.8
@@ -373,12 +376,18 @@ importers:
         specifier: ^0.10.0
         version: 0.10.0
     devDependencies:
+      '@lir/tsconfig':
+        specifier: '*'
+        version: link:../tsconfig
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
       prisma:
         specifier: ^5.6.0
         version: 5.6.0
+      typescript:
+        specifier: ^5.3.3
+        version: 5.3.3
 
   packages/tsconfig: {}
 
@@ -11153,6 +11162,12 @@ packages:
 
   /typescript@5.3.2:
     resolution: {integrity: sha512-6l+RyNy7oAHDfxC4FzSJcz9vnjTKxrLpDG5M2Vu4SHRVNg6xzqZp6LYSR9zjqQTu8DU/f5xwxUdADOkbrIX2gQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: true
+
+  /typescript@5.3.3:
+    resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true

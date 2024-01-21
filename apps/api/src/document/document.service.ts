@@ -3,8 +3,8 @@ import {
   DeleteDocumentInput,
   UpdateDocumentInput,
 } from "@lir/lib/schema";
+import { Prisma } from "@lir/prisma";
 
-import { Prisma } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
 
 import {

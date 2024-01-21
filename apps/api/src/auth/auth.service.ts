@@ -2,9 +2,9 @@ import { WEBAPP_URL } from "@lir/lib";
 import { LoginDto, SignupDto } from "@lir/lib/dto";
 import { ErrorResponseCode } from "@lir/lib/error";
 import { UserProps } from "@lir/lib/schema";
+import type { User } from "@lir/prisma";
+import { Prisma } from "@lir/prisma";
 
-import type { User } from "@prisma/client";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import dayjs from "dayjs";
 import { Response } from "express";
 import { PrismaService } from "nestjs-prisma";
@@ -60,7 +60,7 @@ export class AuthService {
     } catch (error) {
       if (
         // https://www.prisma.io/docs/reference/api-reference/error-reference#p2002
-        error instanceof PrismaClientKnownRequestError &&
+        error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === "P2002"
       ) {
         throw new BadRequestException(ErrorResponseCode.UserAlreadyExists);

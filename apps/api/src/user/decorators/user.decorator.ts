@@ -1,4 +1,5 @@
-import type { User as PrismaUser } from "@prisma/client";
+import type { User as PrismaUser } from "@lir/prisma";
+
 import { Request } from "express";
 
 import { ExecutionContext, createParamDecorator } from "@nestjs/common";

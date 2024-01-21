@@ -6,6 +6,9 @@
       "dependsOn": ["@lir/prisma#db:up"],
       "inputs": ["./schema.prisma", "./migrations/**/*.sql"]
     },
+    "@lir/prisma#db:generate": {
+      "cache": false
+    },
     "@lir/prisma#db:up": {
       "cache": false
     },
@@ -14,7 +17,7 @@
       "dependsOn": ["@lir/prisma#db:migrate"]
     },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "@lir/prisma#db:generate"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "db:deploy": {

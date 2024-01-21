@@ -5,8 +5,8 @@ import {
   SignupDto,
   VerificationTokenDto,
 } from "@lir/lib/dto";
+import type { User as UserType } from "@lir/prisma";
 
-import type { User as UserType } from "@prisma/client";
 import { Response } from "express";
 
 import { Body, Controller, Get, Post, Query, Res, UseGuards } from "@nestjs/common";
