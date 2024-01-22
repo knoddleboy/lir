@@ -99,28 +99,6 @@ export class UserService {
     await this._deleteUser(id, response);
   }
 
-  async deleteUserWithoutPassword(id: string, response: Response) {
-    const user = await this.prismaService.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        identityProvider: true,
-      },
-    });
-
-    if (!user) {
-      throw new NotFoundException(ErrorResponseCode.UserNotFound);
-    }
-
-    if (user.identityProvider === "EMAIL") {
-      throw new BadRequestException(
-        ErrorResponseCode.SocialIdentityProviderRequired
-      );
-    }
-
-    await this._deleteUser(id, response);
-  }
-
   private async _deleteUser(userId: string, response: Response) {
     await Promise.all([
       this.prismaService.user.delete({

@@ -20,6 +20,10 @@
       "dependsOn": ["^build", "@lir/prisma#db:generate"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
+    "start": {
+      "dependsOn": ["build"],
+      "cache": false
+    },
     "db:deploy": {
       "cache": false,
       "inputs": ["./migrations/**/*.sql", "./prisma/migrations/**/*.sql"]

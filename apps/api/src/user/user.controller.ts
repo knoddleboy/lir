@@ -3,16 +3,7 @@ import type { User as UserType } from "@lir/prisma";
 
 import { Response } from "express";
 
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Res,
-  UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Get, Patch, Post, Res, UseGuards } from "@nestjs/common";
 
 import { JwtGuard } from "~/auth/guards/jwt.guard";
 
@@ -41,10 +32,5 @@ export class UserController {
     @Res() response: Response
   ) {
     await this.userService.deleteUser(id, password, response);
-  }
-
-  @Delete()
-  async deleteWithoutPassword(@User("id") id: string, @Res() response: Response) {
-    return this.userService.deleteUserWithoutPassword(id, response);
   }
 }
