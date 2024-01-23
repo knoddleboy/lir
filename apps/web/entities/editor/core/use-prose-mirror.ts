@@ -105,7 +105,7 @@ export const useProseMirror = (initialDoc?: ProseMirrorNode) => {
       editorStateCache.set(currentDocumentId, viewRef.current.state);
       viewRef.current.destroy();
       setEditorView(null);
-      documentModel.setCurrentDocument(null);
+      // documentModel.setCurrentDocument(null);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDocumentId]);
