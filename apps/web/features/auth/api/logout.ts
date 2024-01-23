@@ -17,9 +17,8 @@ export const useLogout = (): UseMutationResult<
     onSettled: () => {
       sessionModel.unsetUser();
       documentModel.unsetDocuments();
-      queryClient.removeQueries({
+      queryClient.invalidateQueries({
         queryKey: sessionApi.sessionKeys.session.currentUser(),
-        type: "inactive",
       });
     },
   });

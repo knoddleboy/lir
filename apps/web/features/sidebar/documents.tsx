@@ -104,7 +104,7 @@ const LoggedInViewerDocuments = ({ lastPathname }: { lastPathname?: string }) =>
 
     router.replace(lastPathname || "/d");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isGetUserDocumentsSuccess]);
+  }, [userDocuments, isGetUserDocumentsSuccess]);
 
   const isMounted = useIsMounted();
 
