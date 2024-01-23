@@ -43,12 +43,18 @@ export const UserDropdown = () => {
         <div className="flex items-center px-3 py-2.5">
           <Avatar avatarUrl={user?.avatar} fallbackName={user?.name} size="md" />
 
-          <div className="flex-1 font-medium">
-            <div className="text-sm">{user?.name}</div>
-            <div className="text-accent-foreground/60 text-xs">{user?.email}</div>
+          <div className="overflow-hidden font-medium">
+            <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm">
+              {user?.name}
+            </div>
+            <div className="text-accent-foreground/60 overflow-hidden text-ellipsis whitespace-nowrap text-xs">
+              {user?.email}
+            </div>
           </div>
 
-          <ThemeSwitch />
+          <div className="ml-1.5 flex items-center">
+            <ThemeSwitch />
+          </div>
         </div>
 
         <DropdownMenuSeparator className="mb-0 mt-1" />

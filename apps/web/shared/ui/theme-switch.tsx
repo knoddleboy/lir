@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Icons } from "@lir/ui";
 
 import { useTheme } from "next-themes";
