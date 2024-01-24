@@ -17,7 +17,11 @@ export const Toolbar = () => {
   const isMounted = useIsMounted();
 
   if (!isMounted) {
-    return <Skeleton className="h-6 w-full" />;
+    return (
+      <div className="w-full">
+        <Skeleton className="ml-[26px] h-6 w-full max-w-2xl" />
+      </div>
+    );
   }
 
   return (

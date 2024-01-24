@@ -40,10 +40,10 @@ export const UserDropdown = () => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="ml-3 w-72 p-0">
-        <div className="flex items-center px-3 py-2.5">
+        <div className="flex items-center justify-between px-3 py-2.5">
           <Avatar avatarUrl={user?.avatar} fallbackName={user?.name} size="md" />
 
-          <div className="overflow-hidden font-medium">
+          <div className="w-full overflow-hidden font-medium">
             <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm">
               {user?.name}
             </div>

@@ -19,7 +19,7 @@ async function main() {
       password: "Pass123!",
     },
     documents: Array.from({ length: 10 }).map((_) => ({
-      title: `${word()} ${Math.random() > 0.5 ? ip() : cityName()}`,
+      title: `${word()} ${Math.random() > 0.5 ? ip() : cityName().toLowerCase()}`,
       content: {},
     })),
   });
@@ -31,7 +31,7 @@ async function main() {
       password: "Pass123!",
     },
     documents: Array.from({ length: 50 }).map((_) => ({
-      title: `${word()} ${Math.random() > 0.5 ? ip() : cityName()}`,
+      title: `${word()} ${Math.random() > 0.5 ? ip() : cityName().toLowerCase()}`,
       content: {},
     })),
   });
